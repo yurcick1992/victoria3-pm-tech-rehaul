@@ -209,7 +209,7 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
 | 3 | RULED, no longer open: the t1 rung is "Compound Engines" and the technology `pumpjacks` is shown as "Pumping Engines"; its description, translations and icon DEFERRED TO THE RELEASE BUILD (§10.124 item 4) | English, vanilla's icon, until then | §10.116.2, §10.124 |
 | 4 | whose technology gates a drive | RULED: the diesel step on the country's own; the steam drive follows irrigation's gate, which is the WORLD's since §10.124 item 1 (the probe passed, F276; checked in game by the user) | §10.116.1, §10.115, §10.124 |
 | 5 | RULED 2026-11-21: the engines' input lift is 1.0 (§10.124 item 5) | — | §10.116, §10.124 |
-| 6 | the 1855 thresholds (the pass lines of the 1836–1855 2+1 screen proposed on 2026-11-16) | ASKED BACK 2026-11-21: what they are, and whether the screen stays now that the plan is one 100-year run, then iteration | §10.115, §10.124 |
+| 6 | the 1855 thresholds (the pass lines of the 1836–1855 screen proposed on 2026-11-16) | MEASURED 2026-11-21 (F281, `ledger/screen_1855.mjs`): vanilla 1.15.2 reads 3.3% dead per run at 0.66 and 0.1% dead in both runs of a pair; the canon's start sits outside vanilla's eight-run min–max on six raw lines; a civil-war split reads as death. The user: the rotation's design, and with it the lines, comes later | §10.115, F281 |
 | 7 | RULED 2026-11-21: 5,000 workers on every deposit rung stays (§10.124 item 6); mining employment is read in the runs | — | §10.115, §10.117, §10.124 |
 | 8 | RULED, no longer open (§10.119): the retune is the iteration of this book; military research (the weight rule) and tier-scaled secondary lines are in it; the minor fixes are release tasks | — | §10.119 |
 | 9 | the cost of oil's rungs: RULED 2026-11-21 for now, subject to calibrating (§10.124 item 7) — the first rung at half vanilla's, 200; the second "as much higher as the output is higher": ASKED BACK, since under the flat output both make 60 (200), while vanilla's second method makes 100 (333) | 200 / 200 until answered | §10.124 |
@@ -239,7 +239,8 @@ t0 and the factory boiler lines. It does not read the t1 engine rung (pumpjacks,
    **The research-weight probes** (§2.6), each of about ten in-game years with the go-ahead: a forced test on vanilla + telemetry
    of pick odds against a weight ratio (the fourth-power fit of F223 was made on vanilla's near-flat weights), then the rule on
    the book as a declared probe with its tick cost, then `tools/research_model/` run with the measured rule to choose the figures.
-3. **The generator** for §2, and the readers that are missing: slot fill by rung, a raw-material price index, the 1855 reader.
+3. **The generator** for §2, and the readers that are missing: slot fill by rung, a raw-material price index (the 1855 reader is built:
+   `ledger/screen_1855.mjs`, F281, 2026-11-21).
 4. Confirm §1 and §5 with the user; state the arms, n, span and predictions back (rule 3); the named books and their field diffs.
 5. The 1836–1855 arms through 2+1; then centuries. **Re-planned by the user on 2026-11-21:** the next session builds the 1.2 book for a
    15-minute player check in game, then plays ONE 100-year run of it; the session after starts iterating on the values.

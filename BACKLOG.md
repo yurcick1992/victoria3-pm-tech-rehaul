@@ -17,8 +17,8 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 pre-1.2 probes done (F276–F280; the research-weight rule ruled −20% / −50% with the ticking signal, built in the emitters), and the register's
 tools are on §10.120 / §10.123. **Next session:** build the mod 1.2 book (NEXT_BOOK_SPEC.md; its §5 lists what is still to rule, items 14 and
 15 new from the probes) for a 15-minute player check in game, then ONE 100-year run of it (go-ahead there). **The session after:** iterate on
-the values. Missing before the iterations read anything: the readers of NEXT_BOOK_SPEC §6 step 3 (slot fill by rung, a raw-material price
-index, the 1855 reader) and the study scripts of 2026-11-16/17, still outside the repo.
+the values. Missing before the iterations read anything: two readers of NEXT_BOOK_SPEC §6 step 3 (slot fill by rung, a raw-material price
+index; the 1855 reader is built, `ledger/screen_1855.mjs`, F281) and the study scripts of 2026-11-16/17, still outside the repo.
 
 1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings, the 2026-10-26 proofread's display text and the 2026-10-27 urban-centre live figure (sha256 `9a05d36da42c1511`, measured as `728f2c7f84e6f467`; CLAUDE.md §4.1,
    the lineage §4.3): the artmerge arm canonised 2026-10-12 (§10.99, F227) → one innovation parameter x = 25 (2026-10-13, §10.101.1) →

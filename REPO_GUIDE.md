@@ -1706,6 +1706,12 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   the premium is a producer price; a merge host is counted by building type, not split by main method. Refs: F161 §4/§6.
 - **`ledger/old_rungs_by_industry.mjs`** `<year> <label>=<group> [...]` — `countrySplit`'s old-rung share per industry, pool and world, each
   run on its own book. Traps: different ladders compare what each calls two tiers behind.
+- **`ledger/screen_1855.mjs`** `[--van <group>] --arm <label>=<group> [...] [--year 1855]` (2026-11-21; F281) — the 1836–1855 readings of §10.115's
+  two pass terms against vanilla's min–max (default `VANILLA_REF`): (a) world GDP at 1837 / 1840 / 1845, deposit-family levels (matched by
+  building-key PREFIX, so tiered rungs count when the generator keeps vanilla's key as their prefix), raw materials' world output and
+  world-market price (52-week mean) at 1837.1.1; (b) at 1855.1.1 the world's share in countries under k × vanilla's median GDP for their tag
+  (k 0.75 / 0.66 / 0.5; weighed by vanilla's median; vanilla read leave-one-out), per run and dead in both runs of every pair, and world GDP ÷
+  vanilla's median. Judges nothing (the thresholds are unruled). ⚠ A civil-war split reads as death (F281: the Taiping state); not merged yet.
 - **`ledger/laggard_pressure.mjs`** `<book> <label>=<group> [...] [--stuck y|y10|none] [--gap 15] [--minpop 1e6] [--tags POR,…] [--json <file>]`
   (the JSON: section A per class — cases, workers kept, median case, profit — the ledger's trade-only backward-industry line; the in-market
   line is the register's term, from `criteria.json`) — section A from `lib_laggard.mjs`, manufacturing only (`lib_industries.mjs`) — competitive

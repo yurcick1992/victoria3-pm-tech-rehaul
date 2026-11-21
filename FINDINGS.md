@@ -426,6 +426,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F278 | The AI's research picks follow ai_weight^3.7 (× 0.8 → odds × 0.33, × 0.5 → × 0.08, × 1.25 → × 2.1, × 0.1 → never); in the research model the ruled entry-weight rule buys ~2 military technologies by 1906 and none by 1936, whatever its figures | vanilla 1.15.2 + overlay; the model over the 1.1.1 canon | 2 + 2 × 1836→1846; model 10 runs × 2 seeds | here |
 | F279 | The entry-weight rule costs no visible play time: 64.9 against 65.4 s per in-game year over 1837–1846, inside the canon's own spread; the wall-clock reader cannot read a performance probe (usableRuns drops probes) | the canon and the canon + the rule | 2 + 2 × 1836→1846, a performance probe | here |
 | F280 | The ruled research-weight rule with its ticking signal costs no visible play time (60.8 against 62.8 s per in-game year, 1837–1846), and the signal works (2,191 open stages store their bar; 54 country flags live at 1846); six load-time lines for the frontline flags, fixed | the canon and the canon + the ruled rule | 2 + 2 × 1836→1846, a performance probe | here |
+| F281 | The 1836–1855 readings on game 1.15.2: vanilla's own spread for §10.115's two pass terms (dead at 0.66: 3.3% per run, 0.1% in both runs of a pair) and the canon beside it; a per-country "dead" reading counts a civil-war split as death (the canon's China at 0.45 = 17.7%, the Taiping state holding the rest); vanilla's eight-run min–max is narrower than the canon's own start (wood, copper outside) | vanilla 1.15.2; the canon | 8 + 2, no game time | here |
 
 ---
 
@@ -23609,3 +23610,45 @@ pulse in this build), `probe: performance`, alternating canon / ewr2 / canon / e
 **What it does NOT say.** Late-game cost (ten early years; about 2,300 entries are open in a 1936 canon save against fewer here); the rule's
 effect on research (a probe is never economy data); a bound below the noise (unpaired runs; the shared-start framework of BACKLOG G would
 pair them); the fixed build (`b68945c2`, 18 fewer pulses) was not run, only built and linted.
+
+## F281 — THE 1836–1855 READINGS ON GAME 1.15.2: VANILLA'S OWN SPREAD FOR §10.115'S TWO PASS TERMS, AND THE CANON BESIDE IT; A PER-COUNTRY "DEAD" READING COUNTS A CIVIL-WAR SPLIT AS DEATH (THE CANON'S CHINA AT 0.45 = 17.7% OF THE WORLD, THE TAIPING STATE HOLDING THE REST), AND VANILLA'S MIN–MAX OF EIGHT RUNS IS NARROWER THAN THE CANON'S OWN START (2026-11-21; no game time: vanilla 1.15.2 n = 8, `20261119_210048`, and the canon's two checkpoint legs, `20261120_230717`, F275)
+
+The user, 2026-11-21: *"Let's have the 1855 measurements now. But the design of actual rotation comes later."* The reader is
+`tools/testbed/ledger/screen_1855.mjs` (new; the "1855 reader" NEXT_BOOK_SPEC §6 step 3 listed as missing). It prints, against vanilla's
+min–max over its runs, (a) the start — world GDP at 1837 / 1840 / 1845, the deposit families' levels, the raw materials' world output and
+world-market prices (52-week mean) at 1837.1.1 — and (b) 1855.1.1 — the share of the world (weighed by vanilla's median GDP per tag) in
+countries under k × vanilla's median GDP for their tag, per run and dead in both runs of every pair, with world GDP ÷ vanilla's median. It
+judges nothing: the thresholds are not ruled.
+
+**(b) 1855.1.1, vanilla 1.15.2 (each run against the median of the other seven; 28 pairs):**
+
+| k | per run: median [min–max] | dead in BOTH runs of a pair: median, max |
+|---|---|---|
+| 0.75 | 5.7% [2.2–7.9%] | 0.6%, 2.7% |
+| 0.66 | 3.3% [1.4–5.1%] | 0.1%, 1.2% |
+| 0.5 | 1.2% [0.4–3.6%] | 0.0%, 0.3% |
+
+World GDP 1855 ÷ vanilla's median: 0.96–1.02. The largest single "dead" countries at 0.66: Austria at 0.30 of its median in one run
+(2.3% of the world), Prussia at 0.27 in another (1.9%), Egypt, Belgium. (On 1.15.1 the same reading was 2.9% median per run at 0.66, 0.2%
+in both runs of a pair, §10.115.)
+
+**The canon on 1.15.2, two legs, against vanilla's median:** per run at 0.66 18.7% and 2.8% (at 0.75 20.6% / 4.9%); dead in both legs
+0.5%; world GDP 0.98 / 1.02. Leg 1's 18.7% is CHINA at 0.45 of its median (17.7% of the world): not a collapse but the **Taiping split** —
+China holds £53.5M on 234M people and the Taiping Heavenly Kingdom (TPG) £42.3M on 190M, together about vanilla run 1's undivided China
+(£113.4M on 410M). Leg 2 has no such split.
+
+**(a) The start at 1837.1.1** (vanilla's median [min–max] against the canon's two legs): world GDP 418 [412–422] against 419 / 423 (£M),
+1845 533 [520–540] against 522 / 531. The canon sits OUTSIDE vanilla's eight-run range on six raw-material lines: wood output 43,068 /
+43,237 against 39,353 [37,970–39,693] (+9%, the crafts and the furniture ladder), copper output 214 / 221 against 195 [184–209] and its
+price 51.7 / 51.2 against 44.5 [42.7–45.9] (+15%: copper in the 1.15 rungs and bronze artillery), whaling stations 11 / 13 against
+8 [7–10], fish and oil marginally; coal, iron, lead, sulfur, gold and the deposit levels inside.
+
+**What the readings say for the thresholds still to design** (observations, not proposals ruled):
+- A per-run "dead" share is dominated by one large country's break-up: a civil-war split reads as death, though the world GDP is
+  unchanged. Dead in BOTH runs of a pair is robust to it (0.5% here). Merging a break-away state into its parent (TPG into CHI) would
+  make the per-run reading mean what it says; the reader does not do it yet.
+- Vanilla's min–max over eight runs is too narrow a band for (a): the canon, whose start is vanilla's converted map with the crafts
+  seeded, sits outside it on six lines. A band in percent of vanilla's median, or the canon's own spread, would read the start fairly.
+
+**What it does NOT say.** Anything about a tiered-deposit book (none exists yet); the canon at n = 2; how often vanilla splits China
+(none of its eight runs at 0.66); the slot fill by rung and the raw-material price index (the two other readers still missing).
