@@ -425,6 +425,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F277 | The resource hooks: a forced discovery reveals the whole block, a zero-chance one too; on_resource_discovered fires once per state of the region inside the force, and a force of another type from inside it fires it again (vanilla's oil events react); depletion moves the whole potential; change_resource_potential changes a region's capacity at once, negative too, discovered capacity even on an undiscovered type; a state-region variable guards once per region | vanilla 1.15.2 + overlay | 1 + 1 short engine probes | here |
 | F278 | The AI's research picks follow ai_weight^3.7 (× 0.8 → odds × 0.33, × 0.5 → × 0.08, × 1.25 → × 2.1, × 0.1 → never); in the research model the ruled entry-weight rule buys ~2 military technologies by 1906 and none by 1936, whatever its figures | vanilla 1.15.2 + overlay; the model over the 1.1.1 canon | 2 + 2 × 1836→1846; model 10 runs × 2 seeds | here |
 | F279 | The entry-weight rule costs no visible play time: 64.9 against 65.4 s per in-game year over 1837–1846, inside the canon's own spread; the wall-clock reader cannot read a performance probe (usableRuns drops probes) | the canon and the canon + the rule | 2 + 2 × 1836→1846, a performance probe | here |
+| F280 | The ruled research-weight rule with its ticking signal costs no visible play time (60.8 against 62.8 s per in-game year, 1837–1846), and the signal works (2,191 open stages store their bar; 54 country flags live at 1846); six load-time lines for the frontline flags, fixed | the canon and the canon + the ruled rule | 2 + 2 × 1836→1846, a performance probe | here |
 
 ---
 
@@ -23577,3 +23578,34 @@ runs). The prediction held. The cost was argued small because the rule's trigger
 - A bound below the noise: no ×10-worsened arm was run (the plan made it conditional on a visible difference).
 - The wall-clock reader cannot read a performance probe (`wall_clusters.mjs` takes usable runs, and `lib_runs.usableRuns` drops every probe):
   the table was read by hand from each run's `run.log` tick lines, per attempt.
+
+## F280 — THE RULED RESEARCH-WEIGHT RULE, WITH ITS TICKING SIGNAL, COSTS NO VISIBLE PLAY TIME, AND THE SIGNAL WORKS: 60.8 AGAINST 62.8 SECONDS PER IN-GAME YEAR OVER 1837–1846; 2,191 OPEN STAGES STORE THEIR BAR AND 54 COUNTRY FLAGS ARE LIVE AT 1846 (2026-11-21; session `20261121_133026_g1152-ewr-tick-perf`, a performance probe, the canon against the canon + the rule, alternating 2 + 2, 1836→1846, game 1.15.2)
+
+The ruled form of BALANCE_FRAMEWORK §10.119 item 3 (2026-11-21): −20% at the entry's literacy line, −50% while the entry is TICKING, read by
+the cheap form — every stage entry's monthly pulse compares its bar with the value it stored on itself last month (`pmr_bp`) and, when it
+rose, sets the expiring country flag `pmr_adv_<tech>` (45 days), which the AI weight reads (`emit_research_events.mjs`,
+`emit_tech_finish.mjs`, `research_events.entry_weight_rule.signal = 'tick'`). Arms: the canon (`697d4869`) and
+`config/mod_config.g1151-canon-bz-dcu-ra-il-aw-ewr2.json` (`c6f20491`: the canon + `entry_weight_rule` {0.8, 0.5, tick}; 339 entries with the
+pulse in this build), `probe: performance`, alternating canon / ewr2 / canon / ewr2; the user's go-ahead.
+
+| run | arm | s per in-game year 1837–1841 | 1842–1846 | 1837–1846 | wall to 1846.1.1 |
+|---|---|---|---|---|---|
+| 1 | canon | 59.6 | 61.0 | 60.9 | 664 s |
+| 2 | ewr2 | 59.1 | 59.7 | 60.8 | 657 s |
+| 3 | canon | 61.3 | 67.7 | 64.6 | 695 s |
+| 4 | ewr2 | 59.5 | 62.4 | 60.7 | 655 s |
+
+- **Cost:** means 62.8 (canon) and 60.8 (ewr2) seconds per in-game year: not visible; the rule arm reads 3% faster, inside the canon's own
+  6% spread between its two runs. The prediction (inside the noise; an upper bound near +1%) held.
+- **The signal works.** Run 2's kept 1846.1.1 save carries `pmr_bp` on 2,191 open stage entries, 47 of them non-zero (stored fixed-point:
+  `1200000` = 12 months of bar), the rest bars that never ticked; and 54 live `pmr_adv_<tech>` country flags (intensive agriculture 6,
+  central archives 5, psychiatry, postal savings, mutual funds, identification documents 4 each …). Run 3 (canon) carries neither. The
+  form `set_variable = { name = pmr_bp value = "scripted_bar_progress(<bar>)" }` on a journal-entry scope is accepted by the engine.
+- **error.log:** no class from the pulses at run time. Ours, at load: six `Variable 'pmr_adv_<tech>' is set but is never used`, one per
+  frontline technology (their entries set the flag; their weight is never lowered); fixed after the batch (`b68945c2`: the frontline
+  entries carry no signal, 321 of 339 entries do). The `MISSING_DLC_ENTRY` group (the bracketed `[1.15]` mod name, F275) appeared in BOTH
+  arms at the main menu, so it is not confined to continuations: the main menu reads the previous run's save, written by another build.
+
+**What it does NOT say.** Late-game cost (ten early years; about 2,300 entries are open in a 1936 canon save against fewer here); the rule's
+effect on research (a probe is never economy data); a bound below the noise (unpaired runs; the shared-start framework of BACKLOG G would
+pair them); the fixed build (`b68945c2`, 18 fewer pulses) was not run, only built and linted.
