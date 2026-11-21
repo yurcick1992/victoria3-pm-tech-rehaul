@@ -62,7 +62,7 @@ game 1.15.0 on **08.11** ✅ (planned ~16.11 on a stable 1.15.N). **Since 2026-1
 - **DEFERRED** · craft extras: a Muskets craft; spreading the 1836 craft levels over the largest states; automation that duplicates a main-method upgrade · ROADMAP step 12, POLISH_1_0.md F2
 - **DEFERRED** · merge branch if the hosts run hot (added method ×1/√1.9, or host cost ×1.62) · §10.91.2
 - **WATCH** · the mandated automations always charge vanilla's automation goods (−£60–460 a level a week at base prices, 2–4% of revenue) — vanilla's own note: Mechanized Looms pays only above £6.9 a laborer a year, Britain's normal rate is £3.2–4.8 · §10.93 rule 5
-- **WATCH** · craft ai_value (800 a level, `_artisan.craft_ai`) — not a lever to pull unasked · §10.91.1, §10.91.5
+- **REVISIT, not now (user, 2026-11-21: "Set a reminder in a backlog to revisit this. Will depend on how much is built now, maybe they're a significant unintended capital sink. However, don't check now.")** · the crafts' AI desire (800 a level, `_artisan.craft_ai`): it stays 800 under §10.124 item 9 (the manufacturing ladder's 10% rule would put a craft, at K(0) ÷ 50, near 9), and the crafts may be a significant unintended capital sink; the reading is how much the AI builds of them, in levels and construction points, once the 1.2 book has runs. Was WATCH: not a lever to pull unasked · §10.91.1, §10.91.5, §10.124 item 9
 - **WATCH** · the PB arc is tracking-only by ruling (no forced radicalisation, no retargeted 1848 cascade); it rises every decade with no dip (members do move crafts → urban centres, F194 §3) · F190–F194
 
 Closed:
