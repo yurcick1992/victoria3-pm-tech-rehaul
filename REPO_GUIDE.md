@@ -1686,6 +1686,18 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   `century`, `century_pooled`, `like_for_like_pooled`). Traps: until 2026-11-12 `--batch` took whole sessions only (a group of
   `<session>/runNNN` items broke the path join); since then the group goes to `lib_runs` as given, so run-folder groups work; decade labels read `1836-46` for the steps from 1836.1.1 to 1846.1.1 (F262's table printed the same decades as
   `1836–45`). A reading, not a register term; the ledger shows it mod only (§10.104.1). Refs: §10.92, F206, F207, F262.
+- **`ledger/craft_capital.mjs`** `--arm <label>=<group>[:<setup>] [--arm …] [--json <out.json>]` (2026-11-21; F282) — how much new capital
+  the AI puts into the t0 crafts and what a pound of it earns against the same country's other new capital. misplaced_capital's step
+  logic (yearly steps, £ per point, profit per staffed level, the VALID benchmark) with the crafts split out and the tiered rungs split by
+  tier (craft · t0 · t1 · t2 · t3 · mines · agriculture). Prints (A) new capital by decade — craft levels, points, £, share of the classes'
+  new capital and of the flow's points, plus the per-run median and range; (B) per class and decade the expected return a year (payback),
+  the misplaced share and the new capital; (C) the standing stock at each decade's first summary — craft levels, staffed share, craft
+  workers (staffed × 500), the return of each class's stock and value added per pound of capital. A mod arm only (a control has no crafts;
+  the run's own book from `build_state.json`). Traps: the state-region caps, `validity()` and the benchmark are COPIES of
+  misplaced_capital.mjs's (that reader runs on import): change both or neither; point VIC3_GAME at the snapshot of the version the runs
+  played (`C:/claude-code/vic3_game_<version>/game`); the expected return is the AI's view when it builds, so a level that never staffs
+  counts at its type's earnings — table C and `downsize_telemetry.mjs` are the checks; levels that change hands count as built by the
+  receiver. Refs: F282, F187, BACKLOG A.
 - **`ledger/obsolete_construction.mjs`** — obsolete construction (GLOSSARY): the share of new tiered capacity (construction points,
   levels, job slots) added to a building while, at the start of that year, the same country holds the technology of a higher-tier
   building of the same industry, has one standing, and gets more value added per worker from it than from the obsolete building's

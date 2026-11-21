@@ -427,6 +427,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F279 | The entry-weight rule costs no visible play time: 64.9 against 65.4 s per in-game year over 1837–1846, inside the canon's own spread; the wall-clock reader cannot read a performance probe (usableRuns drops probes) | the canon and the canon + the rule | 2 + 2 × 1836→1846, a performance probe | here |
 | F280 | The ruled research-weight rule with its ticking signal costs no visible play time (60.8 against 62.8 s per in-game year, 1837–1846), and the signal works (2,191 open stages store their bar; 54 country flags live at 1846); six load-time lines for the frontline flags, fixed | the canon and the canon + the ruled rule | 2 + 2 × 1836→1846, a performance probe | here |
 | F281 | The 1836–1855 readings on game 1.15.2: vanilla's own spread for §10.115's two pass terms (dead at 0.66: 3.3% per run, 0.1% in both runs of a pair) and the canon beside it; a per-country "dead" reading counts a civil-war split as death (the canon's China at 0.45 = 17.7%, the Taiping state holding the rest); vanilla's eight-run min–max is narrower than the canon's own start (wood, copper outside) | vanilla 1.15.2; the canon | 8 + 2, no game time | here |
+| F282 | The crafts are not a capital sink: about 8,400 craft levels, 50,000 points (£20–27M) a century, 0.09% of all construction (0.5% before 1855); expected return 29% a year against 10–19% on the factory rungs, 6% misplaced against 30–44% on t0–t2; about as many craft levels downsized as built (0.55% of the capital downsized), staffing 93% → 51%; the crafts' 800 kept | the book of mod 1.1.1 / 1.1.2 (`697d4869`) | 15 centuries (1.15.1) + 2 × 1836→1855 (1.15.2), no game time | here |
 
 ---
 
@@ -23652,3 +23653,96 @@ price 51.7 / 51.2 against 44.5 [42.7–45.9] (+15%: copper in the 1.15 rungs and
 
 **What it does NOT say.** Anything about a tiered-deposit book (none exists yet); the canon at n = 2; how often vanilla splits China
 (none of its eight runs at 0.66); the slot fill by rung and the raw-material price index (the two other readers still missing).
+
+## F282 — THE CRAFTS ARE NOT A CAPITAL SINK: THE AI PUTS ABOUT 8,400 CRAFT LEVELS, 50,000 POINTS (£20–27M) A CENTURY INTO THEM, 0.09% OF ALL CONSTRUCTION (0.5% BEFORE 1855), AND A POUND OF IT IS EXPECTED TO EARN 29% A YEAR AGAINST 10–19% ON THE FACTORY RUNGS, WITH 6% OF IT MISPLACED AGAINST 30–44% ON T0–T2; WHAT GOES WRONG IS CHURN, SMALL IN MONEY — ABOUT AS MANY CRAFT LEVELS ARE DOWNSIZED AS ARE BUILT, AND CRAFT STAFFING FALLS FROM 93% TO 51% (2026-11-21; no game time: the book of mod 1.1.1 and 1.1.2, `697d4869`, 15 centuries on game 1.15.1, `20261112_113429` + `20261116_005659`, and two runs to 1855 on game 1.15.2, `20261120_230717`)
+
+**The question (the user, 2026-11-21):** *"Check how much capital is spent on t0 crafts in mod 1.1.2, compared to more productive money
+usage"*, after setting the reminder of the same morning (BACKLOG A: the crafts' AI desire of 800 against §10.124 item 9's 10% rule, which
+would put a craft, at K(0) ÷ 50 = 6 points a level, near 9; "maybe they're a significant unintended capital sink").
+
+**Sources.** Mod 1.1.2 has no century: it is the 1.1.1 book (`697d4869`) rebuilt on game 1.15.2 (§10.122), so the century is the 15
+centuries of that book on game 1.15.1 (F271's ten, F272's five; every run's `build_state.json` names it), and game 1.15.2 is read on the
+canon's two checkpoint legs to 1855.1.1 (F275), which the 1.15.1 runs' first two decades match (below). Three readers: **`ledger/craft_capital.mjs`**
+(new; its header holds the definitions — yearly steps, new capital = Δlevels⁺ × points × the country's £ per point, expected return from
+the type's profit per staffed level at the step's start, misplaced = misplaced_capital's VALID rule, the stock at each decade's first
+summary), `construction_spend.mjs` (F187's flow, every summary) and `downsize_telemetry.mjs` (the levels lost, §10.107). VIC3_GAME pointed
+at the snapshot of the version each batch played. The first summary of a century is 1837.1.1, so the "1836" decade is 1837–1846.
+
+**1. How much — new capital by decade** (mean a run over the 15 centuries; the crafts' share of the new capital of the seven classes below,
+and of the construction points the queues received):
+
+| decade | craft levels | points | £M | classes £M | craft ÷ classes | craft ÷ flow points |
+|---|---|---|---|---|---|---|
+| 1836 | 450 | 2,698 | 1.20 | 205 | 0.59% | 0.41% |
+| 1846 | 936 | 5,617 | 2.49 | 344 | 0.72% | 0.59% |
+| 1856 | 1,113 | 6,680 | 3.19 | 490 | 0.65% | 0.55% |
+| 1866 | 869 | 5,214 | 2.53 | 649 | 0.39% | 0.32% |
+| 1876 | 722 | 4,332 | 2.03 | 856 | 0.24% | 0.19% |
+| 1886 | 662 | 3,974 | 1.92 | 1,326 | 0.14% | 0.11% |
+| 1896 | 691 | 4,146 | 1.97 | 2,121 | 0.09% | 0.07% |
+| 1906 | 752 | 4,513 | 2.19 | 3,302 | 0.07% | 0.05% |
+| 1916 | 903 | 5,416 | 2.73 | 4,995 | 0.05% | 0.04% |
+| 1926 | 1,039 | 6,235 | 3.34 | 7,313 | 0.05% | 0.03% |
+
+Per run, median [min–max]: **8,370 craft levels [7,097–9,238], 50,220 points [42,582–55,428], £23.3M [19.6–27.2M]; 0.11% [0.08–0.14%]
+of the classes' new capital (£21.6bn a run), 0.09% [0.07–0.11%] of the flow's points.** `construction_spend.mjs` reads the same:
+42,582–55,506 points, 0.07–0.10% of all construction (median 0.09%; £21–30M at each country's run-average £ per point), 0.07–0.12% of
+economic and 0.11–0.20% of tiered construction. **Game 1.15.2's two legs to 1855 (runs 1 / 2):** 1,498 / 1,372 craft levels, 8,988 / 8,232 points
+(£3.6–3.7M), 0.50–0.59% of the flow's points, 0.55 / 0.47% of all construction by `construction_spend.mjs`, 2.8 / 2.4% of tiered —
+by decade 0.58% and 0.72% of the classes' capital against the 1.15.1 runs' 0.59% and 0.72%. F187's earlier craft book (one seed,
+1836→1866) put 14,988 points, 0.66% of the flow, into crafts; this book puts 14,995 a run into them over the same thirty years.
+
+**2. What a pound of it earns, against the other uses** (pooled over runs, capital-weighted; expected annual profit ÷ the new capital, payback
+in years in brackets; misplaced = the share of the graded capital loss-making or paying back more than 3× slower than the country's best
+VALID sector that year):
+
+| decade | craft | t0 factories | t1 | t2 | t3 | mines | agriculture |
+|---|---|---|---|---|---|---|---|
+| 1846 return | 37% (2.7) | 10% (9.6) | 12% (8.7) | 10% (9.7) | — | 20% (4.9) | 31% (3.3) |
+| 1886 return | 28% (3.5) | 11% (8.8) | 13% (7.8) | 16% (6.1) | 30% (3.4) | 18% (5.7) | 29% (3.4) |
+| 1926 return | 18% (5.5) | 9% (11.6) | 11% (9.2) | 14% (7.2) | 18% (5.7) | 26% (3.9) | 31% (3.2) |
+| **century return** | **29% (3.4)** | 10% (9.6) | 12% (8.2) | 15% (6.6) | 19% (5.2) | 22% (4.6) | 30% (3.3) |
+| **century misplaced** | **6%** | 44% | 44% | 30% | 17% | 16% | 13% |
+| new capital, £M a run | 24 | 424 | 3,489 | 8,318 | 3,517 | 3,256 | 2,574 |
+
+The crafts' return peaks at 40% (2.5 years) in 1856–65 and falls every decade after; their misplaced share is 1–3% to 1895, 5% in
+1896–1905, then 6%, 12% and 17%, the lowest of the manufacturing classes in every decade but 1896–1905 (t3 2%; tied with t3 at 3% in
+1886–95). Loss-making
+new craft capital: 0% in every decade but the last (1%). On the 1.15.2 legs: 31% and 37% a year (3.2 and 2.7 years), 1% misplaced, against
+the 1.15.1 runs' 30% / 37% and 3% / 1%. Value added at market per pound of standing capital: crafts 0.54 (1846), 0.73 (1866), 0.34 (1936)
+against 0.25–0.28 for everything else measured.
+
+**3. The standing stock** (pooled; return = annual profit ÷ capital at that date's £ per point):
+
+| year | craft levels | staffed | craft workers | craft capital | craft return | t0 / t1 / t2 / t3 / mines / agriculture return |
+|---|---|---|---|---|---|---|
+| 1846 | 7,270 | 93% | 3.36M | £23.3M | 23% | 5% / 10% / 6% / — / 17% / 20% |
+| 1866 | 8,193 | 91% | 3.72M | £28.3M | 32% | 5% / 12% / 11% / — / 17% / 20% |
+| 1886 | 8,766 | 87% | 3.82M | £29.1M | 23% | 5% / 11% / 13% / 13% / 17% / 23% |
+| 1906 | 8,502 | 80% | 3.41M | £27.4M | 17% | 5% / 9% / 12% / 20% / 18% / 24% |
+| 1926 | 7,862 | 64% | 2.53M | £25.0M | 12% | 3% / 8% / 11% / 15% / 23% / 29% |
+| 1936 | 7,521 | 51% | 1.91M | £24.2M | 9% | 2% / 7% / 10% / 12% / 26% / 33% |
+
+The stock's own return, empty levels included, stays above t0–t2's to 1926 (above t3's to 1886) and ends at 9% in 1936, between t1's 7%
+and t2's 10%. About 3,700
+craft levels stand empty at 1936, roughly £12M a run.
+
+**4. The churn — downsizing** (`downsize_telemetry.mjs`, the same 15 runs, mean a run ± sd): **7,463.8 ± 870.7 craft levels lost to
+auto-downsizing, 44.8k ± 5.2k construction points** — 36% of the 20,799 levels auto-downsized a run, but **0.55% of the 8,214k points**
+(the t0 factory rungs lose 649 levels and 245k points, t1 2,546 and 1,744k, t2 2,706 and 3,491k). Textile, furniture, glass and paper
+crafts are the four most downsized types (2,074 / 1,494 / 1,448 / 1,347 private levels a run; food 759). In the shortlist 504 craft levels
+a run, 3.0k points. About as many craft levels are lost as are built (8,370 against 7,464 a run, with the stock 7,270 → 7,521 over
+1846–1936): the AI keeps building crafts that empty and go.
+
+**What it says.** The crafts' 800 does not sink capital: at 6 points a level a craft is the cheapest manufacturing capital there is, the
+AI's expected return on it is the highest of any manufacturing class, and the whole century's craft construction (£24M a run) is less
+than the t0 factory rungs received in any single decade from 1856 on (£28–90M). What a craft takes is labour — 500 jobs for 6 points, 3.4–3.8M
+workers in 1846–1896 and 1.9M in 1936 — and its churn is visible in levels (the largest single class of downsized levels) and invisible
+in money. The user kept the 800 for the time being (§10.124 item 9, BACKLOG A).
+
+**What it does NOT say.** Mod 1.1.2 over a century (only its two legs to 1855; the century is the same book on 1.15.1). The return is the
+AI's view when it builds (the type's profit per staffed level at the step's start): a new level that never staffs earns nothing, and the
+stock table is the realised check. The yearly steps count craft levels that change hands as built by the receiver and miss levels built
+and lost inside one year (the downsizing count is independent of both). Points from the GDP base modifier cost no goods (F187), so a poor
+country's £ figures run low; the points shares are the cleaner reading of how much. Whether the crafts' labour would have been better used
+elsewhere (a question of labour, not capital), and the 1.2 book (re-read with `craft_capital.mjs` once it has runs).

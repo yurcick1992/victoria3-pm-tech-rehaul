@@ -6366,6 +6366,9 @@ session. On F271's ten runs every reading the new register shares with the old o
    canon's 1000 / 1000 / 3000 / 5000 at C 1.9). A merged host keeps its conditional rule (§10.91.2) on these values. The crafts keep their
    own ruled 800 (§10.91.1: a craft costs K(0) ÷ 50 by design, so the 10% rule would put its desire near 9). The deposit rungs keep
    vanilla's desire (as §10.115 accepted); §10.92.1's exemptions and gold's static 5000 stand.
+   **The crafts' 800 confirmed the same day after F282** (the user: *"we're leaving ai desire at 800 for the time being"*): on the book of
+   mod 1.1.1 and 1.1.2 the crafts take 0.07–0.11% of all construction over a century and earn more per pound than any factory rung, so the
+   800 does not sink capital; to be re-read on the 1.2 book's runs (BACKLOG A).
 
 **Asked back the same day** (oil answered, above; the 1855 measurements made the same day, F281, the thresholds and the rotation to be designed later — the user: *"Let's have the 1855 measurements now. But the design of actual rotation comes later."*): what "the 1855 thresholds" are (item 6: the pass lines Claude proposed on 2026-11-16 for the 1836–1855 2+1
 screen, §10.115) and whether that screen still exists now that the plan is one 100-year run and then iteration; and the oil reading of
