@@ -18,7 +18,9 @@ and the AI-weights step last). The four items still unruled at build time were r
 cost step 1.3, "Tier N." names on deposit rungs, references to every rung, the standard rung entries for deposit technologies); §10.125 also
 records what the build decided by itself. Every linter and preflight pass; the canon builds byte for byte as before with the changed tools.
 Not yet loaded in the game: the user's 15-minute check is next, then one 100-year run (go-ahead). The rest of this page is the
-specification as it was written; where it and §10.125 disagree, §10.125 wins.
+specification as it was written; where it and §10.125 disagree, §10.125 wins. **Rebuilt the same day as `m12b-first` (§10.126, after the
+user's first check):** logging is not a deposit (narrative: a saw mill reaches no new forest), and the 1836 start pairs every second-rung
+deposit building with a first-rung twin at ⅔ of its levels each, so 1836 supply stays vanilla's; where this page lists logging, §10.126 wins.
 
 **Status (2026-11-17, kept as written).** Nothing is built and nothing has run. The three-arm batch (session `20261116_005659`) may still be playing:
 until its `SCHEDULE DONE`, no emitter, `build.ps1` or `tools/testbed/**` file is edited in the checkout (CLAUDE.md §5.1 rule 7). Every

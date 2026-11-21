@@ -131,7 +131,7 @@ extraction overhaul for 1.2 already (not 1.3)."*
 - **Same-acre steps** (farms, plantations, ranches, rubber) stay methods, gated on the world's technology: the likely solution, deferred
   pending probes after the three-arm batch.
 - **The first book's rules are all ruled** (2026-11-16, §10.115): the family is the five mines, gold, logging, fishing, whaling and
-  oil; rounding up; equal value added at base prices; 5,000 workers a level; output-adding secondary lines × the slot ratio on every
+  oil (logging left it on 2026-11-21, §10.126); rounding up; equal value added at base prices; 5,000 workers a level; output-adding secondary lines × the slot ratio on every
   rung; vanilla's cost on the 1836-map rungs and a step above; vanilla's AI desire on every rung; no factory lever moved; the base book
   is the latest canon when building starts.
 - **The centuries start at cost slope C 2.0** (§10.117, user-ruled 2026-11-17), from the canon's 1.9, the cost level unchanged: mod

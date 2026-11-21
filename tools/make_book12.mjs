@@ -9,7 +9,9 @@
 //   - cost slope C 2.0 (§10.117) and the manufacturing AI desire ladder 455 / 1000 / 2200 / 4840 (§10.124 item 9);
 //   - the quarter: Electric Engines' electricity and Diesel Engines' oil at a quarter of vanilla's in the mix (§10.116 ruling 3);
 //     the engines' own lift stays 1.0 (`--in0-for motor:1`, §10.124 item 5);
-//   - the tiered deposits, cost step 1.3 (§10.115, §10.124, §10.125) — make_deposit_config.mjs;
+//   - the tiered deposits, cost step 1.3 (§10.115, §10.124, §10.125) — make_deposit_config.mjs; since 2026-11-21 without logging and with
+//     the 1836 pair (`--start-1836 pair`, §10.126), first built as `--prefix m12b` (m12-first, the book before it, keeps its record but no
+//     longer regenerates: its chain had logging in DEPOSITS and no start rule);
 //   - the book fields the emitters read: the higher tier's research mark (§10.119 item 6a, `research_events.mark_rule`), the AI research
 //     weight rule −20% / −50% with the ticking signal (§10.119 item 3, `entry_weight_rule`), tier-scaled secondary lines and craft lines
 //     (§10.119 item 2, `secondary_sizing`), the power lines' engines (§10.116 ruling 8, `power_lines_engines`), the two craft seeding fixes
@@ -89,15 +91,18 @@ run(['tools/make_dam_inputs_config.mjs', '--base', b('bz'), '--suffix', `${P}-dc
 run(['tools/make_value_overrides_config.mjs', '--base', b('dcu'), '--suffix', `${P}-ra`, '--set', 'g115-research-adds']);
 run(['tools/make_research_conditions_config.mjs', '--base', b('ra'), '--suffix', `${P}-il`, '--set', 'g115-idea-laws']);
 // ---- the 1.2 additions --------------------------------------------------------------------------------------------------------------
-run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`, '--cost-step', '1.3']);
+run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`, '--cost-step', '1.3', '--start-1836', 'pair']);
 {
   const j = JSON.parse(readFileSync(b('dep'), 'utf8'));
   // the same-acre steps on the world's technology: every vanilla method of the four named steps (§10.124 item 1), read from the game
   const strip = s => s.replace(/^\uFEFF/, '');
   const pmKeys = []; for (const f of readdirSync(join(GAME, 'common/production_methods'))) for (const m of strip(readFileSync(join(GAME, 'common/production_methods', f), 'utf8')).matchAll(/^([A-Za-z_][A-Za-z0-9_-]*)\s*=\s*\{/gm)) pmKeys.push(m[1]);
   const irrigation = pmKeys.filter(k => /^automatic_irrigation_building_/.test(k)).sort();
-  const worldGate = [...pmKeys.filter(k => /^(pm_fertilization|pm_chemical_fertilizer|pm_mechanized_slaughtering)(_building_[a-z_]+)?$/.test(k)).sort(), ...irrigation];
+  // + the untiered logging camp's electric saw mills (tech era 4), so a foreign timber concession is not held to the locals' methods
+  //   (§10.126 ruling 5, the user 2026-11-21)
+  const worldGate = [...pmKeys.filter(k => /^(pm_fertilization|pm_chemical_fertilizer|pm_mechanized_slaughtering)(_building_[a-z_]+)?$/.test(k)).sort(), ...irrigation, 'pm_electric_saw_mills'];
   if (irrigation.length < 8) throw new Error(`only ${irrigation.length} automatic irrigation methods found`);
+  if (!pmKeys.includes('pm_electric_saw_mills')) throw new Error('pm_electric_saw_mills not found in the game');
   j.research_events.mark_rule = 'higher';
   j.research_events.entry_weight_rule = { lowered: 0.8, advancing: 0.5, signal: 'tick' };
   j.secondary_sizing = 'tier';
@@ -110,6 +115,7 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
       'motor ladder (insert motor)': '§10.116 ruling 4, §10.116.2 (Compound Engines on pumpjacks, shown as Pumping Engines)',
       'C 2.0': '§10.117', 'AI desire 455/1000/2200/4840': '§10.124 item 9', 'the quarter (mix-scale)': '§10.116 ruling 3', 'engines lift 1.0': '§10.124 item 5',
       'tiered deposits, cost step 1.3': '§10.115, §10.124 items 2/6/7/9, §10.125',
+      'logging not a deposit; the 1836 pair (start_1836 pair); electric saw mills on the world gate': '§10.126',
       'research_events.mark_rule higher': '§10.119 item 6a', 'research_events.entry_weight_rule 0.8 / 0.5, tick': '§10.119 item 3 (ruled 2026-11-21)',
       'secondary_sizing tier': '§10.119 item 2', 'power_lines_engines': '§10.116 ruling 8', 'craft_seed_fixes': '§10.119 item 7',
       'agri_steps': '§10.124 items 1 and 3; §10.116.1' } };

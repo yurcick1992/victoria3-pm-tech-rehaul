@@ -6,7 +6,8 @@
 // Config `agri_steps` (absent: nothing is emitted, the tool says so):
 //   world_gate: [vanilla method keys] — each method's `unlocking_technologies` becomes `unlocking_global_technologies` (the WORLD's technology,
 //     "technologies that need to be invented in the world to be able to activate this pm", the game's production_methods.md; proven by F276):
-//     the same-acre steps whose technology is tech era 3 or later, so the 1836 map stays vanilla's.
+//     the same-acre steps whose technology is tech era 3 or later, so the 1836 map stays vanilla's; since §10.126 (2026-11-21) also the
+//     untiered logging camp's electric saw mills (tech era 4), for foreign timber concessions.
 //   irrigation: { methods: [vanilla automatic_irrigation_* keys], steam_coal_per_engine, diesel: { engines_mult, oil_value_of_steam_coal,
 //     tech, name } } —
 //     - THE STEAM DRIVE is vanilla's method with one coal per engine added (engines 5 + coal 5; tea 4 + 4), on its world gate;

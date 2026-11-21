@@ -1,9 +1,10 @@
 // THE TIERED DEPOSITS — the mod 1.2 book's extraction overhaul (BALANCE_FRAMEWORK §10.115, ruled 2026-11-16; §10.116 ruling 5 and §10.124,
 // ruled 2026-11-17 and 2026-11-21; the cost step and the names, references and research of the deposit rungs ruled 2026-11-21, §10.125).
 //
-//   node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step 1.3
+//   node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step 1.3 [--start-1836 map|pair]
 //
-// Each main method of a resource-capped building (lib_tier4_spec DEPOSITS: the five mines, gold, logging, fishing, whaling, oil) becomes a
+// Each main method of a resource-capped building (lib_tier4_spec DEPOSITS: the five mines, gold, fishing, whaling, oil; logging left the
+// list on 2026-11-21, §10.126) becomes a
 // building of its own — a RUNG — added to the book as an industry with `deposit: true`, so the emitters that already carry the factory rungs
 // carry these too: the building (cloned from vanilla's block: terrain, potential and vanilla's AI desire kept), its main method, the 1836
 // conversion (convert_history.ps1, by the active method), companies, vanilla's references (every rung, ruled), research entries (the standard
@@ -27,6 +28,10 @@
 //     the same recipe on every rung (vanilla's own method overridden through `pm_goods` / `pm_employment`, because every rung lists vanilla's
 //     group); a line that only saves labour is unchanged.
 //   - REFERENCES: research_events.necessity_anchors naming a deposit's vanilla key reaches every rung of it (ruled 2026-11-21, §10.125).
+//   - THE 1836 START (`--start-1836`, recorded as `_deposits.start_1836`; emitted by tools/emit_deposit_start.mjs on the converted history):
+//     'map' (the default, m12-first) leaves vanilla's map as converted, each building on the rung its method belongs to; 'pair' (ruled for
+//     the 1.2 book 2026-11-21, §10.126) puts a first-rung twin beside every second-rung building, both at k = N × V1 ÷ (V0 + V1) levels,
+//     so the country's 1836 supply stays vanilla's with no recipe moved.
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -37,8 +42,9 @@ import { wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
-const BASE = arg('--base'), SFX = arg('--suffix'), STEP = +arg('--cost-step', 'NaN');
-if (!BASE || !SFX || !(STEP >= 1)) throw new Error('usage: node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step <s ≥ 1>');
+const BASE = arg('--base'), SFX = arg('--suffix'), STEP = +arg('--cost-step', 'NaN'), START = arg('--start-1836', 'map');
+if (!BASE || !SFX || !(STEP >= 1)) throw new Error('usage: node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step <s ≥ 1> [--start-1836 map|pair]');
+if (!['map', 'pair'].includes(START)) throw new Error(`--start-1836 ${START}: map or pair`);
 const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
 const WORKERS = 5000;
 const ENGINE_TOOLS_KEEP = 5;   // §10.116 ruling 5: the tools above the picks rung's 5 become engines
@@ -67,8 +73,8 @@ for (const [bk, b] of Object.entries(BLD)) for (const g of list(b, 'production_m
 const cfg = JSON.parse(rd(join(REPO, BASE)));
 if (cfg.industries.some(i => i.deposit)) throw new Error(`${BASE} already carries deposit industries — run on a book without them`);
 const eraWage = eraReferenceWage(cfg.era_anchor_years);
-const report = [], record = { rule: 'BALANCE_FRAMEWORK §10.115 (slots, flat output, equal value added, cost), §10.116 ruling 5 (engines on the pump rungs), §10.124 (5,000 workers, oil 200/200, vanilla AI desire), §10.125 (cost step, names, references, research)',
-  cost_step: STEP, workers_per_level: WORKERS, slot_rule: { two: 1.5, three_or_four: 2, round: 'up to a multiple of the rung count, at least one a rung', floor_1836: 'gold' },
+const report = [], record = { rule: 'BALANCE_FRAMEWORK §10.115 (slots, flat output, equal value added, cost), §10.116 ruling 5 (engines on the pump rungs), §10.124 (5,000 workers, oil 200/200, vanilla AI desire), §10.125 (cost step, names, references, research), §10.126 (logging not a deposit; the 1836 pair under start_1836 = pair)',
+  cost_step: STEP, workers_per_level: WORKERS, start_1836: START, slot_rule: { two: 1.5, three_or_four: 2, round: 'up to a multiple of the rung count, at least one a rung', floor_1836: 'gold' },
   secondary_rule: 'output-adding lines × vanilla slots ÷ tiered slots on every rung; labour-saving lines unchanged', industries: {} };
 const pmGoods = cfg.pm_goods || {}, pmEmp = cfg.pm_employment || {};
 const lineNotes = [];

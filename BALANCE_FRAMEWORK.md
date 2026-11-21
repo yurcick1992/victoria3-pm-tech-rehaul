@@ -92,7 +92,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.122 | game 1.15.2, mod 1.1.2: the 1.1.1 canon rebuilt on 1.15.2, no balance change (the canon stays 697d4869: the 1.15.2 replay reproduces it); vanilla AI changes pass through unless they affect us; the company-target investment define 5 → 20 affects us (our targets list every rung) and passes through, read in the first 1.2 runs | in force; nothing to build | here |
 | 10.123 | THE loss of the mod 1.2 calibration: §10.120's form and §10.121's old-plants term, with the eight depeasantation aims at 0.25 each (2 together, as world GDP), a second capital term (the shortlist's hoard above half its GDP, weight 0.5) beside the count of members above 0.5 (weight 1, members of at least 2% of world GDP), T0–T3 manufacturing only (no deposits, no agriculture), the spreads fixed from mod 1.1.1's 15 runs on 1.15.1, one rule for the falling-decade aims, the barrier's value printed for every run; play time not read during the iterations, covered in the polishing touches | in force; built 2026-11-21 (`criteria.mjs`, the scorecard, the stop watcher; the five remaining spreads fitted) | here |
 | 10.124 | the 1.2 book's open items ruled after the probes: the world gate on tech-era-3+ same-acre steps; the deposit hooks by change_resource_potential, once per region; the diesel irrigation step at half the steam drive's engines and oil worth half its coal (2.5 + 1.9); Pumping Engines' text and icon deferred to the release build; the engines' lift 1.0; 5,000 on every deposit rung; both oil rungs at 200, half vanilla's cost, at the flat output of 60; saw mills and steam trawlers vanilla; the manufacturing desire ladder at desire ÷ cost × 1.1 a rung (455 / 1000 / 2200 / 4840 at C 2.0), deposits on vanilla's desire | in force; built 2026-11-21 into the 1.2 book (§10.125); the 1855 thresholds measured (F281), their design later |
-| 10.125 | the 1.2 book built (`m12-first`, `tools/make_book12.mjs`): the deposits' cost step 1.3 above the 1836-map rungs; deposit rungs named "Tier N." like factory rungs; a reference to a deposit's vanilla key reaches every rung; the deposit technologies take the standard rung entries; the build's own consequences recorded (extra entries merged, gold spread by the slot rule, the oil link's guard, pumpjacks' weight restored, Precision Tools on t1, no canning on the Bakeries craft) | in force; built and deployed for the user's check; not loaded in game by Claude | here |
+| 10.125 | the 1.2 book built (`m12-first`, `tools/make_book12.mjs`): the deposits' cost step 1.3 above the 1836-map rungs; deposit rungs named "Tier N." like factory rungs; a reference to a deposit's vanilla key reaches every rung; the deposit technologies take the standard rung entries; the build's own consequences recorded (extra entries merged, gold spread by the slot rule, the oil link's guard, pumpjacks' weight restored, Precision Tools on t1, no canning on the Bakeries craft) | in force; built and deployed for the user's check (loaded by the user 2026-11-21, which led to §10.126); its book `m12-first` is the record of that check | here |
+| 10.126 | logging is not a deposit, for narrative reasons (a saw mill reaches no new forest): vanilla's one building again; the 1836 pair: a first-rung twin beside every second-rung deposit building, both at k = N × the second rung's share of the pair's output value (⅔; coal 0.615), so each country's 1836 supply stays vanilla's with no recipe moved; fishing and whaling stay tiered; the first rung keeps vanilla's half output; logging's electric saw mills on the world's technology — the book `m12b-first` | in force; built and deployed for the user's check 2026-11-21; fishing and whaling stay tiered (ruled the same day after the narrative pass); the first rung keeps vanilla's half output; the electric saw mills on the world's technology | here |
 
 ---
 
@@ -6434,3 +6435,66 @@ the weight rule −20% / −50% with the ticking signal; tier-scaled lines and c
 craft seeding fixes; 15 same-acre methods on the world's technology and 10 diesel irrigation steps (engines 2.5 + oil 1.9, tea 2 + 1.5, on
 compression ignition); pumpjacks shown as "Pumping Engines". Every linter, the DLC-gate check and preflight pass on its build; it has not
 been loaded in the game by Claude. Deployed to the local mod folder as "Version 1.2 TEST BOOK m12-first" for the user's 15-minute check.
+
+## §10.126 — LOGGING IS NOT A DEPOSIT; THE 1836 PAIR (user-ruled 2026-11-21)
+
+**The occasion.** The user loaded `m12-first` (§10.125) and saw two things at once: *"have we decided to tier forestry? I thought we decided
+against it"*, and *"the situation where in 1836 the more advanced countries have tier 1 deposits built up, but not tier 0, makes no sense"* —
+asking for the first rung beside every second-rung building at the same level count, with output adjusted so that *"the demand and especially
+supply of country's mine"* stays roughly vanilla's.
+
+**The rulings.**
+1. **Logging is not a deposit, for narrative reasons.** The user: *"Yes, I want logging out for narrative reasons."* The logging camp is
+   vanilla's one building again, its methods switched by the owner on the owner's technology, its recipes and hardwood lines vanilla's.
+   **How it got in.** Claude's narrative pass of 2026-11-16 (session `e90ccd25`) judged the logging step *processing* — a saw mill reaches no
+   new forest; the access story (steam donkeys, logging railways) sits in vanilla's secondary lines — and asked whether to leave it vanilla.
+   The user's reply (*"…the need to preserve foreign investment with foreign techs is a very strong incentive for most industries. … But
+   logging camps?"*) was read as an objection, the family proposal carried logging back in, and the user's *"Yes"* to that family became
+   §10.115's "confirmed". A consequence of `m12-first` that goes with it: the hardwood line scaled to half by the slot ratio made the 1836
+   world start with half vanilla's hardwood from logging (1,970 a week against 3,940).
+2. **The 1836 pair (Claude's option B).** The user: *"I like your solution (B) better, let's go with it."* A building of N levels on a
+   deposit's second map rung (the atmospheric pump, the sailing trawlers, the wooden whaling ships) becomes k levels on each of the first two
+   rungs, k = N × V1 ÷ (V0 + V1), V a rung's output value at base prices — ⅔ for the mines, fishing and whaling, coal 40 ÷ 65 = 0.615, gold
+   15 ÷ 23 — so k × (q0 + q1) = N × q1 and the country's 1836 supply is vanilla's. No recipe, slot or cost moves; a country with only the first
+   rung is unchanged; nothing after 1836 changes. Rounding: each building at least 1 level and at most N, then the country's buildings of the
+   deposit take the remainder by largest fraction to round(ΣN × share). The ownership of each block is re-allocated over its owners
+   (building, country and company owners; largest remainder).
+   **The arithmetic behind the choice** (Claude, 2026-11-21): vanilla's 1836 second method makes exactly twice the first's output with the
+   same 5,000 workers (coal 1.6×), and the first rung must keep vanilla's output or every country with only that rung changes. So with equal
+   first- and second-rung levels only two of three can hold — 1836 supply, 1836 workers, today's recipes. **A** (a twin of N levels, the
+   second rung's output cut to vanilla's second minus first, so to the picks figure) keeps supply and doubles the workers in those states, and
+   reaches the whole century: the flat-output rule would carry the cut to the later rungs (a full deposit's ceiling 57% of vanilla's for iron
+   unless the slots go from × 2 to × 3.5) or the ladder stops being flat. **B** keeps supply and the recipes, at about a third more workers.
+   **C** (k = ½N) keeps workers too but needs the second rung at three times the picks output. B was chosen.
+   **The reading on the 1.15.2 map** (the build's own print, `tools/emit_deposit_start.mjs`): 123 second-rung buildings. Coal 111 levels →
+   68 + 68, supply 0.995 of the converted map's, workers 1.23×; iron 48 → 33 + 33, 1.031, 1.38×; fishing 134 → 95 + 95, 1.063, 1.42×; sulfur
+   14 → 10 + 10, 1.071; lead 8 → 5 + 5, 0.938; whaling 7 → 6 + 6, 1.286; gold 5 → 3 + 3, 0.920. Every country with ten or more such levels
+   is within 0.95–1.07 (Britain's coal 59 → 36 + 36, 0.99). The floor of one level lifts 42 one-level buildings to 1 + 1 (1.5× their
+   supply), which is where fishing's +6% and whaling's +29% come from. About 113 levels more than the converted map (+565,000 workers in the
+   world). The second rung's own inputs fall to k ÷ N (the mines' coal, the trawlers' clippers). Every region fits its first rung's slots.
+   **The build.** `tools/emit_deposit_start.mjs` (after `convert_history.ps1`, before `emit_deposit_slots.mjs`, which then checks the slot fit
+   on the paired levels), run when the book's `_deposits.start_1836` is `pair` (`make_deposit_config.mjs --start-1836 pair`). The book is
+   `config/mod_config.m12b-first.json` (sha256 `9ac09c1b870858d7`, tree twin `4abb84ba3c1c477e`, regenerated with ruling 5; `node tools/make_book12.mjs --prefix
+   m12b`), every linter and preflight passing; built as `mod_m12b` and mirrored into the local mod folder as "Version 1.2 TEST BOOK
+   m12b-first" for the user's check. `m12-first` stays as the record of the first check; its chain no longer regenerates it (logging has left
+   the deposit list).
+3. **Fishing and whaling stay tiered** (the user: *"Keep them tiered"*), after the narrative pass the user asked for again (*"we should have
+   gone through all deposit types and determined the narrative reasons to tier or not … let's have it again"*). Claude's reading: their
+   steps are access, as the mines' are — inshore grounds, offshore banks, distant waters (British steam trawlers off Iceland by the 1890s);
+   shore whaling, ocean sail whaling, steam catchers with the harpoon cannon for the rorquals sail could not take — and foreign capital is
+   real for whaling (mostly Norwegian companies ran 14 shore stations in Iceland in 1883–1915), weaker for fishing (an English merchant
+   started Iceland's first steam-trawler operation in 1899; web-read 2026-11-21, secondary sources). The stack is now the six mines, oil,
+   fishing and whaling; logging, rubber and the gold fields are vanilla's buildings; farms, ranches and plantations keep switchable methods,
+   the tech-era-3+ steps on the world's technology (§10.124 item 1). The user's own summary of the scheme (the same day) placed fishing and
+   whaling with the untiered and plantation irrigation on local technology; both were corrected in reply, and this ruling settles the first.
+
+4. **The first rung keeps vanilla's half output** (asked: *"it keeps vanilla's half output, so the 'easiest ground first' incentive only
+   starts at tier 1. Should it stay that way?"* — the user: *"Yes"*). At base prices the second rung returns 1.3–1.6 × the first's value
+   added per construction point in every family (iron £2.25 against £1.50 a point; fishing £3.50 against £2.50), so the incentive to fill
+   the easier ground first holds from the second rung up only, and the picks rung is the one penalised — §10.115 ruling 3's *"maybe only
+   with some penalty for hand picks and shovels"*, now ruled.
+5. **The untiered logging camp's electric saw mills go on the world's technology** (asked: *"should they move to the world's technology
+   like the farms' tech-era-3+ steps, so a foreign timber concession isn't held to the locals' methods?"* — the user: *"Yes"*): the method's
+   `unlocking_technologies` (electrical generation, tech era 4) becomes `unlocking_global_technologies`, as §10.124 item 1 did for the
+   same-acre steps (`agri_steps.world_gate` in `make_book12.mjs`; emitted by `emit_agri_steps.mjs`). Saw mills (steelworking, tech era 1,
+   on the 1836 map) stay on the owner's technology, by the same era line.

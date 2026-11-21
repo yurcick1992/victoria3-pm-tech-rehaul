@@ -1888,6 +1888,13 @@ $summary | Format-Table -AutoSize | Out-String | Write-Output
 # --- convert the 1836 start (the baseline it reads was refreshed BEFORE emit_techs, above) ---
 & (Join-Path $PSScriptRoot 'convert_history.ps1') -Repo $repo -Config $cfgPath -ModDir $modRel
 
+# ⭐ THE DEPOSITS' 1836 PAIR (the mod 1.2 book, BALANCE_FRAMEWORK §10.126): a first-rung twin beside every second-rung deposit building, both at
+#   k = N x the second rung's share of the pair's output value, so the 1836 supply stays vanilla's. Only a book whose _deposits.start_1836 is
+#   'pair'; any other book is left as converted (the tool says so). After convert_history.ps1, BEFORE emit_deposit_slots.mjs (which checks the
+#   slot fit on the levels this writes).
+& node (Join-Path $PSScriptRoot 'emit_deposit_start.mjs') $modAbs $cfgPath
+if ($LASTEXITCODE -ne 0) { throw "emit_deposit_start.mjs failed - the 1836 deposit pair was not written" }
+
 # ⭐ THE TIERED DEPOSITS ON THE MAP (the mod 1.2 book, BALANCE_FRAMEWORK §10.115, §10.124 item 2): each deposit's slots split over its rungs in
 #   the state regions, gold's 1836 floor read from the history just converted, and the gold and oil resource hooks. A book without `_deposits`
 #   emits nothing (the tool says so). After convert_history.ps1: it reads the converted 1836 levels.

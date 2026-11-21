@@ -427,3 +427,7 @@ tools/testbed/no_new_runs_at.log
 # first century play. Its intermediates (m12-*) are regenerable and stay ignored.
 !config/mod_config.m12-first.json
 !config/tech_tree_options.m12-first.json
+# Its successor (2026-11-21, §10.126): logging untiered and the 1836 pair, `node tools/make_book12.mjs --prefix m12b`; intermediates m12b-*
+# stay ignored. m12-first is kept as the record of what the user's first check loaded.
+!config/mod_config.m12b-first.json
+!config/tech_tree_options.m12b-first.json

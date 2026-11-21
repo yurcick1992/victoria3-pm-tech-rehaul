@@ -103,12 +103,13 @@ before. `tools/check_dlc_gates.mjs` fails the build if a copy under `common/` or
 build, so a file whose emitter stops writing it does not linger; `convert_history.ps1` clears `history/buildings` itself, and `emit_craft_start.mjs`
 removes the pops files it wrote earlier, by their header.
 
-**The mod 1.2 book (`m12-first`, 2026-11-21, BALANCE_FRAMEWORK §10.125) owns more**, all regenerated from the installed game each build and
+**The mod 1.2 book (`m12b-first`, 2026-11-21, BALANCE_FRAMEWORK §10.125, §10.126) owns more**, all regenerated from the installed game each build and
 none owned by a book without the fields that ask for them:
 - `common/buildings/03_mines.txt`, `09_misc_resource.txt` — `build.ps1`'s clone path: every deposit's vanilla block replaced by its rungs, each a
   copy of vanilla's block (terrain, potential, AI desire with its conditionals) with its own key, technology, groups and cost; gold fields and the
   rubber plantation verbatim. A patch that changes a deposit's methods, staffing or groups moves the rungs through `make_deposit_config.mjs` (a
   re-run of the chain), and a fifth main method THROWS.
+- `common/history/buildings/*.txt` — besides the conversion, `emit_deposit_start.mjs` (§10.126) pairs every 1836 second-rung deposit building with a first-rung twin, sized on vanilla's two 1836 methods' outputs; it reads the converted history's ownership forms (building, country, company — a new form THROWS) and the first rung's method groups. A patch that changes vanilla's 1836 deposit levels or methods moves the pair with it; re-read its print (supply against the converted map, per deposit and country).
 - `map_data/state_regions/*.txt` (16 files) — `emit_deposit_slots.mjs`: verbatim but the deposit entries (each split over its rungs) and oil's
   discoverable block (its first rung's share). Vanilla's per-region numbers are read each build; the gold and oil hooks carry each region's
   numbers written in, so a patch that moves a region's deposits moves them too on the next build.

@@ -185,6 +185,8 @@ export const INSERTIONS = [
 //   methods stand on the 1836 map (the first two; oil, which has no 1836 levels, its first). `cost` overrides the cost rule per rung where
 //   ruled (oil: both rungs 200, §10.124 item 7). `discover`: the deposit is found mid-game (oil: the second rung's slots follow the first's
 //   discovery; gold: the gold fields deplete into the first rung, spread over all four by the hook, §10.124 item 2).
+//   ⚠ LOGGING IS NOT A DEPOSIT (user-ruled 2026-11-21, §10.126, for narrative reasons): a saw mill reaches no new forest, so the logging camp
+//   stays vanilla's one building with its methods. It was in the list for the first 1.2 book (m12-first) only.
 export const DEPOSITS = [
   { id: 'coal_mine',       building: 'building_coal_mine',       map_rungs: 2 },
   { id: 'iron_mine',       building: 'building_iron_mine',       map_rungs: 2 },
@@ -192,7 +194,6 @@ export const DEPOSITS = [
   { id: 'sulfur_mine',     building: 'building_sulfur_mine',     map_rungs: 2 },
   { id: 'copper_mine',     building: 'building_copper_mine',     map_rungs: 2 },
   { id: 'gold_mine',       building: 'building_gold_mine',       map_rungs: 2, discover: 'depleted_from_gold_fields', floor_1836: true },
-  { id: 'logging_camp',    building: 'building_logging_camp',    map_rungs: 2 },
   { id: 'fishing_wharf',   building: 'building_fishing_wharf',   map_rungs: 2 },
   { id: 'whaling_station', building: 'building_whaling_station', map_rungs: 2 },
   { id: 'oil_rig',         building: 'building_oil_rig',         map_rungs: 1, discover: 'linked_second_rung', cost: [200, 200] },
