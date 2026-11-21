@@ -23436,6 +23436,10 @@ the in-run control. Reader `tools/testbed/ledger/world_gate_uptake.mjs`; the com
 - Fertilizer in the eleven tracked markets sits at 0.6–1.5 × base (base 30) in both arms; those markets are holders' markets, so the
   scarcity the non-holders meet is **not read** here.
 
+**Checked in game by the user (2026-11-21):** a temporary standalone mod over vanilla (Fertilization and every automatic irrigation
+method on the WORLD's Improved Fertilizer / pumpjacks, the British East India Company granted both at game start, nobody else holding
+either) — the user went through other countries' method pickers: *"Everything works."* No obstacle on the player's side.
+
 **What it does NOT say.** Why the non-holders take it up slowly (the fertilizer price in their own markets, the method's profit there, or
 the AI's switching rule): not separated. Anything about irrigation, fertilizer's later methods or the 1.2 book: this is vanilla's
 early-game farm method on vanilla's economy. n = 2, twenty years.
