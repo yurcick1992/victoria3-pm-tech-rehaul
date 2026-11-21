@@ -910,6 +910,9 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
   const lowGrant = gateYear != null ? Math.round(grant * (DG.before_mult ?? 0.5)) : null;
   if (lowGrant != null && !(lowGrant >= 0 && lowGrant <= grant)) throw new Error(`research_events.date_gate: before_mult ${DG.before_mult} out of [0, 1]`);
   const STAGES = a.rule === 'war' ? RE.stages : (RE.industry_stages || RE.stages);
+  // a FRONTLINE entry (war rule, no ship) is never lowered (§10.119 item 3), so its ticking flag would be set and never read: the engine
+  // logs "Variable 'pmr_adv_<tech>' is set but is never used" at load (found in the ticking-signal probe, 2026-11-21). No signal there.
+  const tickHere = EWR_TICK && !(a.rule === 'war' && !isFleetTech(tech));
   const LIT0 = a.rule !== 'war' && !(a.cond && a.cond.military) ? litOf(T0) : null;
   const REP = (a.rule !== 'war' || RE.repeat_all) && REPEAT ? REPEAT : 0;
   STAGES.forEach((stage, si) => {
@@ -941,7 +944,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
         `${T}${T}${T}${T}else = { set_variable = { name = ${implVar(tech)}  value = 1 } }\n` +
         `${T}${T}${T}${T}debug_log = "PMR_JE|${stage}[THIS.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]|${tech}|[THIS.GetCountry.GetNameNoFormatting]"\n` +
         `${T}${T}${T}${T}je:${key} ?= { add_progress = { value = -${span}  name = ${barName(tech)} } }\n` +
-        `${T}${T}${T}}\n` + tickTrack(key, barName(tech), tech, T + T + T) + `${T}${T}}\n${T}}\n\n` +
+        `${T}${T}${T}}\n` + (tickHere ? tickTrack(key, barName(tech), tech, T + T + T) : '') + `${T}${T}}\n${T}}\n\n` +
         outcomeEnd(`${T}${T}${T}OR = {\n${T}${T}${T}${T}has_technology_researched = ${tech}\n${T}${T}${T}${T}AND = { has_variable = ${implVar(tech)}  var:${implVar(tech)} >= ${REP} }\n${T}${T}${T}}\n`) +
         `${T}weight = 1\n${T}transferable = no\n${T}can_revolution_inherit = yes\n` +
         `${T}should_be_pinned_by_default_uninvolved_or_context = no\n}`);
@@ -960,7 +963,7 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       // on_acquired_technology instead (below), so the engine has no inactive entry type to check every month
       (first ? (PLACE ? '' : `${T}is_shown_when_inactive = { can_research = ${tech} }\n`) + `${T}possible = { can_research = ${tech} }\n\n` : '') +
       `${T}scripted_progress_bar = ${barName(tech)}\n\n` +
-      (EWR_TICK ? `${T}on_monthly_pulse = {\n${T}${T}effect = {\n` + tickTrack(key, barName(tech), tech, T + T + T) + `${T}${T}}\n${T}}\n\n` : '') +
+      (tickHere ? `${T}on_monthly_pulse = {\n${T}${T}effect = {\n` + tickTrack(key, barName(tech), tech, T + T + T) + `${T}${T}}\n${T}}\n\n` : '') +
       outcomeDone(`${T}${T}${T}scope:journal_entry ?= { "scripted_bar_progress(${barName(tech)})" >= ${span} }\n`, tab(
         grantBlock + halfLog +
         // the next stage only where it is not already there (a country holding two stages at once — ~30 a run on F227's batch)
