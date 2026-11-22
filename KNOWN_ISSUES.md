@@ -27,6 +27,9 @@ Mechanical
 * A research journal entry (other than the military and naval ones) appears only once the country's literacy reaches the line for its
   technology's era: 25% for era 1, 35% for era 2, 45% for era 3, 55% for era 4 and 65% for era 5. Below that the entry is simply missing,
   with nothing saying why; an entry already open pauses, and its progress bar gives the line.
+* A company mandate chosen by the player covers only one tier of an industry. For factories this matters little: the latest tier
+  available is always the best one. From mod 1.2, where mines, oil wells and fishing get tiers too, it will matter more, since an older
+  extraction tier stays useful beside a newer one; this is not fixed in mod 1.2.
 
 
 Balance
