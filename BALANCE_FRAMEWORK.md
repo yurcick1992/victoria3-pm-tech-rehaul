@@ -94,6 +94,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.124 | the 1.2 book's open items ruled after the probes: the world gate on tech-era-3+ same-acre steps; the deposit hooks by change_resource_potential, once per region; the diesel irrigation step at half the steam drive's engines and oil worth half its coal (2.5 + 1.9); Pumping Engines' text and icon deferred to the release build; the engines' lift 1.0; 5,000 on every deposit rung; both oil rungs at 200, half vanilla's cost, at the flat output of 60; saw mills and steam trawlers vanilla; the manufacturing desire ladder at desire ÷ cost × 1.1 a rung (455 / 1000 / 2200 / 4840 at C 2.0), deposits on vanilla's desire | in force; built 2026-11-21 into the 1.2 book (§10.125); the 1855 thresholds measured (F281), their design later |
 | 10.125 | the 1.2 book built (`m12-first`, `tools/make_book12.mjs`): the deposits' cost step 1.3 above the 1836-map rungs; deposit rungs named "Tier N." like factory rungs; a reference to a deposit's vanilla key reaches every rung; the deposit technologies take the standard rung entries; the build's own consequences recorded (extra entries merged, gold spread by the slot rule, the oil link's guard, pumpjacks' weight restored, Precision Tools on t1, no canning on the Bakeries craft) | in force; built and deployed for the user's check (loaded by the user 2026-11-21, which led to §10.126); its book `m12-first` is the record of that check | here |
 | 10.126 | logging is not a deposit, for narrative reasons (a saw mill reaches no new forest): vanilla's one building again; the 1836 pair: a first-rung twin beside every second-rung deposit building, both at k = N × the second rung's share of the pair's output value (⅔; coal 0.615), so each country's 1836 supply stays vanilla's with no recipe moved; fishing and whaling stay tiered; the first rung keeps vanilla's half output; logging's electric saw mills on the world's technology — the book `m12b-first` | in force; built and deployed for the user's check 2026-11-21; fishing and whaling stay tiered (ruled the same day after the narrative pass); the first rung keeps vanilla's half output; the electric saw mills on the world's technology | here |
+| 10.127 | a technology with a NAVAL research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain without first movers, sea-lane strategies 2.2 holders against vanilla's 54) | in force; built as `entry_weight_rule.naval_lowered` (`make_book12.mjs --naval-lowered 1`); in the book `m12c-first` (`e355eeb1`), not measured | here |
 
 ---
 
@@ -6498,3 +6499,28 @@ supply of country's mine"* stays roughly vanilla's.
    `unlocking_technologies` (electrical generation, tech era 4) becomes `unlocking_global_technologies`, as §10.124 item 1 did for the
    same-acre steps (`agri_steps.world_gate` in `make_book12.mjs`; emitted by `emit_agri_steps.mjs`). Saw mills (steelworking, tech era 1,
    on the 1836 map) stay on the owner's technology, by the same era line.
+
+## §10.127 — NAVAL TECHNOLOGIES LOSE THE STANDING RESEARCH-WEIGHT PENALTY; ONLY WHILE THEIR ENTRY TICKS (user-ruled 2026-11-22)
+
+**The ruling.** The user, 2026-11-22, after F284's technology census: *"On navies: got it, let's remove the penalties, unless the JE is
+actively ticking."* A technology with a NAVAL research entry (§10.98: it advances while we, a rival or a great power has the ship) no longer
+takes §10.119 item 3's standing −20% AI research weight; it keeps the −50% while its entry is actually ticking for the country (the
+`tick` signal, §10.119 item 3 as ruled 2026-11-21). The literacy-gated industry and society entries keep both multiplies; the six
+frontline technologies keep their full weight, as before. Amends §10.119 item 3 for the naval scope only.
+
+**Why** (F284 against F271/F272, the census at 1936.1.1, countries holding a technology, mean per run; first world acquisition): under the
+1.2 rule the naval chain lost its first movers — sea-lane strategies 2.2 holders (mod 1.1.1 33.3, vanilla 1.15.2 54.4), pre-dreadnought
+9.4 (19.7; 53.5), submarine 8.8 (17.5; 55.3), dreadnoughts 0 (0; 22.6). A naval entry only ticks once someone already has the ship, so a
+standing penalty, which makes the AI pick the technology about a third as often (F278: picks follow weight^3.7), leaves nobody to build
+the first one. In 1936 about a dozen countries per run are partway into pre-dreadnoughts and into sea-lane strategies: late, not
+abandoned. The army technologies without entries rose toward vanilla under the same rule (war propaganda 44.2 holders against 16.6 in
+mod 1.1.1, vanilla 55.4; zeppelins 54.6 against 35.4, vanilla 55.0), which is the rule working as meant.
+
+**Built** (2026-11-22, not in any measured book): `research_events.entry_weight_rule.naval_lowered` — the standing multiply on a naval
+technology, default `lowered`; 1 writes no standing multiply (`emit_tech_finish.mjs`). `make_book12.mjs --naval-lowered 1` sets it;
+without the flag it reproduces `m12b-first` (proved: a rebuild of `m12b-first` differs from its build of 2026-11-21 only in the build stamp;
+a copy with `naval_lowered: 1` differs in exactly the ten naval technologies' standing block, 30 lines). **The book that carries it:**
+`config/mod_config.m12c-first.json` (sha256 `e355eeb1823040bd`, tree twin `bd4ac9cfd4e49dc5`), `node tools/make_book12.mjs --prefix m12c
+--naval-lowered 1`, built 2026-11-22: its field diff against `m12b-first` is `research_events.entry_weight_rule.naval_lowered` = 1 and
+the records (prefixes, dates, hashes) alone, the tree twin its timestamp alone; built as the alternate `mod_m12c`, every linter and preflight
+passing. Not measured, not deployed.

@@ -107,7 +107,9 @@ const normAW = s => s == null ? null : s.replace(/#[^\n]*/g, '').replace(/\s+/g,
 //     entry is ticking, or has ticked in this stage. ⚠ A stand-in for "ticking now" that needs no new variable; the user's words
 //     are "if the JE is already ticking for this particular country";
 //   - else `lowered` (the user's -20%) when the country meets the entry's literacy line (read off the entry's bar); a NAVAL entry
-//     has no line and takes it always;
+//     has no line and takes `naval_lowered` always (default `lowered`; 1 writes no standing multiply at all, so a naval technology
+//     is lowered only while its entry ticks: BALANCE_FRAMEWORK §10.127, ruled 2026-11-22 after F284, where the standing -20% left
+//     the naval chain without a first mover - a naval entry ticks only once someone already has the ship);
 //   - a FRONTLINE entry (its bar reads pmr_wargate_<tech>) is never lowered (the user: "Frontline don't get lowered at all, even
 //     if already ticking. Naval ones do.").
 // Written as multiplies AFTER the restored weights and BEFORE the finish boost's add, which still wins (F160).
@@ -116,6 +118,7 @@ const ewrKind = {};                               // tech -> { kind: 'literacy'|
 if (EWR) {
   if (EWR.signal != null && !['tick', 'stage'].includes(EWR.signal)) die(`entry_weight_rule.signal must be 'tick' or 'stage' (got ${EWR.signal})`);
   for (const k of ['lowered', 'advancing']) if (!(typeof EWR[k] === 'number' && EWR[k] > 0 && EWR[k] <= 1)) die(`entry_weight_rule.${k} must be a multiplier in (0, 1] (got ${EWR[k]})`);
+  if (EWR.naval_lowered != null && !(typeof EWR.naval_lowered === 'number' && EWR.naval_lowered > 0 && EWR.naval_lowered <= 1)) die(`entry_weight_rule.naval_lowered must be a multiplier in (0, 1] (got ${EWR.naval_lowered})`);
   if (!existsSync(RJE)) die('entry_weight_rule needs the research entries (no ' + RJE + ')');
   const BARS = join(MOD, 'common/scripted_progress_bars/zzz_pm_rehaul_research_bars.txt');
   if (!existsSync(BARS)) die('entry_weight_rule needs the research bars (no ' + BARS + ')');
@@ -151,10 +154,11 @@ const ewrText = (tech) => {
   // monthly pulse; 'stage' (the first build, the probe-5 book): a stage open with progress on its bar
   const adv = EWR.signal === 'tick' ? `has_variable = pmr_adv_${tech}`
     : `OR = { ${e.stages.map(([je, bar]) => `je:${je} ?= { "scripted_bar_progress(${bar})" > 0 }`).join(' ')} }`;
+  const standing = e.kind === 'naval' ? (EWR.naval_lowered ?? EWR.lowered) : EWR.lowered;
   return `${T}${T}# pmr_entry_weight - a research entry can deliver this technology (${e.kind}${e.lit != null ? `, literacy ${e.lit}` : ''})\n` +
     `${T}${T}if = {\n${T}${T}${T}limit = { ${adv} }\n${T}${T}${T}multiply = ${EWR.advancing}\n${T}${T}}\n` +
-    (e.lit != null ? `${T}${T}else_if = {\n${T}${T}${T}limit = { literacy_rate >= ${e.lit} }\n${T}${T}${T}multiply = ${EWR.lowered}\n${T}${T}}\n`
-                   : `${T}${T}else = {\n${T}${T}${T}multiply = ${EWR.lowered}\n${T}${T}}\n`);
+    (e.lit != null ? `${T}${T}else_if = {\n${T}${T}${T}limit = { literacy_rate >= ${e.lit} }\n${T}${T}${T}multiply = ${standing}\n${T}${T}}\n`
+                   : standing === 1 ? '' : `${T}${T}else = {\n${T}${T}${T}multiply = ${standing}\n${T}${T}}\n`);
 };
 let nEwr = 0;
 const awDone = [];
@@ -248,7 +252,8 @@ if (EWR) {
   if (!FB.enabled) die('entry_weight_rule is written in the finish-boost pass, which is a force_test control arm here');
   if (nEwr !== want) die(`entry_weight_rule: ${nEwr} technologies lowered, ${want} expected (every researchable technology with a non-frontline entry)`);
   const by = k => Object.entries(ewrKind).filter(([, e]) => e.kind === k).map(([t]) => t);
-  console.log(`entry weight rule: x${EWR.lowered} (x${EWR.advancing} while ${EWR.signal === 'tick' ? 'its bar ticks' : 'a stage has progress'}) on ${nEwr} technologies - literacy-gated ${by('literacy').length}, naval ${by('naval').length} (always); frontline kept at full weight: ${by('frontline').join(', ')}`);
+  const nav = EWR.naval_lowered ?? EWR.lowered;
+  console.log(`entry weight rule: x${EWR.lowered} (x${EWR.advancing} while ${EWR.signal === 'tick' ? 'its bar ticks' : 'a stage has progress'}) on ${nEwr} technologies - literacy-gated ${by('literacy').length}, naval ${by('naval').length} (${nav === 1 ? 'only while ticking, no standing multiply' : `x${nav} always`}); frontline kept at full weight: ${by('frontline').join(', ')}`);
 }
 if (FB.enabled) console.log(`tech finish: +${FB.add} AI weight at has_technology_progress >= ${FB.threshold} on all ${nBoost} researchable technologies ` +
   `(of ${nTech}; skipped as unresearchable: ${skipped.join(', ') || 'none'})`);

@@ -208,7 +208,7 @@ auto-activates); `grant_fraction` 0.5 of the tech-era base cost per stage; `indu
 a researchable first rung without one throws); `war_channel: 'unit_types'` (every technology unlocking a land combat unit, marines
 excluded), `war_gate` {`general_battalions_flat` 50, `front_casualties_min` 0 = clause omitted, `gate_variable_days` 40} computed in
 `on_monthly_pulse_country` into the expiring variable `pmr_wargate_<tech>`; `naval_channel`, `naval_any`; `consumption_thresholds` (the
-`good:<name>` anchor, implemented and unused); `finish_boost` {enabled, threshold 0.99, add 10000; `force_test` for probes}; `entry_weight_rule` {lowered, advancing, signal} (emit_tech_finish, and with `signal: 'tick'` emit_research_events's ticking flag; §10.119 item 3, ruled 0.8 / 0.5 / tick on 2026-11-21; unset in the canon); `extra_entries`
+`good:<name>` anchor, implemented and unused); `finish_boost` {enabled, threshold 0.99, add 10000; `force_test` for probes}; `entry_weight_rule` {lowered, advancing, signal, naval_lowered} (emit_tech_finish, and with `signal: 'tick'` emit_research_events's ticking flag; §10.119 item 3, ruled 0.8 / 0.5 / tick on 2026-11-21; `naval_lowered`, the standing multiply on a naval technology, default `lowered`, 1 = none, ruled 1 by §10.127 on 2026-11-22; unset in the canon); `extra_entries`
 (production technologies outside the ladder, §10.95); `era1_rule_a`; `placement: 'script'` (§10.89.13); the §10.97 rework —
 `sources_additive: false`, `literacy_by_era`, `follower_halving`, `implementation_repeats` 18, `repeat_all`, `exclude_techs`; the §10.98
 entries — `condition_entries`, `condition_values`, `monthly_global_effect`, `count_display`. Other books: `date_gate` (`canon-fdi-rgate`).
@@ -918,6 +918,9 @@ stale output except under `common/history`, which an emitter writing there must 
   fraction of the penalised cost). Appended last (ai_weight evaluates top to bottom), `add` not multiply (the ahead-of-time divisor applies
   outside it); owns all three vanilla technology files when on. Throws on a doubled or misnamed boost, a conditional `can_research`, the
   retired `diag` / `unresearchable` keys. `force_test` is a probe-only A/B (`testbed/ledger/finish_force.mjs`). Status: current. Refs: F160.
+  It also writes `research_events.entry_weight_rule` (§10.119 item 3): ×`advancing` while the technology's entry ticks, else ×`lowered` at
+  the entry's literacy line; a naval technology takes `naval_lowered` (default `lowered`) as its standing multiply and none at 1 (§10.127);
+  frontline technologies keep full weight. It prints the counts by kind and throws when the lowered count differs from the entries'.
   It also applies the book's `tech_ai_weights` (§10.111.3) in the same pass, before the boost: each listed technology's ai_weight block is
   replaced by its recorded old block, after asserting the installed game's block is the recorded `vanilla` one; it throws on a listed
   technology with no research entry, one the tree lacks, or a book that lists weights with the finish boost off.
@@ -1044,7 +1047,7 @@ The canon's chain, read from its records: `tier4-e1` (make_tier4_config `--deriv
 hand: `dams.private = all`, `game_defines` (monopoly threshold 0.99), the 2026-10-21 polish keys. ⚠ Intermediate books on disk may carry
 stale tree twins; re-run the chain from its root rather than one step. **`tools/replay_canon_chain.mjs` runs exactly this chain** (below).
 
-- **`tools/make_book12.mjs`** (2026-11-21, BALANCE_FRAMEWORK §10.125, §10.126) — `node tools/make_book12.mjs [--prefix m12b] [--name <prefix>-first]` (the current book is `--prefix m12b` → `m12b-first`; `m12-first` was made before §10.126 and no longer regenerates): THE
+- **`tools/make_book12.mjs`** (2026-11-21, BALANCE_FRAMEWORK §10.125, §10.126) — `node tools/make_book12.mjs [--prefix m12b] [--name <prefix>-first] [--naval-lowered 0.8]` (the current book is `--prefix m12b` → `m12b-first`; `m12-first` was made before §10.126 and no longer regenerates; `--naval-lowered` sets `entry_weight_rule.naval_lowered`, default 0.8 = what `m12b-first` was built with, so its recorded command still reproduces it, and a book after it passes `--naval-lowered 1`, §10.127): THE
   MOD 1.2 BOOK. The canon's chain (as `replay_canon_chain.mjs`, then the 1.15 steps of the 1.1.1 canon) with `make_tier4_config --insert
   motor` in place of `--derive motor`, `make_ab_config --cost-ratio 2.0 --ai-ladder 455,1000,2200,4840 --mix-scale
   pm_electric_engines:electricity:0.25,pm_diesel_engines:oil:0.25`; then `make_deposit_config.mjs --cost-step 1.3 --start-1836 pair`; then the 1.2 book fields

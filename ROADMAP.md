@@ -147,6 +147,12 @@ extraction overhaul for 1.2 already (not 1.3)."*
 - **The engine rebalance (§10.116) is part of this 1.2 book** (§10.116.3, the user, 2026-11-17: *"In the 1.2 book"*; it was first
   asked for mod 1.3 and is described under that heading below). One of its pieces sits on these tiered deposits: engines on the condensing and diesel pump rungs (the top mine rung's electric
   drive was dropped the next morning, §10.116.1).
+- **Where it stands (2026-11-22):** the first book `m12b-first` is measured by five centuries (F283, F284: world GDP 0.82× vanilla
+  1.15.2, loss 14.51, none past the barrier); its successor `m12c-first` adds only §10.127 (naval technologies lowered only while their
+  entry ticks). **Next within 1.2, before the balance fine tuning: a deeper technology pass** (the user, 2026-11-22: *"techs will require a
+  deeper pass, defer it to next sessions within 1.2, before balance fine tuning"*) — the late second-industrial-revolution technologies
+  (12 of 43 production technologies on their historical onset, against mod 1.1.1's 23), the ten tech-era-5 military technologies and
+  dreadnoughts that no country holds, and the two newly unheld (BACKLOG).
 - **`NEXT_BOOK_SPEC.md` is the build specification** (2026-11-17, at the user's word): §10.115 and §10.116 in build order, worked
   numbers, the ruled and proposed variations, the open questions with their assumed defaults, the order of work. To confirm first:
   which release the combined book is, and whether the engine rebalance joins the first tiered books.

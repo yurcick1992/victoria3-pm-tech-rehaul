@@ -1,7 +1,12 @@
 // THE MOD 1.2 BOOK — the canon's recorded chain (tools/replay_canon_chain.mjs, then the 1.15 steps of the 1.1.1 canon) with the 1.2
 // rulings carried through it, every intermediate book under a prefix so nothing existing is touched.
 //
-//   node tools/make_book12.mjs [--prefix m12] [--name m12-first]
+//   node tools/make_book12.mjs [--prefix m12] [--name m12-first] [--naval-lowered 0.8]
+//
+// --naval-lowered: the standing multiply on a technology with a NAVAL research entry (`entry_weight_rule.naval_lowered`). The default
+// 0.8 is the rule `m12b-first` was built with (its recorded command has no flag and still reproduces it); since BALANCE_FRAMEWORK §10.127
+// (2026-11-22) the ruled value is 1 — no standing penalty, only the -50% while the entry ticks — so a book after m12b-first passes
+// `--naval-lowered 1`.
 //
 // What differs from the canon's chain, each with its ruling (BALANCE_FRAMEWORK; NEXT_BOOK_SPEC.md is the build order):
 //   - the motor ladder: t0 Steam Engines, t1 Compound Engines on pumpjacks (shown as "Pumping Engines"), t2 Electric, t3 Diesel — the
@@ -30,6 +35,8 @@ const argv = process.argv.slice(2);
 const opt = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const P = opt('--prefix', 'm12'); if (!/^[a-z0-9]+$/.test(P)) throw new Error('--prefix <lowercase letters/digits>');
 const NAME = opt('--name', `${P}-first`);
+const NAVAL_LOWERED = +opt('--naval-lowered', '0.8');
+if (!(NAVAL_LOWERED > 0 && NAVAL_LOWERED <= 1)) throw new Error('--naval-lowered <a multiplier in (0, 1]>');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const SNAP_OLD = 'C:/claude-code/vic3_game_1.13.11/game';
 const gameVersion = (() => { try { return JSON.parse(readFileSync(join(GAME, '..', 'launcher', 'launcher-settings.json'), 'utf8')).rawVersion; } catch { return 'unknown'; } })();
@@ -105,6 +112,7 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
   if (!pmKeys.includes('pm_electric_saw_mills')) throw new Error('pm_electric_saw_mills not found in the game');
   j.research_events.mark_rule = 'higher';
   j.research_events.entry_weight_rule = { lowered: 0.8, advancing: 0.5, signal: 'tick' };
+  if (NAVAL_LOWERED !== 0.8) j.research_events.entry_weight_rule.naval_lowered = NAVAL_LOWERED;   // §10.127 (absent = the 0.8 m12b-first carries)
   j.secondary_sizing = 'tier';
   j.power_lines_engines = true;
   j.craft_seed_fixes = true;
@@ -118,7 +126,8 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
       'logging not a deposit; the 1836 pair (start_1836 pair); electric saw mills on the world gate': '§10.126',
       'research_events.mark_rule higher': '§10.119 item 6a', 'research_events.entry_weight_rule 0.8 / 0.5, tick': '§10.119 item 3 (ruled 2026-11-21)',
       'secondary_sizing tier': '§10.119 item 2', 'power_lines_engines': '§10.116 ruling 8', 'craft_seed_fixes': '§10.119 item 7',
-      'agri_steps': '§10.124 items 1 and 3; §10.116.1' } };
+      'agri_steps': '§10.124 items 1 and 3; §10.116.1',
+      ...(NAVAL_LOWERED !== 0.8 ? { [`research_events.entry_weight_rule.naval_lowered ${NAVAL_LOWERED}`]: '§10.127 (ruled 2026-11-22)' } : {}) } };
   writeFileSync(b('pre'), JSON.stringify(j));
   writeFileSync(`config/tech_tree_options.${P}-pre.json`, readFileSync(`config/tech_tree_options.${P}-dep.json`));
   console.log(`\n(hand) ${b('pre')}: the 1.2 book fields (mark rule, weight rule, tier-scaled lines, engines on the power lines, craft fixes, ${worldGate.length} world-gated methods, ${irrigation.length} irrigation drives)`);

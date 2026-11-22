@@ -25,7 +25,14 @@ F284):** the n = 4 batch, paused by the user at 1891 and resumed (`20261122_0004
 `20261122_000405_g1152-m12b-n4-stitched` with the n = 1 session: no run past the barrier, world GDP 0.82× (0.71–1.02), the 1886–1916 dip in
 every run, the world's U* on its aims and the leaders' scattered (medians USA 26.6%, Britain 8.2%, Germany 29.5% at the end), PI 1.00× the
 largest loss term, loss 14.51. Run 2 (the continued one) has no summaries for 1904–1931 (the archiver stopped on low disk, L44). **The session after:**
-iterate on the values. Missing before the iterations read anything: two readers of NEXT_BOOK_SPEC §6 step 3 (slot fill by rung, a raw-material price
+iterate on the values. **Ruled for the next book (2026-11-22):** §10.127, naval technologies lowered only while their entry ticks
+(`make_book12.mjs --naval-lowered 1`), in the book `m12c-first` (`e355eeb1`, built 2026-11-22, not measured). **A deeper technology pass, within 1.2 and before the balance
+fine tuning** (the user, 2026-11-22: *"techs will require a deeper pass, defer it to next sessions within 1.2, before balance fine
+tuning"*), starting from what the F284 technology census shows (`tech_timing.mjs`, the census script of 2026-11-22): the late
+production technologies with industry entries arrive 12–21 years later than under mod 1.1.1 (combustion engine 1923, electric railway 1926,
+nitrogen fixation 1934 by the half-majors year, against onsets of 1886, 1895 and 1913), so 12 of 43 production technologies land within ten
+years of their onset against mod 1.1.1's 23 and vanilla's 10; two technologies newly unheld in 1936 (flash freezing, catalytic synthesis);
+dreadnoughts and the ten tech-era-5 military technologies still unheld, as in 1.1.1. Missing before the iterations read anything: two readers of NEXT_BOOK_SPEC §6 step 3 (slot fill by rung, a raw-material price
 index; the 1855 reader is built, `ledger/screen_1855.mjs`, F281) and the study scripts of 2026-11-16/17, still outside the repo.
 
 1. ✅ **The canon** is `jex-dam4s-rs-x25-m10ac-dpriv-wm99` with the 2026-10-21 polish rulings, the 2026-10-26 proofread's display text and the 2026-10-27 urban-centre live figure (sha256 `9a05d36da42c1511`, measured as `728f2c7f84e6f467`; CLAUDE.md §4.1,

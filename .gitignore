@@ -431,3 +431,7 @@ tools/testbed/no_new_runs_at.log
 # stay ignored. m12-first is kept as the record of what the user's first check loaded.
 !config/mod_config.m12b-first.json
 !config/tech_tree_options.m12b-first.json
+# The next (2026-11-22, §10.127): m12b-first + naval technologies lowered only while their entry ticks,
+# `node tools/make_book12.mjs --prefix m12c --naval-lowered 1`; intermediates m12c-* stay ignored. m12b-first is the record F283/F284 measured.
+!config/mod_config.m12c-first.json
+!config/tech_tree_options.m12c-first.json
