@@ -1952,7 +1952,9 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   (2026-11-22): the entries' conditions parsed from the BUILD's own progress bars and script values, replayed on every yearly summary
   for the technology majors and the top 15 independents by GDP; each unheld country-year is `tick`, `pre` (a prerequisite missing),
   `lit`, `src` (the workforce mark), `req` (the entry's required technology), `lit+src` or `far`. Tables: stage completions and reasons
-  per entry; the blocking prerequisites; each source's holders against its marks at the onset and +10 / +20 / +40 years. One cache file
+  per entry; the blocking prerequisites; each source's holders against its marks at the onset and +10 / +20 / +40 years; and, across
+  arms with `--label <this> --vs <label>=<cache dir>[,…]`, `--section anchors` (the leader's share of each tech era at 1875 / 1905 / 1935
+  by tree, F287 §2) and `--section first` (the world-first and the half-majors year per technology, F286 §1). One cache file
   per run (keep it outside the repo). ⚠ Frontline, naval, idea, colony, rank and urban-centre entries are read for prerequisites and
   literacy only; a merged rung's levels are apportioned by method share; the state is 1 January's. `--mod` must be the build the runs
   played (a named book's `mod_<name>`). Refs: F286.

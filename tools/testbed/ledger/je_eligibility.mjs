@@ -264,4 +264,32 @@ if (SECTION === 'all' || SECTION === 'sources') {
     }
   }
 }
+// ---- across arms (2026-11-22, F287 §2 and F286 §1): `--vs <label>=<cache dir>[,<label>=<cache dir>]` reads other arms' caches beside this one
+//   (`--label` names this one). Only what every cache carries is compared: who holds what, year by year.
+//   --section anchors : the LEADER's share of each tech era held at its anchor year (1875 / 1905 / 1935), by tree — the leader is the focus
+//                       country holding most technologies in the first summary at or within two years after the anchor; the median over runs.
+//   --section first   : per technology of tech era 2+ (or --tech), the world-first year and the half-majors year, the median over runs
+//                       ("—" = fewer than half the runs get there). ⚠ A run with a gap in its summaries reads the first year after the gap.
+if (['anchors', 'first'].includes(SECTION) || (SECTION === 'all' && opt('--vs', null))) {
+  const loadArm = (label, dir) => ({ label, meta: JSON.parse(readFileSync(join(dir, 'meta.json'), 'utf8')), runs: readdirSync(dir).filter(f => /^run_.*\.json$/.test(f)).sort().map(f => JSON.parse(readFileSync(join(dir, f), 'utf8'))) });
+  const ARMS = [{ label: opt('--label', 'this'), meta: META, runs: RUNS }, ...String(opt('--vs', '')).split(',').filter(Boolean).map(x => { const i = x.indexOf('='); if (i < 1) throw new Error(`--vs wants <label>=<cache dir> (got ${x})`); return loadArm(x.slice(0, i), x.slice(i + 1)); })];
+  const medN = a => { const s = a.map(x => x ?? Infinity).sort((x, y) => x - y); const v = s[Math.floor((s.length - 1) / 2)]; return Number.isFinite(v) ? v : null; };
+  const head = ARMS.map(a => `${a.label} (n ${a.runs.length})`).join(' / ');
+  if (SECTION !== 'first') {
+    console.log(`\nD. THE LEADER'S SHARE OF EACH TECH ERA AT ITS ANCHOR, by tree — ${head}; the aim is about half (somewhat under half of tech era 5)`);
+    for (const [era, y] of [[3, 1875], [4, 1905], [5, 1935]]) for (const cat of ['production', 'military', 'society', 'all']) {
+      const cells = ARMS.map(a => { const ids = a.meta.techs.map((t, i) => [t, i]).filter(([t]) => t.era === era && (cat === 'all' || t.category === cat)).map(([, i]) => i);
+        const v = medN(a.runs.map(run => { const Y = run.years.find(z => z.y >= y); if (!Y || Y.y > y + 2 || !Y.rows.length) return null; const lead = Y.rows.slice().sort((p, q) => q.held.length - p.held.length)[0]; return Math.round(100 * ids.filter(i => lead.held.includes(i)).length / ids.length); }));
+        return (v == null ? '—' : v + '%').padStart(5); });
+      console.log(`   tech era ${era} at ${y}, ${cat.padEnd(10)}: ${cells.join(' / ')}`);
+    }
+  }
+  if (SECTION !== 'anchors') {
+    console.log(`\nE. THE WORLD-FIRST YEAR · THE HALF-MAJORS YEAR per technology — ${head}`);
+    const firstY = (a, id) => medN(a.runs.map(run => { const i = a.meta.ids.indexOf(id); if (i < 0) return null; for (const Y of run.years) if ((Y.holders[i] || 0) > 0) return Y.y; return null; }));
+    const halfY = (a, id) => medN(a.runs.map(run => { const i = a.meta.ids.indexOf(id); if (i < 0) return null; for (const Y of run.years) { const m = Y.rows.filter(r => r.maj); if (m.length && m.filter(r => r.held.includes(i)).length >= Math.ceil(m.length / 2)) return Y.y; } return null; }));
+    for (const t of META.techs.filter(t => ONLY ? ONLY.has(t.id) : t.era >= 2).sort((a, b) => a.category.localeCompare(b.category) || a.era - b.era || (a.onset ?? 0) - (b.onset ?? 0)))
+      console.log(`   ${t.id.padEnd(31)}${t.category.slice(0, 4)} era ${t.era} onset ${String(t.onset ?? '?').padEnd(5)}| ` + ARMS.map(a => `${String(firstY(a, t.id) ?? '—').padStart(4)} · ${String(halfY(a, t.id) ?? '—').padStart(4)}`).join('  /  '));
+  }
+}
 if (opt('--json', null)) { writeFileSync(opt('--json'), JSON.stringify(out, null, 1)); console.log('json → ' + opt('--json')); }

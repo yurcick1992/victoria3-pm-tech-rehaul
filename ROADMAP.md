@@ -152,7 +152,14 @@ extraction overhaul for 1.2 already (not 1.3)."*
   entry ticks). **Next within 1.2, before the balance fine tuning: a deeper technology pass** (the user, 2026-11-22: *"techs will require a
   deeper pass, defer it to next sessions within 1.2, before balance fine tuning"*) — the late second-industrial-revolution technologies
   (12 of 43 production technologies on their historical onset, against mod 1.1.1's 23), the ten tech-era-5 military technologies and
-  dreadnoughts that no country holds, and the two newly unheld (BACKLOG).
+  dreadnoughts that no country holds, and the two newly unheld (BACKLOG). **Its first round is ruled and built the same day**
+  (F286, F287; BALANCE_FRAMEWORK §10.129, §10.130): the book `m12d-first` (`2e25dfe4`, on `m12c-first`) — the research-entry references
+  the 1.2 book broke, pumpjacks on rotary valve engine in place of dynamite, mining workers as a source for nitroglycerin and dynamite,
+  the military industries' marks × 0.25, the financial entries held, shift work's AI weight × 1.2. **Next: its first centuries** (a 2+1,
+  on the user's go-ahead in the session that runs it), read above all for the first holders of pumpjacks, combustion engine and electric
+  railway and for the leader's share of tech era 4 production at 1905 (31% in `m12b-first`; `ledger/je_eligibility.mjs --section
+  anchors`); then the balance fine tuning. Left open by the round: the military tree behind its anchors everywhere, tech spread
+  (deferred), a lower literacy line for a follower (parked).
 - **`NEXT_BOOK_SPEC.md` is the build specification** (2026-11-17, at the user's word): §10.115 and §10.116 in build order, worked
   numbers, the ruled and proposed variations, the open questions with their assumed defaults, the order of work. To confirm first:
   which release the combined book is, and whether the engine rebalance joins the first tiered books.
