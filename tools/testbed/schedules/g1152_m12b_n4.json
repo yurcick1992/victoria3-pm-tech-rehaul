@@ -1,0 +1,87 @@
+{
+  "schedule_version": 1,
+  "label": "g1152-m12b-n4",
+  "_why": "FOUR MORE CENTURIES OF THE MOD 1.2 BOOK m12b-first, the same book as session 20261121_175213_g1152-m12b-n1 (n=1). The user, 2026-11-21, while run 1 played: \"When done, go with n=4 more.\" Same terms as run 1 (\"no broken conditions apply: gather the data and report, run a full run\"). Pooled with run 1 they give n=5 of the book against vanilla 1.15.2 (n=8, F274).",
+  "_arms": {
+    "m12b": "{kind: config, config: config/mod_config.m12b-first.json} - the mod 1.2 book (sha256 9ac09c1b870858d7, tree twin 4abb84ba3c1c477e, commit 1ad01626): the 1.1.1 canon's chain with the motor ladder (Compound Engines), C 2.0, the desire ladder 455/1000/2200/4840, the quarter, nine tiered deposits at cost step 1.3 with the 1836 pair (logging untiered), the research mark and weight rules, tier-scaled and craft lines, engines on the power lines, the craft seeding fixes, the world gate and irrigation's drives."
+  },
+  "_comparison": "The register (criteria.mjs, §10.120/§10.123) against vanilla 1.15.2 (n=8, F274); the first-run decomposition (world and shortlist); beside it the mod 1.1.1 canon on 1.15.1 (F271/F272, n=15) as a direction only (other game version). Readings beside the register: misplaced capital, red flags, the technology census, old rungs, mining employment and the deposit rungs' levels by tier. n=1: every reading is directional; nothing ranks.",
+  "_predictions": {
+    "from_run_1": "Run 1 (directional): world GDP 1.00x vanilla 1.15.2 to 1850, sliding to 0.81x by 1900 and 0.63x in 1920-25, 0.72x in 1935; Britain stalled from 1880 (empty treasury, Per-Capita Taxation, U* 43% in 1915 against vanilla 4%), the USA U* 51% against 24% in 1915; coal, iron, lead, copper and oil dearer than vanilla throughout; play x0.95 of vanilla over the century.",
+    "world_gdp": "The four runs end at 0.60-0.85x vanilla's median, most below 0.80 (the book is cold, not run 1's seed alone); Britain's stall is the least certain part (its tax path is political, seed-dependent).",
+    "u_star": "The leaders' U* at 1913 well above vanilla's and above the register's aims (USA 25%, Britain 10%) in at least three of four runs.",
+    "prices": "Coal and iron above vanilla's in GBP in every run over 1880-1915.",
+    "play_time": "Recorded, not graded (§10.123); x0.90-1.05 of vanilla 1.15.2 over the century."
+  },
+  "_stop_rule": "None: a fixed-n batch, every run plays to 1936 (fixed-n batches run to completion, user-ruled 2026-09-23; the user, 2026-11-21: no broken conditions apply).",
+  "_cost": "4 x 1836 -> 1936, about 2 h 45 min each (run 1: 161 min of play), about 11 hours from the launch on 2026-11-21 ~20:40 local, ending around 2026-11-22 07:30-08:30 local.",
+  "_launch_checklist": [
+    "The user's go-ahead: 2026-11-21, \"When done, go with n=4 more.\"",
+    "tools/testbed/STOP and NO_NEW_RUNS absent; no game running (L19); no emitter, build.ps1 or tools/testbed/** edit while it plays (L10). The checkout at 1ad01626 plus uncommitted docs only (BACKLOG.md, the two schedules): no build input differs from run 1.",
+    "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter.",
+    "Smoke check at about five to seven minutes: the init marker, game version 1.15.2, DLC (L50) ok, the clock advancing, the run's own error classes against vanilla 1.15.2's (20261119_210048) and the canon's 1.15.2 legs (F281), class by class; the construction mix at the first summary."
+  ],
+  "defaults": {
+    "dump_dates": [
+      "1836.2.1",
+      "1840.1.1",
+      "1850.1.1",
+      "1860.1.1",
+      "1870.1.1",
+      "1880.1.1",
+      "1890.1.1",
+      "1900.1.1",
+      "1910.1.1",
+      "1920.1.1",
+      "1930.1.1",
+      "1935.1.1"
+    ],
+    "tags": [
+      "GBR",
+      "FRA",
+      "USA",
+      "PRU",
+      "NGF",
+      "GER",
+      "NET",
+      "BEL",
+      "UNL",
+      "RUS",
+      "JAP"
+    ],
+    "metrics": [
+      "country_state",
+      "population",
+      "tech_log",
+      "treasury",
+      "events",
+      "market_goods_scoped"
+    ],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "m12b": {
+      "kind": "config",
+      "config": "config/mod_config.m12b-first.json"
+    }
+  },
+  "runs": [
+    {
+      "setup": "m12b",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "m12b",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "m12b",
+      "until": "1936.1.1"
+    },
+    {
+      "setup": "m12b",
+      "until": "1936.1.1"
+    }
+  ]
+}

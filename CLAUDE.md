@@ -728,14 +728,16 @@ What §1.2 and §1.3 leave out:
   administrative strategy.
 - **Trade and defines:** the five-class traded-quantity table at ×1 (F159 §7), copper in class C (§10.108.3); `NEconomy.WORLD_MARKET_MONOPOLY_THRESHOLD = 0.99`.
 
-## 4.2 Where it stands (2026-11-19)
+## 4.2 Where it stands (2026-11-22)
 
 - **The mod 1.2 book is built (2026-11-21, §10.125 and §10.126), not canon:** `config/mod_config.m12b-first.json` (+ twin), `node
   tools/make_book12.mjs --prefix m12b` on game 1.15.2 — the motor ladder with Compound Engines, C 2.0, the desire ladder 455 / 1000 / 2200 / 4840,
   the quarter, nine tiered deposits at cost step 1.3 (logging untiered, §10.126) with the 1836 pair, the research mark and weight rules, tier-scaled and craft lines, engines on the power lines, the craft seeding fixes, the
   world gate and irrigation's drives. Every linter and preflight pass; it is deployed for the user's check from the alternate build
-  `mod_m12b` (`mod/` still holds the 1.1.2 release build) and has not been measured. Its predecessor `m12-first` (logging tiered, no pair) is
-  what the user's first check loaded.
+  `mod_m12b` (`mod/` still holds the 1.1.2 release build). Its predecessor `m12-first` (logging tiered, no pair) is what the user's first
+  check loaded. **Measured by five centuries** (F283, n = 1; F284, n = 4, read together, 2026-11-22): no run past the barrier, world GDP
+  0.82× vanilla 1.15.2 (0.71–1.02), level to 1866–1880, then a dip to 0.64–0.83 in 1886–1916 and a recovery from about 1920; the world's U\*
+  on its aims while the leaders scatter run to run; PI 1.00× (falling), the largest term of the loss; loss 14.51. The iterations start here.
 
 - **Game 1.15.2** (installed 2026-11-19; mod 1.1.2, the same canon, released the same day): the mod is measured only by the smoke test
   (F273: it loads and runs; two error classes were ours, the BOM fixed as landmine L53). **Vanilla 1.15.2's eight centuries** (F274,

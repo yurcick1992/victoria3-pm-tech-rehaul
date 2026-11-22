@@ -428,6 +428,8 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F280 | The ruled research-weight rule with its ticking signal costs no visible play time (60.8 against 62.8 s per in-game year, 1837–1846), and the signal works (2,191 open stages store their bar; 54 country flags live at 1846); six load-time lines for the frontline flags, fixed | the canon and the canon + the ruled rule | 2 + 2 × 1836→1846, a performance probe | here |
 | F281 | The 1836–1855 readings on game 1.15.2: vanilla's own spread for §10.115's two pass terms (dead at 0.66: 3.3% per run, 0.1% in both runs of a pair) and the canon beside it; a per-country "dead" reading counts a civil-war split as death (the canon's China at 0.45 = 17.7%, the Taiping state holding the rest); vanilla's eight-run min–max is narrower than the canon's own start (wood, copper outside) | vanilla 1.15.2; the canon | 8 + 2, no game time | here |
 | F282 | The crafts are not a capital sink: about 8,400 craft levels, 50,000 points (£20–27M) a century, 0.09% of all construction (0.5% before 1855); expected return 29% a year against 10–19% on the factory rungs, 6% misplaced against 30–44% on t0–t2; about as many craft levels downsized as built (0.55% of the capital downsized), staffing 93% → 51%; the crafts' 800 kept | the book of mod 1.1.1 / 1.1.2 (`697d4869`) | 15 centuries (1.15.1) + 2 × 1836→1855 (1.15.2), no game time | here |
+| F283 | The first century of the mod 1.2 book (`m12b-first`, n = 1): world GDP 0.71× vanilla 1.15.2, level to 1866, behind from 1876, 0.64–0.65 in 1916–26; the leaders do not depeasant (U* USA 47%, Britain 42% at the end against aims of 15% and 5%) while the world sits on its aims; the gap is output per worker before 1900 and workers per head after 1920; raw materials dearer than vanilla throughout; Britain stalls from 1880 on an empty treasury; the USA hoards with labour; not past the barrier, loss 29.51 | `m12b-first`, vanilla 1.15.2 | 1 (against 8), directional | here |
+| F284 | Five centuries of the mod 1.2 book (`m12b-first`, F283's run + four): none past the barrier; world GDP 0.82× vanilla 1.15.2 (0.71–1.02), every run level to 1866–1880, dipping in 1886–1916 and recovering from about 1920; the world's U* on its aims while the leaders scatter by seed (the USA's end U* 3.7–47%, Britain's 2.8–42%, Germany's 2.5–68%); PI 1.00× the largest loss term; loss 14.51; run 2 continued from a paused save and lacks 1904–1931 summaries (L44) | `m12b-first`, vanilla 1.15.2 | 5 (against 8), directional | here |
 
 ---
 
@@ -23746,3 +23748,134 @@ stock table is the realised check. The yearly steps count craft levels that chan
 and lost inside one year (the downsizing count is independent of both). Points from the GDP base modifier cost no goods (F187), so a poor
 country's £ figures run low; the points shares are the cleaner reading of how much. Whether the crafts' labour would have been better used
 elsewhere (a question of labour, not capital), and the 1.2 book (re-read with `craft_capital.mjs` once it has runs).
+
+---
+
+## F283 — THE FIRST CENTURY OF THE MOD 1.2 BOOK: THE WORLD ENDS AT 0.71× VANILLA 1.15.2, LEVEL WITH IT TO 1866 AND BEHIND FROM 1876; THE LEADERS DO NOT DEPEASANT (U* THE USA 47%, BRITAIN 42% AT THE END) WHILE THE WORLD SITS ON ITS AIMS; RAW MATERIALS ARE DEARER THAN VANILLA'S THROUGHOUT; BRITAIN STALLS FROM 1880 ON AN EMPTY TREASURY; THE USA HOARDS WITH LABOUR (2026-11-21; session `20261121_175213_g1152-m12b-n1`, n = 1, 1836→1936.1.1, game 1.15.2, against vanilla 1.15.2's eight centuries `20261119_210048`)
+
+**The arm.** `{kind: config, config: config/mod_config.m12b-first.json}` (sha256 `9ac09c1b870858d7`, tree twin `4abb84ba3c1c477e`, commit
+`1ad01626`): the 1.1.1 canon's chain with the 1.2 rulings — the motor ladder with Compound Engines, C 2.0, the desire ladder 455 / 1000 /
+2200 / 4840, the quarter, nine tiered deposits at cost step 1.3 with the 1836 pair (logging untiered), the research mark and weight rules,
+tier-scaled and craft lines, engines on the power lines, the craft seeding fixes, the world gate and irrigation's drives (§10.125, §10.126).
+The user's go-ahead: "Go on with the n=1 … no 'broken' conditions apply". One run, no crash, 9,590 s of play.
+
+**Predictions written before the run** (the schedule's `_predictions`), against the reading:
+- world GDP 0.95–1.15× at the end, 1886 at 0.80–0.95: **wrong** (0.71×; 1886 0.89, right);
+- world U* 35–45%, the shortlist 5–15%: **wrong** (the world 51.5%, the shortlist 41.0% at the end);
+- the barrier not crossed: **right** (0.95, the USA);
+- the paired mines within 10% of vanilla's 1837 output: not read yet; iron and coal dearer than vanilla over 1870–1910: **right**;
+- PI and PP falling: **right**; play 170–200 min: 160 min, ×0.95 of vanilla's runs (directional, different days).
+
+**1. The register** (`criteria.mjs`, the 1932–36 mean, vanilla 1.15.2 n = 8):
+
+| line | reading | aim |
+|---|---|---|
+| world GDP ÷ vanilla | 0.71× | 0.90–1.00 |
+| U* the USA, 1913 · the end | 53.3% · 46.9% | 25% · 15% |
+| U* Britain, 1913 · the end | 42.6% · 42.2% | 10% · 5% |
+| U* Germany (never formed; Prussia), 1913 · the end | 72.0% · 68.3% | 20% · 20% |
+| U* the world, 1913 · the end | 59.7% · 51.5% | 60% · 50% |
+| PI · PP | 1.00×, falling · 0.97×, falling | ≤ 0.8, falling |
+| members above 0.5 GDP · the hoard above half GDP | 1 · 0.229 | 0 · 0 |
+| T0 slope · T3 share of tiered | +0.122 · 28.7% | falling · the more the better |
+| old plants kept (in-market backward industries) | 43.1%, shrinking | under 100%, shrinking |
+
+The barrier: not past (the USA's best ten-year pool ÷ GDP 0.95, 1927–36). **Loss 29.51**, of it Britain's end U* 11.89 and world GDP 2.68.
+Minor readings: W 0.77× (world), 0.67× (shortlist); the shortlist's GDP 0.74×; H shortlist 0.52 (1.25× vanilla).
+
+**2. The path and its decomposition** (world GDP ÷ vanilla's median by decade: 1846 0.98 · 1856 0.98 · 1866 1.01 · 1876 0.95 · 1886 0.89 ·
+1896 0.86 · 1906 0.75 · 1916 0.65 · 1926 0.64 · 1936 0.72). `first_run_decomp.mjs`, world: 1880 GDP 0.93× = workers per head 1.05× ×
+£ per productive worker 0.91×; 1900 0.81× = 1.01× × 0.84×; 1920 0.63× = 0.81× × 0.81×; 1935 0.72× = 0.77× × 1.02× (population 0.93–0.98×).
+The shortlist: 1900 0.62× (0.90× × 0.73×), 1935 0.77× (0.64× × 1.01×). Before 1900 the gap is productivity; after 1920 it is employment, with
+productivity back at vanilla's by 1935.
+
+**3. Raw materials** (world market price ÷ base, the 52-week mean; this run / vanilla's median): coal 1.22 / 1.09 (1880), 1.17 / 1.05 (1900),
+1.39 / 1.08 (1915); iron 1.25 / 1.09, 1.21 / 0.99, 1.16 / 0.98; lead 1.24 / 1.13, 1.23 / 1.07, 1.20 / 0.98; copper 1.18 / 1.14, 1.29 / 1.00,
+1.21 / 0.95; oil 1.37 / 1.20, 1.20 / 0.93, 1.25 / 0.83; steel 1.32 / 1.28, 1.31 / 1.17, 1.20 / 1.14. Pop goods fall faster than vanilla's
+(clothes 0.75 / 0.94 in 1915).
+
+**4. The countries.** Britain tracks vanilla to 1875 (0.95–1.00×), stalls from 1880 (£96–117M a year to 1896 while vanilla's goes from £106M to
+£178M) and falls 1898–1900 (£106M → £74M, one state lost in 1897; 0.36× in 1900, 0.46× in 1910). Its treasury is at zero from 1880 and its
+government queue empty (vanilla's Britain keeps £4–18M and 13–18 items); it stays on Per-Capita Taxation (vanilla's moves to Proportional by
+1865) after a civil war in 1861. The USA is on vanilla's tax law and holds more money than vanilla's, yet its U* is 51% in 1915 against 24%,
+and by 1927–36 its pool is 0.95 of its GDP at U* 47% — capital piling up where labour is free, a combination the barrier's premise excludes
+(no member-year above 1 GDP at a U* over 20% in 2,705). Germany never forms (vanilla's median £99M in 1905). Above vanilla: France (1.30–1.50×),
+China (to 1905), British India (1.18–1.53×).
+
+**5. The smoke check.** Every error class vanilla's on 1.15.2 or catalogued, but one of ours: two vanilla one-level Simple Fishing wharves cut
+to 0 at game start (Witu, Kaurna: "can only support 0, its level will be reduced") — small states of split regions whose share of the tiered
+slots rounds to 0 (deferred by the user, BACKLOG).
+
+**What it does NOT say.** n = 1: nothing ranks, and the book cannot be told from the seed — Britain's political path (its tax law, the 1861
+civil war) and Germany's non-formation are seed-shaped; that the leaders do not depeasant could be either. Which 1.2 change cools the
+economy (C 2.0, the deposits' labour and prices, the engine rebalance, the research weights) is not separable from one book. The deposit
+rungs' own readings — slot fill by rung, mining employment, the 1837 output by good — were not read (their readers are still to be written).
+The play time is against another day's vanilla. Continued as n = 5 with session `20261121_203530_g1152-m12b-n4` (paused at 1891): F284.
+
+## F284 — FIVE CENTURIES OF THE MOD 1.2 BOOK: NONE PAST THE BARRIER; THE WORLD ENDS AT 0.82× VANILLA 1.15.2 (0.71–1.02), EVERY RUN DIPPING BETWEEN 1886 AND 1916; THE WORLD'S U* SITS ON ITS AIMS WHILE THE LEADERS' SCATTERS FROM FULL EMPLOYMENT TO STALLED; INPUT PRICES STAY AT VANILLA'S LEVEL AND ARE THE LARGEST TERM OF THE LOSS (14.51) (2026-11-22; sessions `20261121_175213_g1152-m12b-n1` + `20261122_000405_g1152-m12b-n4-stitched`, n = 5, 1836→1936.1.1, game 1.15.2, against vanilla 1.15.2's eight centuries `20261119_210048`)
+
+**The arm.** The same book as F283, `m12b-first` (sha256 `9ac09c1b870858d7`, tree twin `4abb84ba3c1c477e`), built from commit `1ad01626` with
+clean build inputs in every run (content layout `aea4b438e76636f4`). Run 1 is F283's. Runs 2–5 are the n = 4 batch the user asked for ("When
+done, go with n=4 more."): run 2 was paused by the user at 1891 (`20261121_203530_g1152-m12b-n4`) and continued from its kept 1891.1.1 save on
+2026-11-22 ("proceed with the remaining play time, starting from the latest autosave"; `20261122_000405_g1152-m12b-n4-continue`, the
+same-book gate passed); runs 3–5 played fresh after it. `stitch_session.mjs` joined run 2's halves (`…-stitched`). No crash, no resume.
+**Run 2 has no save summaries for 1904–1931**: the disk fell under the archiver's 8 GB floor at 00:25 and the archiver stopped after the
+1903 save while the game played on (landmine L44, its second occurrence); the game's five autosave slots still held 1932–36 and were melted
+by hand. Its 1913 U* lines and its barrier window read nothing, and its loss counts those four terms as 0. The ledger report:
+claude.ai/artifact/7K4gp3igytEc1FhektoF49 (`REPORT.html` in the stitched session).
+
+**Predictions written before runs 2–5** (the schedule's `_predictions`), against the reading:
+- the four runs end at 0.60–0.85× vanilla, most below 0.80: **wrong** (0.79, 0.82, 1.02, 0.86; one below 0.80, one on vanilla's level);
+- the leaders' 1913 U* above vanilla's and above the aims (the USA 25%, Britain 10%) in at least three of four: **right** in the three runs
+  that read it (the USA 34.7 / 50.7 / 42.1%, Britain 26.6 / 15.2 / 13.4%, against vanilla's 28.8% and 4.9%);
+- coal and iron above vanilla's in £ in every run over 1880–1915: not read here;
+- play ×0.90–1.05: **right but for run 2** (×0.95, 0.93 and 1.01 for runs 3–5; run 2 ×0.89, its play including one reload).
+
+**1. The register** (`criteria.mjs`, the 1932–36 mean, vanilla 1.15.2 n = 8; the consensus is the median of all five, none past the
+barrier):
+
+| line | run 1 | run 2 | run 3 | run 4 | run 5 | median | aim |
+|---|---|---|---|---|---|---|---|
+| world GDP ÷ vanilla | 0.71× | 0.79× | 0.82× | 1.02× | 0.86× | **0.82×** | 0.90–1.00 |
+| U* the USA, 1913 · the end | 53% · 47% | — · 3.7% | 34.7% · 14.4% | 50.7% · 32.6% | 42.1% · 26.6% | 46.4% · 26.6% | 25% · 15% |
+| U* Britain, 1913 · the end | 43% · 42% | — · 8.2% | 26.6% · 2.9% | 15.2% · 2.8% | 13.4% · 9.1% | 20.9% · 8.2% | 10% · 5% |
+| U* Germany, 1913 · the end | 72% · 68% | — · 49.4% | 36.6% · 29.5% | 33.7% · 16.2% | 39.5% · 2.5% | 38.0% · 29.5% | 20% · 20% |
+| U* the world, 1913 · the end | 59.7% · 51.5% | — · 53.9% | 59.3% · 48.7% | 56.1% · 45.6% | 61.5% · 51.3% | 59.5% · 51.3% | 60% · 50% |
+| PI (input goods, £) | 1.00× | 0.97× | 1.06× | 0.96× | 1.02× | 1.00×, falling | ≤ 0.8, falling |
+| PP (pop goods, wage units) | 0.97× | 1.28× ↑ | 0.99× | 0.72× | 1.56× ↑ | 0.99×, falling | ≤ 0.8, falling |
+| members above 0.5 GDP, 1935–36 | 1 | 2 | 1 | 1 | 0 | 1 | 0 |
+| T3 share of tiered workers | 28.7% | 51.7% | 27.2% | 35.4% | 23.7% | 28.7% | more |
+| old plants kept (in-market) | 43.1% | 103.3% | 101.7% | 72.6% | 137.8% | 101.7%, shrinking | under 100%, shrinking |
+| loss | 29.51 | 15.80* | 15.73 | 10.03 | 23.09 | **14.51** | — |
+
+\* four 1913 terms unread. The barrier: the highest ten-year mean of a member's pool ÷ GDP is 0.95 (the USA, 1927–36, run 1); run 2's window
+is blind after 1903 and its USA held 0.95–1.05 of its GDP in every year 1932–36. The pooled loss is mostly PI (6.15), T3 (2.03), PP (1.46),
+world GDP (1.21), the capital count (1.13) and Britain's end U* (1.02). Minor readings: W 0.78× (world), 0.84× (shortlist); GDP per productive
+worker 1.04× (world); the shortlist's GDP 0.96×; H 0.24 (world, vanilla 0.28) and 0.22 (shortlist, vanilla 0.41).
+
+**2. The path.** World GDP ÷ vanilla's median, the median of the five by decade: 1846 0.98 · 1856 0.99 · 1866 1.00 · 1876 0.95 · 1886 0.89 ·
+1896 0.86 · 1906 0.80 · 1916 0.74 · 1926 0.76 · 1936 0.81 (the 1886 line 0.79–1.01: inside). Every run is level with vanilla to 1866–1880,
+then falls behind; the low point is 0.64–0.74 in 1910–1925 for four runs, while run 4's dip came about fifteen years later (0.98 to 1895,
+0.83 in 1916) and it recovered to 1.03 by 1936. Every run recovers from about 1920. At five-year marks (run 2–5's watch, `five_year.mjs`):
+run 3 0.86 (1890) → 0.71 (1920) → 0.83 (1935); run 4 0.98 (1895) → 0.86 (1900) → 0.90 (1920) → 1.02 (1935); run 5 0.92 (1885) → 0.74 (1915) → 0.86
+(1935).
+
+**3. Depeasantation scatters by seed.** The world's U* sits on its aims in every run (45.6–53.9% at the end). The leaders do not share a
+pattern: the USA ends at 3.7–47% (run 2's USA fully employed and holding a pool of about its GDP; run 4's stalled at 32.6% with 7.6% of world
+GDP), Britain at 2.8–42% (run 1's political stall alone above 10%), Germany at 2.5–68% (it forms in every run, 1854–1890, but in run 1 only
+in 1935). Run 4, the one run on the world-GDP aim, meets the Britain, Germany and world end aims and misses only the USA's.
+
+**4. The ledger's other readings** (`fill_ledger.sh`, report above): construction delivered 1880–1935 0.77× vanilla's; 46.0% of new
+plants built below the best tier their owner runs (aim under 35%); a tier-3 plant repays in 8.3 years at realised prices, a tier-0 factory
+in 20 and a craft workshop in 10; backward industries in their own market change their workers by +2% a decade (vanilla +12%), through trade
++2% (vanilla +21%); misplaced capital 19% in 1926–36 (16–26% by decade); auto-downsizing destroys 0.64× vanilla's construction points and
+0.57× its jobs; the technology leader holds 50 / 31 / 46% of the tier-1 / 2 / 3 technologies at 1875 / 1905 / 1936 (vanilla 55 / 51 / 69%:
+tier 2 late), Britain 162 technologies against 169 (military 44 against 54); the red flags 129 problem market-years against vanilla's 161,
+but more before 1870 (76 against 57.5) — Japanese paper (capacity lag, government administration) and Japanese hardwood and iron (supply
+failures; the iron mines, now tiered, at a median 1 staffed level in Japan). Play ×0.95 of vanilla over the century (149.8–169.3 minutes a
+run, all cluster 1; vanilla's runs on other days: directional).
+
+**What it does NOT say.** n = 5 is directional (§2.9) and nothing here ranks this book against another. Run 2's gap removes one run from
+every 1904–1931 reading and from the 1913 aims (n = 4 there). Which 1.2 change makes the world colder than vanilla between 1886 and 1916 (C 2.0,
+the deposits' labour and costs, the engine rebalance, the research weights) is not separable from one book. The deposit rungs' own readings
+(slot fill by rung, mining employment, the 1837 output by good) are still unread; their readers are still to be written (BACKLOG).

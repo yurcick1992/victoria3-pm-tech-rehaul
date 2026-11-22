@@ -1,0 +1,38 @@
+{
+  "schedule_version": 1,
+  "label": "g1152-m12b-n1",
+  "_why": "THE FIRST CENTURY OF THE MOD 1.2 BOOK (BALANCE_FRAMEWORK §10.125, §10.126; BACKLOG: 'then ONE 100-year run of it'). The user, 2026-11-21: \"Go on with the n=1. If smoke test reveals fixable errors, fix and restart, but no 'broken' conditions apply: gather the data and report, run a full run.\" One full run of m12b-first, 1836 -> 1936.1.1 on game 1.15.2, read against vanilla 1.15.2's eight centuries (F274, VANILLA_REF). It starts the 1.2 iterations: the shape of the book before any value moves.",
+  "_arms": {
+    "m12b": "{kind: config, config: config/mod_config.m12b-first.json} - the mod 1.2 book (sha256 9ac09c1b870858d7, tree twin 4abb84ba3c1c477e, commit 1ad01626): the 1.1.1 canon's chain with the motor ladder (Compound Engines), C 2.0, the desire ladder 455/1000/2200/4840, the quarter, nine tiered deposits at cost step 1.3 with the 1836 pair (logging untiered), the research mark and weight rules, tier-scaled and craft lines, engines on the power lines, the craft seeding fixes, the world gate and irrigation's drives."
+  },
+  "_comparison": "The register (criteria.mjs, §10.120/§10.123) against vanilla 1.15.2 (n=8, F274); the first-run decomposition (world and shortlist); beside it the mod 1.1.1 canon on 1.15.1 (F271/F272, n=15) as a direction only (other game version). Readings beside the register: misplaced capital, red flags, the technology census, old rungs, mining employment and the deposit rungs' levels by tier. n=1: every reading is directional; nothing ranks.",
+  "_predictions": {
+    "world_gdp": "At the end 0.95-1.15x vanilla 1.15.2's median (GBP 4.68bn): C 2.0 and the dearer, more labour-hungry raw materials cool the mod's 1.18x of 1.15.1, and vanilla 1.15.2 itself is 0.89x of 1.15.1. Direction argued (below mod 1.1.1's ratio), magnitude not. The 1886 point 0.80-0.95.",
+    "u_star": "World U* 35-45% at the end (vanilla 1.15.2 36.8%, mod 1.1.1 33.4% on 1.15.1), the shortlist 5-15% (vanilla 1.15.2 9.2%). Direction only: C 2.0 pushes U* up, the deposit rungs' extra miners (1.5-2x vanilla's per unit of ore, §10.115) push it down.",
+    "barrier": "Not crossed more likely than crossed (mod 1.1.1 crossed in 7 of 10 on 1.15.1, vanilla 1.15.2 in 4 of 8); Britain is the candidate.",
+    "deposits": "In 1837 the paired mines and wharves run within 10% of vanilla's 1837 output by good. By 1900 the leaders build second and third rungs before filling the first (the first rung returns 0.6-0.75x the second's per point at base prices); mining employment at the end 1.3-1.8x vanilla's; iron and coal dearer than vanilla's in GBP over 1870-1910.",
+    "prices": "PI falling decade over decade, PP falling; red flags no more than mod 1.1.1's 140 problem market-years (direction not argued).",
+    "play_time": "Recorded, not graded (§10.123: play time is not read during the 1.2 iterations); 170-200 minutes."
+  },
+  "_stop_rule": "None: one full run, no stop watcher; a run past the barrier is read and reported, not stopped (the user: 'no broken conditions apply'). If the smoke check finds a fixable error of ours, the run is stopped, the fix made and committed, and the run restarted on the fixed build (the user's instruction).",
+  "_cost": "1 x 1836 -> 1936, about 3-3.5 hours with the build and harvest (the canon 182 min on 1.13.11, vanilla 1.15.2 167.6 min of play).",
+  "_launch_checklist": [
+    "The user's go-ahead: 2026-11-21, quoted in _why.",
+    "tools/testbed/STOP and NO_NEW_RUNS absent; no game running (L19); the checkout clean at 1ad01626; no emitter, build.ps1 or tools/testbed/** edit while it plays (L10).",
+    "Launch through tools/testbed/launch_detached.ps1 called directly from the PowerShell tool (L30); confirm the session folder within a minute; start the background waiter.",
+    "Smoke check at about five to seven minutes: the init marker, game version 1.15.2, DLC (L50) ok, the clock advancing, the run's own error classes against vanilla 1.15.2's (20261119_210048) and the canon's 1.15.2 legs (F281), class by class; the construction mix at the first summary."
+  ],
+  "defaults": {
+    "dump_dates": ["1836.2.1", "1840.1.1", "1850.1.1", "1860.1.1", "1870.1.1", "1880.1.1", "1890.1.1", "1900.1.1", "1910.1.1", "1920.1.1", "1930.1.1", "1935.1.1"],
+    "tags": ["GBR", "FRA", "USA", "PRU", "NGF", "GER", "NET", "BEL", "UNL", "RUS", "JAP"],
+    "metrics": ["country_state", "population", "tech_log", "treasury", "events", "market_goods_scoped"],
+    "autosave_interval": "yearly",
+    "timeout_minutes": 330
+  },
+  "setups": {
+    "m12b": { "kind": "config", "config": "config/mod_config.m12b-first.json" }
+  },
+  "runs": [
+    { "setup": "m12b", "until": "1936.1.1" }
+  ]
+}
