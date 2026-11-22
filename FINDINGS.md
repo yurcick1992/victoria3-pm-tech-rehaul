@@ -433,6 +433,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F285 | The register's PI and PP terms are half pegged to vanilla (the level part on 0.8 × vanilla's 1935 index), and vanilla's own input prices now fall (1935 ÷ 1900 0.91 on 1.13.11, 0.85 on 1.15.2); m12b's fall 19% yet score 6.15 + 1.46 of its 14.51 loss on the pegged part; own-path forms read; the ledger's tier lines count the nine tiered deposits as manufacturing (below-best 46.0% published, 26–28.5% on manufacturing alone; tier-1 workers 29.0M against 6.1M in 1935); the deposit ladders add rather than replace, and world raw output runs at about half vanilla's from 1900; §5 prices by goods class, market and decade: industry output 1900→1935 −11% in the 1.2 book, −9% / −10% in vanilla 1.15.2 / 1.15.1, −20% in mod 1.1.1; staples flat; the 1.2 book's coal and oil at 1.2–1.3 of base to 1920; §6 the prices at which old rungs stop covering inputs and wages when the rung two tiers up takes a quarter of output (0.85–1.0 of base for most goods in the decade t3 takes over); §7 the register under §10.128's industry-price term (1935 ÷ 1900 ≤ 0.75): the 1.2 book 0.89, loss 12.34; mod 1.1.1 0.81 | `m12b-first`, mod 1.1.1, vanilla 1.13.11 / 1.15.1 / 1.15.2 | 5 + 15 + 80 runs re-read, no game time | here |
 | F286 | Why the 1.2 book's technologies are late: the world-first holder, not diffusion (first → 10th country 3–10 years, as vanilla's); the majors hold vanilla's production count, +1 society, −8 military; of the majors' unheld years on the industry entries the workforce mark blocks 36–68%, a prerequisite 5–25%, literacy about 1%; 20 of 62 industry entries complete under 5 stages a run; two entries are dead in the 1.2 book (railways, flash freezing: their methods moved to deposit rungs) and combustion engine's sources sit behind its own successors; pumping engines wait on dynamite (904 major-years); 32 technologies of tech era 2+ have no entry and arrive 5–23 years late; the same marks blocked in the canon | `m12b-first` n = 5, the 1.1.1 canon n = 10, vanilla 1.15.2 n = 8 | re-read, no game time | here |
 | F287 | The 1.2 build has four research entries with a source that cannot exist (railways, flash freezing, navigation; combustion engine's diesel source, in the canon too); against the tier anchors production is ahead in tech eras 3 and 5 (64%, 63% held by the leader) and behind only in tech era 4 (31% at 1905; the canon 56%), the military tree behind everywhere (31 / 15 / 0%); the majors spend 44–52% of directed research on the military tree and 24–37% on technologies three or more countries hold; the motor ladder's gates do not chain; combustion engine is open without pumpjacks in 79% of the majors' years | the builds `mod_m12c`, `mod/`; F286's arms | re-read, no game time | here |
+| F288 | The AI's own research choices lose about 1% of directed research to the ahead-of-time penalty, in vanilla and the mod alike (the majors 1.0–1.3%, the world 0.5–0.7%); camera (no entry of ours; vanilla's realism event option only) accounts for 0.1–0.2%; in the mod directed research is 12–14% of what the majors acquire, so under 0.2% of research; the penalty on entry-delivered technologies (14–20% of the majors' acquisitions) is no loss, the grants being free; acceptable, no intervention (user) | vanilla 1.15.1 n=10, 1.1.1 canon n=10, vanilla 1.15.2 n=8, `m12b` n=5, `g1152-canon12` 1 + partial | re-read, no game time | here |
 
 ---
 
@@ -24232,3 +24233,54 @@ years). The research in hand is a 1 January snapshot, not research spent: it doe
 what faster spread could free and does not measure it. Whether production tech era 4 returns to the canon's share once the references
 are fixed is a prediction (argued: its late technologies are the ones behind pumpjacks, combustion engine and the dead sources), not a
 reading. The checker reads what can exist, not what is reachable: a mark nobody reaches is F286's subject.
+
+## F288 — THE AI'S OWN RESEARCH CHOICES LOSE ABOUT 1% OF DIRECTED RESEARCH TO THE AHEAD-OF-TIME PENALTY, IN VANILLA AND THE MOD ALIKE (THE MAJORS 1.0–1.3%); CAMERA, WHICH HAS NO ENTRY OF OURS, ACCOUNTS FOR 0.1–0.2% OF IT; ACCEPTABLE, NO INTERVENTION (USER, 2026-11-22) (2026-11-22; no game time: vanilla 1.15.1 n = 10 and the 1.1.1 canon n = 10, `20261112_113429`; vanilla 1.15.2 n = 8, `20261119_210048`; `m12b-first` n = 5, F284's sessions; `g1152-canon12` run 1 and run 2 to about 1895, `20261122_142920`, while the batch played)
+
+**The question (the user).** Does the AI, by not picking camera and then researching later technologies under the ahead-of-time penalty,
+lose a significant share of its research? Only the AI's own choices count: a technology a research entry delivers is not an AI mistake,
+and an entry's grants are free, so a penalised technology that needs a third or later stage costs nothing real.
+
+**Camera's sources.** No entry of ours: `research_events.exclude_techs` = realism, camera, film, navigation (§10.98 item 10). Vanilla's
+`je_realism` (a country holding realism that runs Realist Art in an art academy at ≥ 90% occupancy) fires `dt_society_events.2`, whose
+option b grants camera 4,150 (a third of its 12,500); option a is the default. The majors' camera acquisitions, median year (first–last):
+vanilla 1.15.1 1884 (1871–1906, 67 acquisitions), vanilla 1.15.2 1882 (1862–1915, 55), the 1.1.1 canon 1895 (1865–1920, 63), `m12b` 1889
+(1876–1904, 34), `g1152-canon12` 1895 (1892–1904, 8).
+
+**Method.** Each yearly save summary (1 January to 1935): every country's technology in hand (`researching`, the AI's directed choice) and
+its weekly `innovation`. The penalty sum Σ of that technology = Σ over the UNHELD technologies of its category in earlier eras of (its era −
+their era) (F160; sericulture excluded), on the arm's own tree (the tree twin; vanilla arms its vanilla technologies at their vanilla
+eras). The penalty's share of what the research pays is 0.25Σ ÷ (1 + 0.25Σ); innovation-weighted over country-years, the 1 January
+snapshot estimates the share of directed research the penalty consumes. Beside it, directed research's weight in acquisition: 52 ×
+innovation ÷ the base cost of the technologies acquired over the following year. The reader was a scratch script, not committed.
+
+**Directed research, 1836–1935** (on a penalised technology · lost to the penalty · directed ÷ base cost acquired):
+
+| arm | majors | top 15 independents | world |
+|---|---|---|---|
+| vanilla 1.15.1 | 5.6% · 1.2% · 0.41 | 5.8% · 1.4% · 0.37 | 3.0% · 0.7% · 0.28 |
+| vanilla 1.15.2 | 5.4% · 1.2% · 0.41 | 4.8% · 1.1% · 0.38 | 2.8% · 0.6% · 0.28 |
+| the 1.1.1 canon | 4.4% · 1.0% · 0.14 | 3.5% · 0.9% · 0.12 | 2.1% · 0.5% · 0.14 |
+| `m12b` | 5.6% · 1.3% · 0.14 | 5.1% · 1.4% · 0.13 | 2.1% · 0.5% · 0.14 |
+| `g1152-canon12` (partial) | 4.4% · 1.1% · 0.12 | 4.3% · 1.3% · 0.14 | 2.4% · 0.6% · 0.14 |
+
+By period, the majors' loss: vanilla 1.15.1 1.9 · 1.1 · 0.9% (1836–69 · 1870–99 · 1900–35), vanilla 1.15.2 1.7 · 0.8 · 1.2%, the 1.1.1
+canon 1.9 · 0.7 · 0.7%, `m12b` 1.8 · 1.4 · 0.8%, `g1152-canon12` 1.4 · 1.1 · 0.5%. The mean Σ on a penalised pick is 1.0–1.7 (a cost
+1.25–1.4 × base): the engine divides the AI's weight by 1 + 1.25Σ, so it rarely picks one. Directed research on camera itself: the majors
+0.4% in vanilla, 1.0–2.0% in the mod. Camera as the MISSING technology behind a penalised pick: 0.1–0.2% of the majors' directed research in
+every arm. The largest penalised picks, the majors: multilateral alliances (0.2–0.6%) and pan-nationalism (0.1–0.4%) in the mod; their
+largest missing causes feminism, quinine, anarchism, camera, film, realism, pharmaceuticals (each 0.1–0.5%).
+
+**Reading.** The loss is the same size in vanilla and the mod (about 1% of directed research for the majors, 0.5–0.7% for the world),
+largest before 1870. In the mod directed research is 12–14% of what the majors acquire (vanilla's 41%), so the AI's penalised choices
+cost under 0.2% of the mod's research. **The user's assessment (2026-11-22): the situation is acceptable and requires no intervention.**
+
+**A reading that was withdrawn.** The penalty carried by ALL the majors' acquisitions is 14–20% of their base cost in the mod (vanilla
+0.3–0.4%), almost all in the society tree, on technologies the entries deliver (the university and financial entries) while
+earlier society technologies without an entry (feminism, camera, film, zeppelins, central planning, anarchism, human rights) are still
+missing. It was first presented as a slowdown; it is not a loss (the user): those grants are free, and a technology delivered on a later
+stage costs nothing the AI could have spent elsewhere. Not a measure of research waste.
+
+**What it does NOT say.** The 1 January snapshot samples the time spent on each technology; it is not a ledger of points paid, and
+`innovation` is the AI's own last snapshot, not a weekly mean. The penalty is read at the snapshot: a missing technology acquired later
+(by spread or an entry) lowers the cost of a pick already under way, so the loss is an upper bound for each pick. Directed ÷ acquired
+uses unpenalised base costs and the snapshot innovation, an approximation. `g1152-canon12` is one century and a partial second.
