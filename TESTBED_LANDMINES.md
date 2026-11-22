@@ -119,6 +119,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L53 | a shipped script or localization file without its UTF-8 BOM: the engine reads it and logs `should be in utf8-bom encoding` on every load (mods 1.1.0–1.1.1: `01_industry.txt`, `06_urban_center.txt`, written back BOM-less by `emit_ai_value_adds.mjs`) | `Test-LmL53` (`tools/lint_bom.mjs`) | every build | AUTO, proven; fixed |
 | L54 | a short run measured on one book and the century then played on another: both build, play and report, and the short run's reading is quoted for the century's book (the same-book rule, §10.118) | the gate in `tools/testbed/lib_same_book.ps1`, called by `run_schedule.ps1` at plan time and around a continuation's build (throws); `Test-LmL54` proves the gate exists and trips, on `tools/testbed/fixtures/same_book/` | harness; repo, every build | AUTO, proven (the run loop with a stubbed build and observer); not yet run with a real build and game |
 | L55 | a ledger reader that walks every industry of the book counts the tiered deposits as manufacturing (and vanilla's mines as tier-0 rungs on a vanilla run): the report reads, nothing fails (F285 §3: below-best 46.0% for 26–28.5%) | `Test-LmL55` (`tools/lint_ledger_industries.mjs`): every reader the ledger fill runs takes `lib_industries.mjs`'s manufacturing list or an `L55:` marker | repo, every build | AUTO, proven; fixed |
+| L56 | a research entry whose source cannot exist: it counts a method no building offers any more (the mod 1.2 deposit rungs: railways, flash freezing) or a rung its own technology unlocks (navigation; combustion engine's diesel source), reads 0 for ever and never ticks (F286 §2, F287 §1) | `Test-LmL56` (`tools/lint_research_sources.mjs`): every source a research bar compares, walked to buildings and methods the build defines; fails a book with `research_events.require_live_sources`, lists an older book's as known | every build | AUTO, proven (`--strict` fails on `mod_m12c`); fixed in `m12d-first` |
 
 ---
 
@@ -1393,3 +1394,32 @@ restored: `L55 PASS: 16 ledger readers of the book's industries, every one on th
 **Limits.** The walk sees the ledger fill only: the forty-odd diagnostic readers outside it (`craft_*`, `rung0_*`, `tiered_panel` …)
 still walk every industry and need the same care before they are read on a 1.2 book. A reader that names the book's industries under
 another variable than `cfg` / `CFG` is not seen.
+
+### L56 — a research entry whose source cannot exist
+
+**Defect.** A research entry counts staffed levels of named buildings, some only on named production methods. When a later change
+turns such a method into a building of its own, or puts a counted rung behind the entry's own technology, the entry's script value
+still loads and reads 0 for ever. The entry never ticks; the build, the load and the run all pass, and the technology simply arrives
+late by ordinary research. The mod 1.2 book did it three times: the tiered deposits made the engine pumps, steam trawlers and steam
+whaling ships rungs (the railways and flash-freezing entries counted them as methods of the base buildings), and gave navigation an
+entry sourced on the first whaling rung, which navigation itself unlocks. A fourth is older: combustion engine counted the Diesel
+Engines rung, unlocked by compression ignition, which needs combustion engine (in the canon too).
+
+**How it was found.** F286 §2 (2026-11-22): 0 stage completions for railways and flash freezing in five centuries of `m12b-first`,
+against 12.6 and 26.7 a run in the canon; then F287 §1, the detector's first walk.
+
+**Detector.** `Test-LmL56` → `tools/lint_research_sources.mjs <modRoot> <config>` on the BUILT mod: every script value a research bar
+compares is walked to its building terms — the building is defined, it offers at least one counted method, neither is unlocked by the
+entry's own technology or one that needs it; every required technology and every named ship type exists. It FAILS a book that carries
+`research_events.require_live_sources` (set by `make_book12.mjs --tech-pass 1`, so `m12d-first` on). A book without the key predates
+the check: the canon and `m12b-first` / `m12c-first` are records that must still build, so their defects are printed as KNOWN and the
+check passes. Proven 2026-11-22: `--strict` FAILS on `mod_m12c` (seven errors: three dead entries and the diesel source), lists the
+canon's one, PASSES on `mod_m12d`.
+
+**The fix** (`m12d-first`, BALANCE_FRAMEWORK §10.129 item 1, §10.130): railways counts the coal and iron mines' rungs of tier 1 and
+later, flash freezing the fishing and whaling rungs of tier 2 (`min_tier` on an industries source), navigation has no entry, combustion
+engine counts the motor's Compound and Electric Engines rungs.
+
+**Limits.** It reads whether a source CAN exist, not whether anyone reaches its mark (F286's subject), and not the frontline, naval or
+idea conditions beyond their ship types. A source dead only in part (an "every tier" source counting a rung behind the technology's
+own successor) is a warning.

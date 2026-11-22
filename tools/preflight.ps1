@@ -2163,6 +2163,24 @@ function Test-LmL53 {
     Invoke-ModLint 'L53' 'a shipped file without its UTF-8 BOM' 'lint_bom.mjs' 'make the writer that last wrote the file write the UTF-8 BOM (see lint_bom.mjs)'
 }
 
+function Test-LmL56 {
+    <#
+      L56 - A RESEARCH ENTRY WHOSE SOURCE CANNOT EXIST (found 2026-11-22, FINDINGS F286 section 5 and F287 section 1).
+      A research entry counts staffed levels of named buildings, some only on named production methods. When a later change turns such a
+      method into a building of its own (the mod 1.2 tiered deposits: the engine pumps, steam trawlers, steam whaling ships), or re-gates a
+      rung behind the entry's own technology, the script value still loads and reads 0 for ever: the entry never ticks and nothing fails.
+      Five centuries of m12b-first played with the railways and flash-freezing entries dead (the canon: 12.6 and 26.7 stages a run).
+      DETECTOR: tools/lint_research_sources.mjs on the BUILT mod and its book: every script value a research bar compares is walked to its
+      building terms - the building is defined, it offers at least one counted method, and neither is unlocked by the entry's own
+      technology or one that needs it. It FAILS for a book carrying research_events.require_live_sources (make_book12 --tech-pass);
+      a book without the key predates the check (the canon, m12b-first, m12c-first: records that must still build) and has its defects
+      printed as KNOWN.
+      Proven 2026-11-22: --strict FAILS on mod_m12c (railways, flash freezing, navigation, combustion engine's diesel source) and lists
+      the canon's one; PASS on mod_m12d.
+    #>
+    Invoke-ModLint 'L56' 'a research entry whose source cannot exist' 'lint_research_sources.mjs' 're-point the entry at buildings and methods the build defines (research_events.extra_entries / necessity_anchors in the book''s generator), or drop it (exclude_techs)'
+}
+
 function Test-LmL54 {
     <#
       L54 - A SHORT RUN MEASURED ON ONE BOOK, THE CENTURY PLAYED ON ANOTHER (user-ruled 2026-11-17, BALANCE_FRAMEWORK 10.118).
@@ -2447,7 +2465,9 @@ $CHECKS = @(
     # (repo-side: it gates every batch before anything is built). It walks no schedule under tools\testbed\schedules.
     @{ Id = 'L54'; Artifact = $false; Fn = { Test-LmL54 } },
     # L55 walks the ledger fill's readers: none counts the tiered deposits as manufacturing (repo-side).
-    @{ Id = 'L55'; Artifact = $false; Fn = { Test-LmL55 } }
+    @{ Id = 'L55'; Artifact = $false; Fn = { Test-LmL55 } },
+    # L56 reads the BUILT mod: every source a research entry counts can exist while the entry is open (an artifact check).
+    @{ Id = 'L56'; Artifact = $true;  Fn = { Test-LmL56 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

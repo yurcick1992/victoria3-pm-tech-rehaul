@@ -96,6 +96,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.126 | logging is not a deposit, for narrative reasons (a saw mill reaches no new forest): vanilla's one building again; the 1836 pair: a first-rung twin beside every second-rung deposit building, both at k = N × the second rung's share of the pair's output value (⅔; coal 0.615), so each country's 1836 supply stays vanilla's with no recipe moved; fishing and whaling stay tiered; the first rung keeps vanilla's half output; logging's electric saw mills on the world's technology — the book `m12b-first` | in force; built and deployed for the user's check 2026-11-21; fishing and whaling stay tiered (ruled the same day after the narrative pass); the first rung keeps vanilla's half output; the electric saw mills on the world's technology | here |
 | 10.127 | a technology with a NAVAL research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain without first movers, sea-lane strategies 2.2 holders against vanilla's 54) | in force; built as `entry_weight_rule.naval_lowered` (`make_book12.mjs --naval-lowered 1`); in the book `m12c-first` (`e355eeb1`), not measured | here |
 | 10.128 | the price decline is an aim of the mod's own class, never read against vanilla (the loss's PI and PP level part on 0.8 × vanilla's 1935 index was wrong under it, F285); the reading is prices by goods class, decade by decade, by market and aggregate ("Option A"); the loss's price term is the industry-output aggregate's 1935 ÷ 1900, aim 0.75 ("Aggregate fall, ~25%"), sized so t0 sheds workers once t2 is significant and t1 once t3 is (F285 §6) | in force; built (`lib_prices.mjs`, `fill_prices.mjs`, `criteria.mjs`): weight 2 in place of PI and PP, spread 0.04227 (Claude's defaults, stated); PI and PP minor readings | here |
+| 10.129 | the mod 1.2 technology pass, first rulings: every research-entry reference the 1.2 book broke or misplaced is fixed, after a thorough check (combustion engine's sources among them); mining workers become a source for nitroglycerin (150,000) and dynamite (250,000); the financial, university and administration entries that run ahead are held (marks raised) and a follower's mark goes from ½ to ¼; refused: army size as a source (too easy to farm), any other new condition type for now, dropping the standing −20% AI weight where an entry cannot tick; parked as a hypothesis: a lower literacy line for a follower; open: military-industry marks (agreed in general, not elsewhere), the dynamite prerequisite of pumpjacks pending the production-tree pass, faster tech spread | in force; the open parts ruled in §10.130; built into `m12d-first` | here |
+| 10.130 | the technology pass, second rulings, and the book `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped, the first prerequisite removed from a vanilla technology); the research marks of arms, artillery and munition × 0.25 (explosives and synthetics stay × 0.5); no entry for navigation; shift work: no entry, its AI research weight × 1.2; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels, a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build from this book on (landmine L56) | in force; built (`m12d-first`, `2e25dfe4`, `make_book12.mjs --tech-pass 1`), the alternate `mod_m12d`, not measured, not deployed; combustion engine on three separate sources, never a sum; macroeconomics' 200 levels is the builder's number, to be confirmed | here |
 
 ---
 
@@ -6585,3 +6587,112 @@ their share of the loss; and **the spread 0.04227**, fitted on mod 1.1.1's 15 ru
 reproduces every older spread exactly). The early rise of industry prices to about 1870 is outside the window by construction (1900 on).
 Readings (F285 §7): `m12b-first`'s four complete runs 0.89 (vanilla 1.15.2 0.89), distance 3.25, weighted 6.49 against the old PI + PP 7.80;
 the four-run loss 12.34 (13.65 under the old terms).
+
+## §10.129 — THE MOD 1.2 TECHNOLOGY PASS, FIRST RULINGS (user-ruled 2026-11-22): BROKEN REFERENCES FIXED FIRST; MINING WORKERS FOR NITROGLYCERIN AND DYNAMITE; THE ENTRIES THAT RUN AHEAD HELD, A FOLLOWER'S MARK ¼; NO ARMY-SIZE SOURCE, NO OTHER NEW CONDITION TYPE, THE STANDING AI WEIGHT KEPT
+
+**The frame.** The user, 2026-11-22: *"The 1.2 situation with techs is not too good, and this likely drags the economy down … the first
+step should be on tech side. Mostly, we need to PUSH techs (relax restrictions, speed up spread etc), but we can hold some individually
+for historical realism reasons, if overall we're still pushing. I'd prefer to not deviate from the 'deliberate research' nerf that we
+introduced in 1.0 (caps and uni effectiveness)."* The priorities given: workforce and other thresholds of the entries (not a purely
+arithmetical calibration: reachable in an average game, neither too easy nor too hard for a specialised economy); new types of
+conditions; reordering prerequisites where an unrelated technology blocks an entry; vanilla's tech spread. F286 read the five `m12b-first`
+centuries for it and F287 the follow-up; the proposals drawn from them were answered the same day:
+
+1. **Everything the 1.2 book broke by changing a reference is fixed** (*"We definitely need to fix everything that's plain broken in
+   1.2 -- relies on references that changed"*), after a thorough check. Combustion engine's sources belong here (*"should go to the first
+   action point: fixing references that are misplaced or broken in 1.2. Make a thorough check"*). The check is F287 §1 and
+   `tools/lint_research_sources.mjs`; the fixes are proposed there and not built.
+2. **Mining workers become a source for nitroglycerin and dynamite**, about 150,000 and 250,000 (*"Good. Add."*).
+3. **The entries that run ahead of their dates are held** (*"Agreed on all"*): the financial-district ladder 40 / 60 / 80 / 100 levels →
+   about 100 / 150 / 400 / 700, and macroeconomics on administration. **A follower's mark goes from ½ to ¼** (*"let's reduce catcher-up
+   requirements stronger, from x1/2 to x1/4"*). ⚠ Whether ¼ applies to every entry or to the held ones only was not said (asked).
+4. **Refused:** the army's size as a second source for weapons technologies (*"No. Too easy to farm / game."*); every other new condition
+   type proposed (*"No on other new condition types for now"*: establishment entries, the fleet of the class below, universities for the
+   first holder of an idea); dropping the standing −20% AI weight for a technology whose entry cannot tick (*"No."*; §10.119 item 3 and
+   §10.127 stand as they are).
+5. **Parked as a hypothesis to follow:** a literacy line 10 points lower for a follower (*"Good idea to try, but for now let's park
+   this"*).
+6. **Open, under discussion:**
+   - the workforce marks: *"are they tuned to shift techs closer to their intended onset dates? Because e.g. antibiotics are intended to
+     come late or not at all. In general I'd agree on reducing military industry workforce requirements, but not elsewhere."* F286's
+     sizing (the third-largest holder at the onset label) was not tuned to arrival dates; F287 §2 reads the tech eras against their
+     anchors instead, and the non-military reductions proposed in F286 are withdrawn by it;
+   - pumpjacks' dynamite prerequisite (*"I'm open to removing dynamite prerequisite from pumping engines. However, I want a thorough pass
+     on all industrial tree techs, whether their current interconnection makes sense."*): the pass is F287 §4–§5;
+   - tech spread: *"having them spread faster would free deliberate research for catchers-up to maybe pick up a frontier tech"* (F287 §3
+     reads what directed research is spent on). §10.54 (spread stays vanilla's) stands until ruled.
+
+Nothing is built. The fixes and the ruled changes go into a book branching from a base still to be agreed (§5.1 rule 3).
+(Built the same day as `m12d-first`: §10.130.)
+
+## §10.130 — THE MOD 1.2 TECHNOLOGY PASS, SECOND RULINGS AND THE BOOK `m12d-first` (user-ruled 2026-11-22): PUMPJACKS ON ROTARY VALVE ENGINE; THE MILITARY INDUSTRIES' MARKS × 0.25; NAVIGATION WITHOUT AN ENTRY; SHIFT WORK'S AI WEIGHT × 1.2; THE QUARTER ONLY FOR THE HELD FINANCIAL ENTRIES; SPREAD DEFERRED
+
+**The rulings**, the user's answers to F287's questions, 2026-11-22:
+
+1. **Pumpjacks: "replace."** Dynamite leaves its prerequisites and rotary valve engine enters: pumpjacks ← steam donkey + rotary valve
+   engine. The first prerequisite the mod removes from a vanilla technology (§2.6: an explicit, named entry of the spec,
+   `PREREQ_SWAPS['pumping-engines']`, opt-in per book). ⚠ It moves everything pumpjacks gates: the motor's Compound Engines rung, the
+   first oil rung and the irrigation drives no longer wait on dynamite.
+2. **"Military marks 0.25 everywhere."** The research marks of arms, artillery and munition go from × 0.5 to × 0.25 of the tier mark
+   (`research_events.threshold_mult`); artillery is not taken lower (× 0.1 was proposed). Read here as the three military industries:
+   explosives and synthetics keep × 0.5 (explosives' technologies get the mining source, §10.129 item 2). In whole levels: a t1 gate
+   2 (follower 1), t2 4 (2), t3 12 (6). ⚠ Automatic machine guns' source (the breech-loader foundries) held 2 levels at its onset and 9
+   thirty years on in `m12b-first` (F286 §4): at 12 it still does not fire early.
+3. **Navigation: "drop."** No research entry (`exclude_techs`); the canon had none.
+4. **Shift work: no entry; "add a bespoke +20% chance to its AI desire."** Built as a `multiply = 1.2` at the end of its own
+   `ai_weight` (`tech_ai_weight_bespoke`). A weight is not a chance, and here it is worth more than its face (corrected the same day
+   on the user's question, "Isn't it in practice more than a fifth?"; the first wording here said less): the AI takes the largest
+   score after a 0.5×–2× roll, so the top of a × 1.2 technology's range (2.0–2.4 × its weight, 22% of a uniform roll) is out of every
+   equal rival's reach. By simulation, a uniform roll · a log-uniform one: among 3 equal candidates its chance goes from 33% to 50% ·
+   46%, among 5 from 20% to 39% · 33%, among 10 from 10% to 31% · 23%, among 20 from 5% to 26% · 18%. Against rivals at weight 1.5 it
+   goes from 1.6% to 5.3% among 5 and stays under 1% among 10. Shift work's vanilla weight is 1, the floor (50 of 57 production
+   technologies carry a plain 1); which roll the engine uses is not known. **Confirmed by the user the same day:** *"I did mean +20%
+   in the weights, and much higher -- in the odds."* The × 1.2 stands.
+5. **The follower's quarter is for the held financial entries only** (*"Only for the financial entries that we make harder for the first
+   country within this ruling, we partially (!) revert the malus for catchers-up"*): 100 / 150 / 400 / 700 financial-district levels
+   for the first holder, 25 / 38 / 100 / 175 for a follower (40 / 60 / 80 / 100 and 20 / 30 / 40 / 50 before). Every other entry keeps
+   the half. Macroeconomics, held on administration and not a financial entry, takes the usual half.
+6. **"Defer spread changes."** §10.54 stands; F287 §3 is the reading to come back to.
+7. **Shift work entry: no** (with item 4). The literacy line for a follower stays parked (§10.129 item 5).
+
+**Numbers that are mine, not the user's** (to be confirmed or moved): macroeconomics at 200 administration levels, from 30 (the
+third-largest administration holds 123 levels in 1900 and 190 in 1920 in `m12b-first`; the proposal the user agreed to named no figure);
+the mining
+source counted over the six tiered mines (coal, iron, lead, sulfur, copper, gold; every rung); railways at its old 30,000 on the coal and
+iron mines' rungs of tier 1 and later, flash freezing at its old 75,000 on the fishing and whaling rungs of tier 2.
+
+**Combustion engine's sources are not summed** (the user, 2026-11-22, on the first build's one summed source of the Compound and
+Electric Engines rungs: *"We usually don't go into sums. Should we?"*). No: a rung anchor is one rung at its own mark, as the anchor it
+replaces was (the Electric rung, the Diesel rung). The entry has three sources, any one ticking it: the Compound Engines rung, the
+Electric Engines rung, the first oil rung, 15 fully staffed levels each (8 for a follower); the Diesel rung, which needs combustion
+engine itself, is left out. Before the Electric rung exists the sum was the Compound rung alone, so the first holder's date does not
+move; a country whose engine industry is split between the two rungs no longer passes on the total. The sums that remain are of the
+kind the entries outside the ladder always had, workers of an industry: the mining source, railways (coal and iron) and flash
+freezing (fishing and whaling).
+
+**The book.** `config/mod_config.m12d-first.json` (sha256 `2e25dfe4c09dd51f`; tree twin `4716c84d86453120`; regenerated the same day for
+the split sources, the first build's `d1acb8ce` is gone), `node tools/make_book12.mjs
+--prefix m12d --naval-lowered 1 --tech-pass 1` on game 1.15.2: `m12c-first`'s chain with the technology pass. **Base: `m12c-first`**,
+the latest 1.2 book (proposed twice, not objected to; the user's "The game process is killed now" taken as the word to build). By field
+diff against `m12c-first` the config moves in `research_events` (`necessity_anchors.automotive`, `threshold_mult` × 3,
+`extra_entries.railways` / `.flash_freezing` sources, new `extra_entries.nitroglycerin` / `.dynamite`, `exclude_techs`, the triggers,
+follower triggers and labels of the nine financial entries and macroeconomics, `require_live_sources`), `tech_ai_weight_bespoke`, the
+record `_tech_pass` and the chain's own names and stamps; the tree twin in pumpjacks' prerequisites (with `vanillaPrereqs`,
+`prereqsAdded`, `prereqsDropped`, `prereqSwap`) and the two `blocks` lists that follow. Built as the alternate `mod_m12d` (not
+deployed): every linter and the preflight pass, landmine L56 among them. The emitted files that differ from `mod_m12c` beyond their
+headers: the research entries, bars, values, effects and held-flag sweep, the production and military technology files, the research
+localization.
+
+**What the build adds to the tools.** `lib_tier4_spec.mjs` `PREREQ_SWAPS` and `make_tier4_techs.mjs --prereq-swap`; `emit_techs.mjs`
+rewrites a swapped prerequisite block (and throws when vanilla's list is not the recorded one); `emit_research_events.mjs` takes
+`min_tier` on an industries source and `merge: true` on an extra entry (a ruled source beside a ladder technology's rung sources), and
+words a follower's mark as "a quarter of the mark" where it is one; `emit_tech_finish.mjs` writes `tech_ai_weight_bespoke`;
+`lint_research_sources.mjs` fails a book carrying `research_events.require_live_sources` (landmine L56) and lists an older book's
+defects as known.
+
+**Not measured.** No run was played. Predictions for its first centuries, argued and not read: pumpjacks' first holder in the 1870s
+(1906 in `m12b-first`; rotary valve engine and steam donkey are both held by the 1860s) and the Compound Engines rung staffed from
+then; combustion engine's and electric railway's first holder back near the canon's (1903, 1904); the leader's share of tech era 4
+production at 1905 above `m12b-first`'s 31%; the financial technologies later (the direction only); world GDP's direction not argued:
+earlier engines push it up, later financial technologies down. Tick cost: the two mining sources add 48 building loops to two entries
+while they are open; play time is read at polish (§10.123).

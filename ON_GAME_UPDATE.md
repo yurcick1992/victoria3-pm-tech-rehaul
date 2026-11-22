@@ -220,7 +220,9 @@ none owned by a book without the fields that ask for them:
 
 **`common/technology/technologies/{10_production,20_military,30_society}.txt`** (3) — `emit_techs.mjs`, then `emit_tech_finish.mjs`.
 - *What:* 10 moves vulcanization to tech era 4 (the spec's `ERA_MOVES`) and adds conveyors to compression_ignition's prerequisites (`PREREQ_ADDS`,
-  §10.93). In all three, the finish boost is appended to every researchable technology's `ai_weight` (+10,000 at ≥ 0.99 progress, F160).
+  §10.93). In a book of the mod 1.2 technology pass (`make_book12.mjs --tech-pass 1`, §10.130) it also REPLACES pumpjacks' prerequisite
+  dynamite with rotary_valve_engine (`PREREQ_SWAPS`): `emit_techs` throws if vanilla's list is no longer `steam_donkey dynamite`, and a patch
+  that re-roots pumpjacks or rotary_valve_engine needs the swap re-ruled. In all three, the finish boost is appended to every researchable technology's `ai_weight` (+10,000 at ≥ 0.99 progress, F160).
   The book's `tech_ai_weights` (§10.111.3) replaces six technologies' `ai_weight` with game 1.13.11's block (combustion_engine,
   electrical_generation, oil_turbine, percussion_cap, radio, telephone), each recorded beside the 1.15.1 block it replaces.
 - *Breaks (the AI weights):* `emit_tech_finish` throws when a listed technology's installed block is no longer the recorded one. On a patch,
@@ -359,7 +361,8 @@ Tables and rules in our code that name vanilla keys or lean on vanilla's order; 
   `PM_EMPLOYMENT_RULED`, `VARIANTS` (1.15: `pm_bronze_cannons` → `pm_cannons`, `pm_bronze_smoothbores` → `pm_smoothbores`, §10.108.2).
   `make_tier4_config` throws on a missing building, method or technology, on more than four main methods (a `VARIANTS` method is left out of the
   count; one whose host is gone throws, one the game lacks is skipped and printed as `variant: …`), and on an era-rule overflow;
-  `make_tier4_techs` throws on a stale `PREREQ_ADDS` entry (a technology gone, or the prerequisite already vanilla's). `make_variant_config.mjs`
+  `make_tier4_techs` throws on a stale `PREREQ_ADDS` or `PREREQ_SWAPS` entry (a technology gone, the prerequisite already vanilla's, or a
+  dropped one no longer vanilla's). `make_variant_config.mjs`
   sizes each variant from the vanilla method's inputs: a patch that changes a bronze method's mix moves the variant's split, which the field diff
   shows.
 - **`tools/lib_secondary_compat.mjs`** — the reviewed compatibility table (`REVIEWED`, `NOT_BESIDE`, `MANDATED`) names vanilla secondary methods;

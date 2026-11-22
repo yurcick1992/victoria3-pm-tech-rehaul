@@ -431,6 +431,8 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F283 | The first century of the mod 1.2 book (`m12b-first`, n = 1): world GDP 0.71× vanilla 1.15.2, level to 1866, behind from 1876, 0.64–0.65 in 1916–26; the leaders do not depeasant (U* USA 47%, Britain 42% at the end against aims of 15% and 5%) while the world sits on its aims; the gap is output per worker before 1900 and workers per head after 1920; raw materials dearer than vanilla throughout; Britain stalls from 1880 on an empty treasury; the USA hoards with labour; not past the barrier, loss 29.51 | `m12b-first`, vanilla 1.15.2 | 1 (against 8), directional | here |
 | F284 | Five centuries of the mod 1.2 book (`m12b-first`, F283's run + four): none past the barrier; world GDP 0.82× vanilla 1.15.2 (0.71–1.02), every run level to 1866–1880, dipping in 1886–1916 and recovering from about 1920; the world's U* on its aims while the leaders scatter by seed (the USA's end U* 3.7–47%, Britain's 2.8–42%, Germany's 2.5–68%); PI 1.00× the largest loss term; loss 14.51; run 2 continued from a paused save and lacks 1904–1931 summaries (L44) | `m12b-first`, vanilla 1.15.2 | 5 (against 8), directional | here |
 | F285 | The register's PI and PP terms are half pegged to vanilla (the level part on 0.8 × vanilla's 1935 index), and vanilla's own input prices now fall (1935 ÷ 1900 0.91 on 1.13.11, 0.85 on 1.15.2); m12b's fall 19% yet score 6.15 + 1.46 of its 14.51 loss on the pegged part; own-path forms read; the ledger's tier lines count the nine tiered deposits as manufacturing (below-best 46.0% published, 26–28.5% on manufacturing alone; tier-1 workers 29.0M against 6.1M in 1935); the deposit ladders add rather than replace, and world raw output runs at about half vanilla's from 1900; §5 prices by goods class, market and decade: industry output 1900→1935 −11% in the 1.2 book, −9% / −10% in vanilla 1.15.2 / 1.15.1, −20% in mod 1.1.1; staples flat; the 1.2 book's coal and oil at 1.2–1.3 of base to 1920; §6 the prices at which old rungs stop covering inputs and wages when the rung two tiers up takes a quarter of output (0.85–1.0 of base for most goods in the decade t3 takes over); §7 the register under §10.128's industry-price term (1935 ÷ 1900 ≤ 0.75): the 1.2 book 0.89, loss 12.34; mod 1.1.1 0.81 | `m12b-first`, mod 1.1.1, vanilla 1.13.11 / 1.15.1 / 1.15.2 | 5 + 15 + 80 runs re-read, no game time | here |
+| F286 | Why the 1.2 book's technologies are late: the world-first holder, not diffusion (first → 10th country 3–10 years, as vanilla's); the majors hold vanilla's production count, +1 society, −8 military; of the majors' unheld years on the industry entries the workforce mark blocks 36–68%, a prerequisite 5–25%, literacy about 1%; 20 of 62 industry entries complete under 5 stages a run; two entries are dead in the 1.2 book (railways, flash freezing: their methods moved to deposit rungs) and combustion engine's sources sit behind its own successors; pumping engines wait on dynamite (904 major-years); 32 technologies of tech era 2+ have no entry and arrive 5–23 years late; the same marks blocked in the canon | `m12b-first` n = 5, the 1.1.1 canon n = 10, vanilla 1.15.2 n = 8 | re-read, no game time | here |
+| F287 | The 1.2 build has four research entries with a source that cannot exist (railways, flash freezing, navigation; combustion engine's diesel source, in the canon too); against the tier anchors production is ahead in tech eras 3 and 5 (64%, 63% held by the leader) and behind only in tech era 4 (31% at 1905; the canon 56%), the military tree behind everywhere (31 / 15 / 0%); the majors spend 44–52% of directed research on the military tree and 24–37% on technologies three or more countries hold; the motor ladder's gates do not chain; combustion engine is open without pumpjacks in 79% of the majors' years | the builds `mod_m12c`, `mod/`; F286's arms | re-read, no game time | here |
 
 ---
 
@@ -24056,3 +24058,177 @@ under the older terms, 14.51 for F284's five runs). The term is now the largest 
 Mod 1.1.1 on game 1.15.1, all fifteen runs (`--consensus all`, not the ruled form, which reads only the runs not past the barrier): 0.81
 (vanilla 1.15.1's 0.91), distance 1.39, weighted 2.78, loss 14.34. Neither book reaches 0.75: the 1.1.1 canon is about one and a half spreads
 short of it, the 1.2 book more than three.
+
+## F286 — WHY THE 1.2 BOOK'S TECHNOLOGIES ARE LATE: THE WORLD-FIRST HOLDER, NOT DIFFUSION; THE WORKFORCE MARKS BLOCK 36–68% OF THE MAJORS' UNHELD YEARS ON THE INDUSTRY ENTRIES, PREREQUISITES 5–25%, LITERACY ABOUT 1%; TWO ENTRIES ARE DEAD IN THE 1.2 BOOK AND COMBUSTION ENGINE'S SOURCES SIT BEHIND ITS OWN SUCCESSORS; 32 TECHNOLOGIES HAVE NO ENTRY AND ARRIVE 5–23 YEARS LATE (2026-11-22; no game time: `m12b-first` n = 5, F284's sessions; the 1.1.1 canon n = 10, `20261112_113429` runs `canon`, game 1.15.1; vanilla 1.15.2 n = 8, `20261119_210048`)
+
+**What was read.** `tools/testbed/ledger/je_eligibility.mjs` (new): every research entry's conditions as the build emitted them
+(`mod_m12b`'s progress bars and script values; `mod/` for the canon) replayed on each run's yearly summaries for the technology majors
+(GBR USA NET BEL FRA PRU SWE UNL NGF GER) and the top 15 independents by GDP, and the runs' stage completions (`PMR_JE`, dated by the last
+dated log line before each). A country-year in which a technology is unheld, from its onset − 5 on, is `tick` (prerequisites, literacy
+and a source at its mark), `pre` (only a prerequisite missing), `lit`, `src` (only the workforce mark missing), `req` (the source is
+there, its required technology is not), `lit+src` or `far`. The frontline, naval, idea, colony, rank and urban-centre entries are read
+for prerequisites and literacy only (their conditions are script flags, or a per-state level, the summaries do not carry). `tech_timing.mjs`
+gave the half-majors years. Run 2 of the stitched session has no summaries for 1904–1931 (L44), so a first year inside that gap reads 1932
+in that run; medians of five are quoted.
+
+**1. Where the lateness is.** Technologies held per major, m12b / vanilla 1.15.2: 1870 production 24.5 / 23.1, military 24.1 / 27.0,
+society 39.1 / 36.8; 1900 35.6 / 36.1, 33.9 / 37.7, 52.0 / 49.1; 1935 51.7 / 50.4, 42.9 / 51.0, 61.6 / 60.9. The majors' weekly
+innovation is 30–44 on a cap of 41–45 (vanilla 86–171 on 143–175). The top 15 independents outside the majors hold 132.6 against 135.9
+at 1935. **Diffusion is vanilla's**: years from the world-first holder to the 10th country, by tree and tech era 2 / 3 / 4 — production
+4 / 6 / 10 (vanilla 3 / 6 / 7), military 3 / 4 / 5 (4 / 6 / 7), society 3 / 6 / 7 (3 / 7 / 7); to the 30th, production 6 / 17 / 27
+(6 / 14 / 21), military 6 / 8 / 9 (7 / 14 / 20). **The world-first year is what is late**: dynamite 1901 (vanilla 1874), pumpjacks 1906
+(1878), electric telegraph 1880 (1863), shift work 1888 (1873), vulcanization 1901 (1875, a tech era 3 technology there), electric
+railway 1919 (1901), combustion engine 1918 (1897), nitrogen fixation 1930 (1910), mechanized farming 1923 (1909), repeaters 1871 (1861),
+breech-loading artillery 1871 (1859), automatic machine guns 1923 (1900), jeune école 1899 (1882), pre-dreadnought 1934 (1912), military
+aviation 1913 (1896), wargaming 1928 (1907), human rights 1884 (1867), feminism 1902 (1871). Ahead of vanilla: electrical generation 1871
+(1873), electrical capacitors 1892 (1897), steel railway cars 1865 (1873), compression ignition 1930 (1934), and the half-majors years of
+rotary valve engine 1859 (1879), pneumatic tools 1881 (1922), pasteurization 1905 (1921), vacuum canning 1867 (1887), investment banks
+1863 (1886), mutual funds 1854 (1883), identification documents 1848 (1880), psychoanalysis 1875 (1909), corporate management 1878
+(1894), international exchange standards 1872 (1912; onset 1922), modern financial instruments 1898 (1936; onset 1920), analytical
+philosophy 1896 (1932), behaviorism 1895 (1935), macroeconomics 1905 (1920; onset 1936).
+
+**2. Which entries complete stages** (per run, every country): the 62 industry entries 1,050 in all, 20 of them under 5 a run; the 20
+condition entries (universities, administration, financial districts, chemicals) 1,071; the 11 idea entries 1,795; the 10 naval entries
+1,051, all of it on ironclad (535), torpedoes (273) and monitor (243), the other seven 0.6 together; the 6 frontline entries 28. Under 5
+stages a run among the industry entries: nitroglycerin 0, railways 0, flash freezing 0, catalytic synthesis 0, navigation 0, steelworking
+0, distillation 0.2, cotton gin 0.2, automatic machine guns 0.8, art silk 1.0, crystal glass 1.6, repeaters 1.8, shell gun 3.0, lathe 3.8,
+mechanical tools 3.8, dynamite 3.8, bessemer 4.0, baking powder 4.4, bolt-action rifles 4.6, canneries 4.8. Antibiotics 0.4.
+
+**3. The reasons**, the majors' unheld country-years on the industry entries by the technology's tech era (2 · 3 · 4 · 5; n = 4,615 ·
+10,547 · 17,156 · 3,934): `tick` 11 · 10 · 9 · 13%; `src` 68 · 43 · 48 · 36%; `pre` 5 · 25 · 9 · 8%; `req` 0 · 0 · 4 · 0%; `lit` 0 · 0 · 1 ·
+1%; `lit+src` 0 · 1 · 4 · 4%; `far` 16 · 20 · 24 · 38%. For the top 15 independents literacy weighs more: `lit` + `lit+src` 35 · 20 · 8 ·
+7%. Entries with over 75% of the majors' unheld years on the mark alone: nitroglycerin 99%, crystal glass 96%, shell gun 96%, repeaters
+95%, vacuum canning 93%, art silk 93%, canneries 92%, dynamite 91%, open hearth 90%, combustion engine 89%, improved fertilizer 87%,
+antibiotics 84%, bolt-action rifles 83%, plastics 82%, steel railway cars 82%, spray finishing 82%, nitrogen fixation 80%, reinforced
+concrete 80%, electrical capacitors 79%, steam turbine 79%, electric arc 76%. Mechanized farming: 60% `req` (its source is there, combustion
+engine is not).
+
+**4. The sources against their marks**, in fully staffed levels of the rung below unless said; the largest and the third-largest holder
+in the world at the technology's onset (the median run), then ten years on, against the full mark: crystal glass 5.5 and 3.3 of 15;
+shell gun 2.0 and 1.6 of 3; nitroglycerin 1.0 and 0.4 of 3 (3.6 and 1.0 twenty years on); bessemer 8.6 and 3.1 of 5; repeaters 2.3 and
+1.0 of 8 (4.4 and 2.0); open hearth 2.6 and 1.6 of 15 (12.3 and 5.0); dynamite 1.0 and 0 of 8 on the explosives rung (4.0 and 1.0), 2.0
+and 1.0 of 8 on munition plants; improved fertilizer 4.9 and 2.0 of 5; vulcanization 19 and 8 of 47 (25 and 9 twenty years on); automatic
+machine guns 2.0 and 0.2 of 23 (9 and 3 thirty years on); bolt-action rifles 26 and 1 of 24 (one arms exporter, nobody else); electrical
+capacitors 82 and 15 of 47; electric arc 52 and 24 of 47; plastics 82 and 23 of 47; nitrogen fixation 14.9 and 10 of 15; spray finishing
+26 and 14 of 43; continuous web 74 and 39 of 47; canneries 135,000 and 66,000 workers of 100,000; steel railway cars 76,000 and 36,000 of
+56,000; steam turbine 8,500 and 3,800 of 13,000; art silk 3,400 and 0 of 25,000; antibiotics 350,000 and 225,000 of 500,000 (1928); oil
+turbine 19,400 and 2,100 of 19,000 (1920). Far above their marks at the onset (the fifth-largest holder, × the full mark): steam donkey
+25×, intensive agriculture 14×, aniline 7× and 30×, pneumatic tools 5.8×, mass surveillance 4.8×, fractional distillation 4.5×, mechanized
+farming 3.9×, threshing machine 3.3×, administration 3.1–4.8×, financial districts 1.6–4.9×, universities 1.7–2.1× from 1878.
+
+**5. Defects of the 1.2 book.** (a) **Two entries cannot tick**: railways counts coal and iron mines running an engine-pump method, and
+flash freezing fishing wharves and whaling stations on steam ships; in the 1.2 book those methods are deposit rungs, and the base
+buildings named carry none of them (`pmr_lx_railways_0_0`, `pmr_lx_flash_freezing_0_0`). 0 stages in five runs; the canon 12.6 and 26.7 a
+run. (b) **Combustion engine's sources come after it**: the motor's Electric Engines rung (gated by electric railway, onset 1895) and
+Diesel Engines rung, and the first oil rung (gated by pumpjacks); none exists anywhere before 1915–1926, and the first stage completes in
+1918 (onset 1886). (c) **Pumping engines (pumpjacks) wait on dynamite**: 904 major-years with the Steam Engines rung at its mark and
+literacy met, dynamite missing (vanilla's prerequisite); the Compound Engines rung it gates has no staffed level anywhere at 1895 and
+1905, so electric railway's first stage completes in 1918 (the canon 1900). (d) Breech-loading artillery gates the artillery's t2 rung
+and has the frontline entry only.
+
+**6. The prerequisites that block**, major-years in `pre`: feminism ← human rights 1,521; pasteurization ← electrical capacitors 1,155;
+dreadnought ← sea lane strategies 1,015, pre-dreadnought 978, military aviation 546, concrete dockyards 454; nco training ← wargaming
+994, trench works 538; pumpjacks ← dynamite 904; battleship ← dreadnought 840; aniline ← rubber mastication 769; mobile armor ← concrete
+fortifications 732, nco training 732; paved roads ← elevator 723; quinine ← pharmaceuticals 702; carrier ← dreadnought 678; sea lane
+strategies ← jeune école 637; threshing machine ← steam donkey 603; monitor ← breech-loading artillery 586, ironclad 421; rubber
+mastication ← chemical bleaching 291; chemical bleaching ← crystal glass 207; breech-loading artillery ← shell gun 194; investment banks
+← mutual funds 188; telephone ← shift work 173; pneumatic tools ← reinforced concrete 165; arc welding ← electric arc 155. All are
+vanilla's prerequisites. An entry's own required technology: electrical generation and radio need electric telegraph (a military
+technology with no entry, half-majors 1884 against 1873).
+
+**7. Technologies of tech era 2+ with no entry: 32.** Half-majors year m12b / vanilla: electric telegraph 1884 / 1873, modern nursing
+1881 / 1873, enlistment offices 1884 / 1871, handcranked machine gun 1893 / 1883, military statistics 1897 / 1888, jeune école 1904 /
+1889, wargaming never / 1914, concrete dockyards 1911 / 1903, military aviation 1924 / 1901, war propaganda 1930 / 1916, landing craft
+1920 / 1897, shift work 1893 / 1882, camera 1888 / 1880, film 1929 / 1914, zeppelins 1930 / 1910, multilateral alliances 1909 / 1894, mass
+propaganda never / 1932; chemical warfare, flamethrowers, battlefleet tactics, stormtroopers and concrete fortifications have no holder
+in any m12b run (vanilla's first 1929–1934).
+
+**8. Against the canon** (mod 1.1.1, game 1.15.1). The same marks blocked there: crystal glass 96%, shell gun 97%, repeaters 96%,
+dynamite 94%, open hearth 89% of the majors' unheld years on the mark. What moved with the 1.2 book, world-first year m12b / canon:
+dynamite 1901 / 1887, pumpjacks 1906 / 1894, vulcanization 1901 / 1888, electric railway 1919 / 1904, combustion engine 1918 / 1903,
+conveyors 1914 / 1906, nitrogen fixation 1930 / 1904, mechanized farming 1923 / 1909; stages a run: pre-dreadnought 0.6 / 76.7, sea lane
+strategies 0 / 78.3, submarine 0 / 11.2 (F284's naval reading), electric railway 9.0 / 22.7, vulcanization 9.4 / 18.6, arc welding 27 /
+49, mechanical tools 3.8 / 9.2 (its mark 15 against 5, the higher-tier rule).
+
+**What it does NOT say.** The classification is a model on 1 January states, not the engine's own flags: a `tick` year is a year the
+entry could advance, and the fit to the logged completions was not scored. Which 1.2 change delays the chain against the canon — the
+standing −20% AI weight on a technology whose entry exists but cannot tick (§10.119 item 3), the colder economy's smaller rungs, or
+pumpjacks as the new gate of the motor's second rung — is not separable from one book. The canon comparison is across game versions
+(1.15.1 against 1.15.2). Nothing here measures what earlier technologies would do to world GDP: the first-holder delays and F284's
+1886–1916 dip coincide, and the link is argued, not measured. No mark, source or prerequisite is changed; the proposals drawn from this
+are the user's to rule (BACKLOG C).
+
+## F287 — THE 1.2 BUILD HAS FOUR RESEARCH ENTRIES WITH A SOURCE THAT CANNOT EXIST (THREE NEW IN 1.2); READ AGAINST THE TIER ANCHORS, PRODUCTION IS AHEAD IN TECH ERAS 3 AND 5 AND BEHIND ONLY IN TECH ERA 4 (31% OF IT HELD BY THE LEADER AT 1905; THE CANON 56%), THE MILITARY TREE BEHIND EVERYWHERE (31 / 15 / 0%); THE MAJORS SPEND HALF THEIR DIRECTED RESEARCH ON THE MILITARY TREE AND A QUARTER TO A THIRD OF IT ON TECHNOLOGIES THREE OR MORE COUNTRIES ALREADY HOLD; THE MOTOR LADDER'S GATES DO NOT FORM A CHAIN (2026-11-22; no game time: F286's arms and caches; the build `mod_m12c`)
+
+**What was read.** `tools/lint_research_sources.mjs` (new) on the builds `mod_m12c` (the book `m12c-first`) and `mod/` (the 1.1.1 canon's
+book); F286's caches for the anchors, the research in hand and the ladders; the emitted tree (`mod_m12c/common/technology`) for the
+prerequisites. It follows the user's answers of 2026-11-22 (§10.129).
+
+**1. The references.** The checker walks every script value a research bar compares down to its building terms: 116 entries, 115
+compared values, 196 building terms in the 1.2 build. **Errors, 1.2 build:** (a) railways — its one source counts coal and iron mines on
+an engine-pump method, and the base mines offer none of the three (they are deposit rungs now); (b) flash freezing — fishing wharves on
+steam trawlers and whaling stations on steam whaling ships, the same; (c) navigation — its one source is the first whaling rung, which
+navigation itself unlocks (a deposit rung entry new in 1.2); (d) combustion engine — one of its three sources is the Diesel Engines rung,
+unlocked by compression ignition, which needs combustion engine. The canon build (113 entries, 163 terms) has (d) only. Combustion
+engine's other two sources are the Electric Engines rung (gated by electric railway, onset label 1895 against combustion engine's 1886)
+and the first oil rung (gated by pumpjacks): in the majors' years with combustion engine open, pumpjacks is missing in 1,484 of 1,879
+(79%). Harmless dead parts inside live "every tier" sources (a rung gated by the technology's own successor): atmospheric engine,
+conveyors, electrical generation, fractional distillation, percussion cap, rotary valve engine, watertube boiler.
+
+**2. The tech eras against their anchors** (§2.2: a leader holds about half of a tier's technologies at its anchor year; somewhat under
+half of tech era 5 at 1936). The leader's share of the tech era held at the anchor, the median over runs, m12b / the 1.1.1 canon /
+vanilla 1.15.2:
+
+| tech era, year | production | military | society | all |
+|---|---|---|---|---|
+| 3, 1875 | 64 / 50 / 29% | 31 / 23 / 69% | 54 / 46 / 62% | 50 / 43 / 55% |
+| 4, 1905 | 31 / 56 / 38% | 15 / 0 / 46% | 70 / 60 / 60% | 31 / 38 / 51% |
+| 5, 1935 | 63 / 88 / 25% | 0 / 0 / 80% | 75 / 88 / 88% | 46 / 54 / 65% |
+
+Production is at or above its aim in tech eras 3 and 5 and below it in tech era 4, where the canon was not. The tech era 4 production
+technologies whose world-first holder comes more than five years after 1905: combustion engine 1918, mechanized farming 1923, electric
+railway 1919, steam turbine 1912, automatic bottle blowers 1913, conveyors 1914, radio 1915, nitrogen fixation 1930, art silk 1933. On
+or before the anchor although the mark blocks most of the majors' years: electrical capacitors 1892 (84%), plastics 1903 (91%), electric
+arc 1909 (84%), telephone 1897. Tech era 3 production stragglers against 1875: pumpjacks 1906, dynamite 1901, open hearth 1886, improved
+fertilizer 1887. Of the weapons rungs' technologies, repeaters (1871; anchor 1875) and bolt-action rifles (1895; anchor 1905) are on
+their anchors, automatic machine guns (1923) and dynamite (1901) late. The military tree's shortfall is in the technologies with a
+frontline or naval entry or none (F286 §2, §7). Tech era 5 production entries (antibiotics, oil turbine, spray finishing, continuous web,
+flash freezing, catalytic synthesis) are not behind an anchor of 1940.
+
+**3. What directed research is spent on** (the technology in hand on 1 January, by how many countries already hold it; share of
+country-years, 1840–69 · 1870–99 · 1900–35). The majors, m12b: held by nobody 63 · 50 · 44%, by one or two countries 16 · 18 · 19%, by
+three to nine 7 · 13 · 13%, by ten or more 14 · 19 · 24%; vanilla: nobody 38 · 29 · 33%, ten or more 26 · 30 · 31%. By tree, m12b:
+military 47 · 44 · 52%, production 17 · 27 · 29%, society 37 · 29 · 18%; vanilla: military 36 · 27 · 33%, production 25 · 37 · 38%. The
+top 15 independents outside the majors, m12b: 82 · 72 · 62% on technologies thirty or more countries hold, 10 · 5 · 10% on technologies
+nobody holds (vanilla 88 · 68 · 68% and 1 · 2 · 2%). Technologies spreading to a country at once: 2.3–2.6 for a major, 2.9–3.0 for the
+others (one a tree at most).
+
+**4. The ladders' gates.** Whether a rung's gate technology requires the gate of the rung below: yes for food, steel, fertilizer,
+automotive, arms, artillery, the art academy, the five mines and whaling; no for textile t3, furniture t3, glass t3, tooling t3, paper
+t2, explosives t3, munition t2, gold t1, oil t2 and **all three steps of the motor ladder** (pumpjacks does not need atmospheric engine,
+electric railway does not need pumpjacks, compression ignition does not need electric railway). Where it binds, the majors' years with
+the upper technology open and the lower gate missing: combustion engine without pumpjacks 79% of 1,879 (the oil source); electrical
+capacitors without dynamite 80% of 981 (its explosives source; the textile source carries it); electric railway without pumpjacks 32%
+of 501; compression ignition without electric railway 21% of 190; the others 0%.
+
+**5. The production tree's connections** (63 technologies; all prerequisites vanilla's but one). Pumpjacks ← steam donkey + dynamite:
+neither is on the engine line (steam donkey ← intensive agriculture; dynamite ← nitroglycerin ← intensive agriculture + prospecting),
+and it now gates the motor's second rung and oil. Compression ignition ← combustion engine + conveyors, the one prerequisite of ours
+(§10.93, for the automotive t3 rung's assembly lines): the motor's t3 rung, six mine rungs and the diesel irrigation step wait on
+conveyors ← vulcanization + shift work + electrical generation with it (49 major-years so far). The rubber line hangs off glass: crystal
+glass → chemical bleaching → rubber mastication → aniline, vulcanization → automatic bottle blowers, conveyors (12 technologies behind
+crystal glass, whose entry the mark blocks in 96% of the majors' years). Shift work is the one production technology of tech era 2+
+without an entry (world-first 1888, vanilla 1873) and a prerequisite of telephone, conveyors and continuous web. Eight onset labels are
+earlier than the label of a technology they require: crystal glass 1674 (lathe 1800), railways 1825 (mechanical tools 1840), rubber
+mastication 1820 (fractional distillation 1830), threshing machine 1842 (steam donkey 1881), rotary valve engine 1849 (watertube boiler
+1867), pumpjacks 1859 (steam donkey 1881, dynamite 1867), pasteurization 1864 (vacuum canning 1874, electrical capacitors 1891),
+telephone 1878 (electrical generation 1882), compression ignition 1897 (conveyors 1913); vulcanization's label is 1839 on a tech era 4
+technology. The mines' ladder has no gate between watertube boiler (tech era 2, half-majors 1847) and compression ignition (tech era
+5).
+
+**What it does NOT say.** The leader's share is read among the focus countries (the majors and the top 15 independents), on five runs,
+one of them with the 1904–1931 gap (its 1905 reading is the 1903 state's successor year and is dropped where no summary lies within two
+years). The research in hand is a 1 January snapshot, not research spent: it does not see what spread delivers in parallel, so it bounds
+what faster spread could free and does not measure it. Whether production tech era 4 returns to the canon's share once the references
+are fixed is a prediction (argued: its late technologies are the ones behind pumpjacks, combustion engine and the dead sources), not a
+reading. The checker reads what can exist, not what is reachable: a mark nobody reaches is F286's subject.

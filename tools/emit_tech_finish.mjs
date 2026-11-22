@@ -180,6 +180,21 @@ function restoreAiWeight(txt, b) {              // returns the new text; b.close
   return out;
 }
 
+// A BESPOKE AI RESEARCH WEIGHT (`tech_ai_weight_bespoke` = { <technology>: <multiplier> }, BALANCE_FRAMEWORK §10.130, user-ruled 2026-11-22:
+// "No journal entry for shift work for now. However, add a bespoke +20% chance to its AI desire"): one `multiply` appended to that
+// technology's own ai_weight — after vanilla's value and adds, so it scales the whole weight, and before the entry-weight rule and the
+// finish boost. A weight is not a chance, and here it is worth MORE than its face: the AI's pick is the largest score after a 0.5x-2x roll
+// (MODDING_NOTES), so the top of a x1.2 technology's range is out of every equal rival's reach - among 5 equal candidates its chance goes
+// from 20% to 33-39%, among 10 from 10% to 23-31% (a uniform or a log-uniform roll; BALANCE_FRAMEWORK 10.130 item 4). Throws on a
+// technology the tree does not research.
+const BESPOKE = CFG.tech_ai_weight_bespoke || {};
+for (const [k, v] of Object.entries(BESPOKE)) if (!(typeof v === 'number' && v > 0 && v !== 1)) die(`tech_ai_weight_bespoke.${k} must be a positive multiplier other than 1 (got ${v})`);
+if (Object.keys(BESPOKE).length && !FB.enabled) die('tech_ai_weight_bespoke is written in the finish-boost pass, which is off in this book');
+const bespokeDone = [];
+const bespokeText = tech => { if (BESPOKE[tech] == null) return ''; bespokeDone.push(tech);
+  return `${T}${T}# PM & Tech Rehaul: a bespoke research weight (BALANCE_FRAMEWORK §10.130)
+${T}${T}multiply = ${BESPOKE[tech]}
+`; };
 const seen = {};
 const researchable = new Set();
 let nBoost = 0, nSkip = 0;
@@ -203,7 +218,7 @@ for (const [f, F] of Object.entries(files)) {
     if (AWT[b.key]) { txt = restoreAiWeight(txt, b); r++; }
     if (!FB.enabled) continue;              // a force_test control arm: parse the tree, patch nothing
     const ew = ewrText(b.key); if (ew) nEwr++;
-    const ins = ew + `${T}${T}${MARKER} — its banked progress covers ${FB.threshold * 100}% of its cost: one tick of research completes it\n` +
+    const ins = bespokeText(b.key) + ew + `${T}${T}${MARKER} — its banked progress covers ${FB.threshold * 100}% of its cost: one tick of research completes it\n` +
       `${T}${T}if = {\n${T}${T}${T}limit = { has_technology_progress = { technology = ${b.key}  progress >= ${FB.threshold} } }\n` +
       `${T}${T}${T}add = ${FB.add}\n${T}${T}}\n`;
     // insert immediately before a closing brace: at the start of its line when it stands alone, otherwise push the
@@ -229,6 +244,9 @@ for (const [f, F] of Object.entries(files)) {
   if (missing.length) die(`tech_ai_weights lists ${missing.join(', ')}, which no researchable technology of the tree is`);
   if (awDone.length) console.log(`tech AI weights: ${awDone.length} restored to ${CFG.tech_ai_weights.old_game} (${awDone.sort().join(', ')}); every other technology keeps ${CFG.tech_ai_weights.game}'s`);
 }
+{ const missing = Object.keys(BESPOKE).filter(t => !bespokeDone.includes(t));
+  if (missing.length) die(`tech_ai_weight_bespoke lists ${missing.join(', ')}, which no researchable technology of the tree is`);
+  if (bespokeDone.length) console.log(`bespoke AI research weights: ${bespokeDone.map(t => `${t} x${BESPOKE[t]}`).join(', ')}`); }
 const nTech = Object.keys(seen).length;
 if (nTech < 150) die(`only ${nTech} technologies parsed - the tree files moved or changed shape`);
 

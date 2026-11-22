@@ -468,7 +468,8 @@ merges, research levers — each records its command in the book). Every book ca
 - **`tools/make_tier4_techs.mjs`** — the four-rung tree twin `config/tech_tree_options.<suffix>.json`: every vanilla technology
   at vanilla's era, name and prerequisites, plus the spec's departures — `ERA_MOVES` (only vulcanization 3 → 4, marked
   `reEra` so `emit_techs` patches vanilla's file), `PREREQ_ADDS` (conveyors before compression_ignition, recorded as
-  `vanillaPrereqs` / `prereqsAdded`, §10.93 rule 7) and the additions' three minted technologies (furniture, paper,
+  `vanillaPrereqs` / `prereqsAdded`, §10.93 rule 7), `--prereq-swap <name>[,…]` (the spec's `PREREQ_SWAPS`, opt-in: `pumping-engines` =
+  pumpjacks without dynamite, with rotary valve engine, §10.130; also recorded as `prereqsDropped` / `prereqSwap`) and the additions' three minted technologies (furniture, paper,
   fertilizer), each placed by its own year. Validates: no minted technology in tech era 1, none gating nothing, every
   prerequisite known, same-category and not later-era, no technology gating two rungs of one industry.
   `[TIER4_SUFFIX=<s>] node tools/make_tier4_techs.mjs`. Status: current (generator). Refs: §10.72.
@@ -811,6 +812,15 @@ stale output except under `common/history`, which an emitter writing there must 
   engine band with inputs AT BASE: `target_be ≤ 175` ⇔ O:I ≥ 0.762 at wp 0.25. Recomputes from the goods block, never reads `target_be`; sees
   every tier, shipyards included. `node tools/lint_solvency.mjs [--config <book>] [--census] [--goods-only] [--band]` (`--band` = the retired
   ≤ 400 line, `--goods-only` drops wages; neither is the rule). Status: current (build step). Refs: §10.63, F67.
+- **`tools/lint_research_sources.mjs`** `<modRoot> [--tree <twin>] [--warn-only] [--late-years 10]` — can every research entry's source
+  exist? (2026-11-22, F287 §1.) Reads the BUILD over vanilla (buildings, method groups, methods, technologies, ship types) and walks every
+  script value a research bar compares down to its building terms: DEAD-BUILDING, DEAD-METHOD (a method none of the building's groups
+  offers), AFTER-ITSELF (the building or every counted method is unlocked by the entry's own technology or one that needs it), then DEAD
+  SOURCE / DEAD ENTRY; warnings for a source or a required technology whose onset label is over ten years later. Exit 1 on an error.
+  With `[configPath]` as the second argument (how `preflight.ps1` calls it) it takes the book's own twin and FAILS only a book carrying
+  `research_events.require_live_sources`; an older book's defects are printed as KNOWN (`--strict` fails them, `--warn-only` never fails).
+  Status: current — landmine L56, walked by preflight in every build. `m12d-first` passes; `m12b-first` / `m12c-first` list seven known
+  defects, the canon one.
 - **`tools/lint_tech_content.mjs`** — the two hard tech rules against the EMITTED mod: no orphaned technology (it must gate a method of a
   shipped building, a building or a modifier; being a prerequisite does not count) and no technology gating two rungs of one industry.
   `node tools/lint_tech_content.mjs [modDir] [config]`. Status: current (build step). Refs: BUGS_AND_FIXES 2026-08-30.
@@ -1047,6 +1057,14 @@ The canon's chain, read from its records: `tier4-e1` (make_tier4_config `--deriv
 hand: `dams.private = all`, `game_defines` (monopoly threshold 0.99), the 2026-10-21 polish keys. ⚠ Intermediate books on disk may carry
 stale tree twins; re-run the chain from its root rather than one step. **`tools/replay_canon_chain.mjs` runs exactly this chain** (below).
 
+- **`tools/make_book12.mjs` `--tech-pass 1`** (2026-11-22, §10.129, §10.130; the book `m12d-first` = `--prefix m12d --naval-lowered 1 --tech-pass 1`): the
+  technology pass on top of the chain below — `make_tier4_techs --prereq-swap pumping-engines`; in the hand step the research-entry
+  reference fixes (`extra_entries.railways` / `.flash_freezing` on deposit rungs by `min_tier`, `exclude_techs` + navigation,
+  `necessity_anchors.automotive` on the Compound and Electric Engines rungs), `extra_entries.nitroglycerin` / `.dynamite` (`merge: true`,
+  the six mines, 150,000 / 250,000), the nine financial entries and macroeconomics held, `threshold_mult` 0.25 for arms, artillery and
+  munition, `tech_ai_weight_bespoke` (`emit_tech_finish.mjs` appends the `multiply` to that technology's `ai_weight`),
+  `research_events.require_live_sources` (L56) and the record `_tech_pass`. Every step throws when the chain no longer has what it edits.
+  Off by default, so `m12b-first` and `m12c-first` regenerate unchanged.
 - **`tools/make_book12.mjs`** (2026-11-21, BALANCE_FRAMEWORK §10.125, §10.126) — `node tools/make_book12.mjs [--prefix m12b] [--name <prefix>-first] [--naval-lowered 0.8]` (the current book is `--prefix m12b` → `m12b-first`; `m12-first` was made before §10.126 and no longer regenerates; `--naval-lowered` sets `entry_weight_rule.naval_lowered`, default 0.8 = what `m12b-first` was built with, so its recorded command still reproduces it, and a book after it passes `--naval-lowered 1`, §10.127): THE
   MOD 1.2 BOOK. The canon's chain (as `replay_canon_chain.mjs`, then the 1.15 steps of the 1.1.1 canon) with `make_tier4_config --insert
   motor` in place of `--derive motor`, `make_ab_config --cost-ratio 2.0 --ai-ladder 455,1000,2200,4840 --mix-scale
@@ -1929,6 +1947,15 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   gain (line 0.70) and early world GDP (line 0.80) ÷ vanilla. Refs: §10.97.
 - **`ledger/je_tally.mjs`** `--session <stamp>[:<setup>] [--config]` — unique research-entry completions per run, token-windowed and
   de-duplicated (L28).
+- **`ledger/je_eligibility.mjs`** `extract <label>=<group>[:<setup>] --mod <built mod folder> --tree <twin> --cache <dir>`, then
+  `report --cache <dir> [--section entries|prereq|sources] [--tech a,b] [--json <file>]` — why a research entry does not tick
+  (2026-11-22): the entries' conditions parsed from the BUILD's own progress bars and script values, replayed on every yearly summary
+  for the technology majors and the top 15 independents by GDP; each unheld country-year is `tick`, `pre` (a prerequisite missing),
+  `lit`, `src` (the workforce mark), `req` (the entry's required technology), `lit+src` or `far`. Tables: stage completions and reasons
+  per entry; the blocking prerequisites; each source's holders against its marks at the onset and +10 / +20 / +40 years. One cache file
+  per run (keep it outside the repo). ⚠ Frontline, naval, idea, colony, rank and urban-centre entries are read for prerequisites and
+  literacy only; a merged rung's levels are apportioned by method share; the state is 1 January's. `--mod` must be the build the runs
+  played (a named book's `mod_<name>`). Refs: F286.
 - **`ledger/finish_force.mjs`** `--session <stamp>` — the finish boost's force test (counts only choices while the tech is unacquired;
   F160 §6). `finish_probe.mjs` (record) reads the retired first form (`20260923_203339` only).
 - **`ledger/tech_finish_gap.mjs`** `--arm <s>:<setup>[:<label>] [--list]` — acquisition at the second stage once the penalty is zero. Refs: F162.

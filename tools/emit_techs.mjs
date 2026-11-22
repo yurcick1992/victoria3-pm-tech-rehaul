@@ -243,8 +243,11 @@ function applyAiWeightMult(txt, mult, label) {
 // three files holds it (each file below takes them, and a file is owned when it has any).
 // ⚠ The match is anchored inside THAT technology's block (it may not cross a column-0 `}`), and the list it finds must be the one the tree
 //   recorded as vanilla's: a patch that changes vanilla's prerequisites fails the build here rather than being silently re-written.
-const PREREQ_TECHS = OPT.techs.filter(t => (t.prereqsAdded || []).length);
+// ⭐ since 2026-11-22 also the prerequisites a ruled SWAP removes (`prereqsDropped`, lib_tier4_spec PREREQ_SWAPS, BALANCE_FRAMEWORK §10.130:
+//   pumpjacks without dynamite, with rotary valve engine): the block is rewritten as vanilla's list minus the dropped plus the added.
+const PREREQ_TECHS = OPT.techs.filter(t => (t.prereqsAdded || []).length || (t.prereqsDropped || []).length);
 for (const t of PREREQ_TECHS) if (t.origin !== 'vanilla') throw new Error(`emit_techs: ${t.id} carries prereqsAdded but is not a vanilla technology - a minted one states its prerequisites itself`);
+for (const t of PREREQ_TECHS) for (const d of t.prereqsDropped || []) if (!(t.vanillaPrereqs || []).includes(d)) throw new Error(`emit_techs: ${t.id} drops ${d}, which the tree does not record as a vanilla prerequisite`);
 function applyPrereqAdds(txt, category) {
   for (const t of PREREQ_TECHS.filter(x => x.category === category)) {
     const re = new RegExp(`(^${t.id} = \\{(?:(?!\\n\\})[\\s\\S])*?\\n\\tunlocking_technologies = \\{)([^}]*)(\\})`, 'm');
@@ -253,6 +256,14 @@ function applyPrereqAdds(txt, category) {
     const found = m[2].trim().split(/\s+/).filter(Boolean);
     if (found.join(' ') !== (t.vanillaPrereqs || []).join(' '))
       throw new Error(`emit_techs: ${t.id}'s vanilla prerequisites are now [${found.join(' ')}] where the tree recorded [${(t.vanillaPrereqs || []).join(' ')}] - regenerate the tree (make_tier4_techs.mjs)`);
+    const dropped = t.prereqsDropped || [], added = t.prereqsAdded || [];
+    if (dropped.length) {
+      const now = [...found.filter(p => !dropped.includes(p)), ...added];
+      if (!now.length) throw new Error(`emit_techs: ${t.id} would be left with no prerequisite`);
+      txt = sub(txt, re, (all, a, list, b) => a + now.map(p => `\n\t\t${p}`).join('') + '\n\t' + b, 1, `swap prerequisite(s) of ${t.id}: - ${dropped.join(', ')} + ${added.join(', ')}`);
+      console.log(`  prerequisite swapped: ${t.id} no longer waits on ${dropped.join(', ')}${added.length ? ' and now waits on ' + added.join(', ') : ''}`);
+      continue;
+    }
     txt = sub(txt, re, (all, a, list, b) => a + list.replace(/\s*$/, '') + t.prereqsAdded.map(p => `\n\t\t${p}`).join('') + '\n\t' + b,
       1, `add prerequisite(s) ${t.prereqsAdded.join(', ')} to ${t.id}`);
     console.log(`  prerequisite added: ${t.id} now also waits on ${t.prereqsAdded.join(', ')}`);

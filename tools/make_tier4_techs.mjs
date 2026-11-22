@@ -14,7 +14,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocks } from './lib_vanilla_ladder.mjs';
-import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED, PREREQ_ADDS, gameEraOfYear } from './lib_tier4_spec.mjs';
+import { INDUSTRIES, ADDITIONS, ERA_MOVES, TECH_RENAMES_RULED, PREREQ_ADDS, PREREQ_SWAPS, gameEraOfYear } from './lib_tier4_spec.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -57,6 +57,17 @@ for (const [id, a] of Object.entries(PREREQ_ADDS)) {
     if (VT[id].prereqs.includes(q)) throw new Error(`PREREQ_ADDS: ${q} is already a vanilla prerequisite of ${id} - the entry is stale`);
   }
 }
+// ⭐ THE RULED PREREQUISITE SWAPS THIS TREE OPTS INTO (`--prereq-swap <name>[,<name>]`, lib_tier4_spec PREREQ_SWAPS; BALANCE_FRAMEWORK §10.130:
+//   pumpjacks loses dynamite and takes rotary valve engine). Opt-in by name so every earlier book regenerates from its recorded command.
+const SWAPS = {};
+{ const i = process.argv.indexOf('--prereq-swap'); const names = i >= 0 ? String(process.argv[i + 1] || '').split(',').filter(Boolean) : [];
+  if (i >= 0 && !names.length) throw new Error('--prereq-swap needs a name (lib_tier4_spec PREREQ_SWAPS: ' + Object.keys(PREREQ_SWAPS).join(', ') + ')');
+  for (const n of names) { const w = PREREQ_SWAPS[n]; if (!w) throw new Error(`--prereq-swap: '${n}' is not in lib_tier4_spec PREREQ_SWAPS (${Object.keys(PREREQ_SWAPS).join(', ')})`);
+    if (!VT[w.tech]) throw new Error(`PREREQ_SWAPS.${n}: ${w.tech} is not a vanilla technology`);
+    if (SWAPS[w.tech] || PREREQ_ADDS[w.tech]) throw new Error(`PREREQ_SWAPS.${n}: ${w.tech} already carries a prerequisite change`);
+    for (const d of w.drop || []) if (!VT[w.tech].prereqs.includes(d)) throw new Error(`PREREQ_SWAPS.${n}: ${d} is not a vanilla prerequisite of ${w.tech} - the entry is stale`);
+    for (const a of w.add || []) { if (!VT[a]) throw new Error(`PREREQ_SWAPS.${n}: ${a} is not a vanilla technology`); if (VT[w.tech].prereqs.includes(a)) throw new Error(`PREREQ_SWAPS.${n}: ${a} is already a vanilla prerequisite of ${w.tech} - the entry is stale`); }
+    SWAPS[w.tech] = { name: n, ...w }; } }
 // ⭐ an INSERTION's ruled renames (lib_tier4_spec INSERTIONS, the mod 1.2 book: pumpjacks → "Pumping Engines", §10.116.2) — only on a
 //   structure that carries the insertion (`_inserted`, make_tier4_config --insert), so the canon's tree stays vanilla-named
 const INSERT_RENAMES = {};
@@ -67,12 +78,13 @@ for (const x of cfg._inserted || []) for (const [id, r] of Object.entries(x.rena
 const techs = Object.entries(VT).map(([id, v]) => {
   const vname = ENLOC[id] || id; const ruled = TECH_RENAMES_RULED[id] || INSERT_RENAMES[id];
   const era = ERA_MOVES[id] != null && ERA_MOVES[id] > v.era ? ERA_MOVES[id] : v.era;
-  const added = (PREREQ_ADDS[id] || {}).add || [];
+  const dropped = (SWAPS[id] || {}).drop || [];
+  const added = [...((PREREQ_ADDS[id] || {}).add || []), ...((SWAPS[id] || {}).add || [])];
   return { id, name: ruled ? ruled[0] : vname, vanillaName: vname, renamed: ruled ? ruled[1] : null, desc: null,
     category: v.category, era, vanillaEra: v.era, reEra: era !== v.era, year: null, onset: ONSET[id] ?? null, idea: false, mod: null,
-    origin: 'vanilla', filler: false, platform: null, industry: null, prereqs: [...v.prereqs, ...added], unlocks: [],
+    origin: 'vanilla', filler: false, platform: null, industry: null, prereqs: [...v.prereqs.filter(p => !dropped.includes(p)), ...added], unlocks: [],
     // a ruled departure from vanilla's prerequisites is RECORDED beside vanilla's own list, so emit_techs patches exactly it
-    ...(added.length ? { vanillaPrereqs: v.prereqs, prereqsAdded: added } : {}),
+    ...(added.length || dropped.length ? { vanillaPrereqs: v.prereqs, prereqsAdded: added, ...(dropped.length ? { prereqsDropped: dropped, prereqSwap: SWAPS[id].name } : {}) } : {}),
     vanillaUnlocks: vanillaUnlocks[id] || [], pmUnlocks: pmUnlocks[id] || [], otherGates: [], modLines: v.modLines, blocks: [] };
 });
 const moved = techs.filter(t => t.reEra).map(t => `${t.id} ${t.vanillaEra}→${t.era}`);
@@ -127,6 +139,6 @@ console.log('  minted technology                 year  era  serves');
 for (const t of newT) console.log('  ' + t.id.padEnd(33) + t.year + '   ' + t.era + '   ' + t.unlocks.map(u => u.ind + ' e' + u.era).join(' + '));
 console.log(`  era moves against vanilla (ERA_MOVES): ${moved.join(', ') || 'none'}`);
 console.log(`  vanilla technologies renamed: ${techs.filter(t => t.renamed).length}`);
-console.log(`  prerequisites added to vanilla technologies (PREREQ_ADDS): ${techs.filter(t => t.prereqsAdded).map(t => `${t.id} + ${t.prereqsAdded.join('/')}`).join(', ') || 'none'}`);
+console.log(`  prerequisites changed on vanilla technologies (PREREQ_ADDS, PREREQ_SWAPS): ${techs.filter(t => t.prereqsAdded).map(t => `${t.id} + ${t.prereqsAdded.join('/')}${(t.prereqsDropped || []).length ? ' - ' + t.prereqsDropped.join('/') : ''}`).join(', ') || 'none'}`);
 console.log(`  technologies that gate at least one of our tiers: ${techs.filter(t => t.unlocks.length).length}`);
 console.log(`\n  wrote config/tech_tree_options.${SUFFIX}.json — next: node tools/make_ab_config.mjs --A 2.0 --B 1.5 --suffix <canon> --ai-steep glass,tooling:3`);

@@ -229,6 +229,22 @@ export const PREREQ_ADDS = {
   compression_ignition: { add: ['conveyors'], why: 'Mass Production\'s mandated Assembly Lines carry the conveyors gate (§10.93)' },
 };
 
+// ⭐ PREREQUISITE SWAPS, each ruled and each OPT-IN BY NAME (`make_tier4_techs.mjs --prereq-swap <name>[,<name>]`), so a book built before a
+//   swap was ruled still regenerates from its recorded command: { name: { tech, drop: [vanilla prerequisite, …], add: [prerequisite, …], why } }.
+//   make_tier4_techs records `vanillaPrereqs`, `prereqsDropped` and `prereqsAdded` on the technology; emit_techs rewrites exactly that block
+//   and throws when vanilla's list is no longer the one recorded. The first prerequisite the mod ever REMOVES from a vanilla technology.
+export const PREREQ_SWAPS = {
+  // (user-ruled 2026-11-22, BALANCE_FRAMEWORK §10.130: "Pumpjacks: replace." — dynamite out, rotary valve engine in.) In the mod 1.2 book
+  //  pumpjacks ("Pumping Engines", §10.116.2) gates the motor's second rung (Compound Engines) and the first oil rung. Vanilla's two
+  //  prerequisites (steam donkey, dynamite) are neither on the engine line, and dynamite's own entry rarely fires: in five centuries of
+  //  m12b-first the majors spent 904 country-years with the Steam Engines rung at its mark, literacy met and only dynamite missing, and
+  //  pumpjacks' first holder came in 1906 (vanilla 1878) — F286 §5, F287 §4–§5. Rotary valve engine (← watertube boiler ← atmospheric
+  //  engine) puts the motor's t1 gate behind its t0 gate.
+  //  ⚠ It moves everything pumpjacks gates: oil rigs and the irrigation drives no longer wait on dynamite either.
+  'pumping-engines': { tech: 'pumpjacks', drop: ['dynamite'], add: ['rotary_valve_engine'],
+    why: 'Pumping Engines sit on the engine line, not behind explosives (§10.130, F287 §5)' },
+};
+
 // Rule 1 for TECHNOLOGY names: vanilla's, unless ruled here as { id: [name, why] }. Empty. (The six-rung tree renamed
 // fourteen; none is ruled for this line. The two dating corrections — pumpjacks "Oil Drilling", threshing_machine "Steam
 // Threshing" — were ruled out 2026-10-24: vanilla's names stay, POLISH R9.)

@@ -332,7 +332,8 @@ ask (§5.1 rule 3).
   (the generator throws). Three are minted today: furniture spray finishing, paper continuous web, fertilizer catalytic synthesis.
 - **The tech tree is vanilla's**, at vanilla's tech eras, names and prerequisites, departing only by the spec's explicit entries in
   `tools/lib_tier4_spec.mjs`: `ERA_MOVES`, `PREREQ_ADDS` (today one: conveyors before compression ignition, so Mass Production's mandated Assembly
-  Lines keep their own gate — §10.93) and the minted technologies of the additions.
+  Lines keep their own gate — §10.93), `PREREQ_SWAPS` (opt-in per book; one, in the mod 1.2 technology pass: pumpjacks takes rotary valve
+  engine in place of dynamite — §10.130) and the minted technologies of the additions.
 - **There are no contentless vanilla technologies.** A technology that looks empty in the tree viewer gates something elsewhere (methods, units,
   decrees, companies, events). Never delete a vanilla technology (vanilla script names it), and never empty one: a re-peg must keep what it gates.
   Read `tools/audit_tech_content.mjs` before any merge or removal; `tools/lint_tech_content.mjs` checks the emitted mod every build.
@@ -485,6 +486,8 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.126 | logging is not a deposit, for narrative reasons (a saw mill reaches no new forest): vanilla's one building again; the 1836 pair: a first-rung twin beside every second-rung deposit building, both at k = N × the second rung's share of the pair's output value (⅔, coal 0.615), so each country's 1836 supply stays vanilla's with no recipe moved (`tools/emit_deposit_start.mjs`); fishing and whaling stay tiered; the first rung keeps vanilla's half output; logging's electric saw mills on the world's technology; the book `m12b-first` | in force; built and deployed for the user's check; fishing and whaling stay tiered (ruled the same day after the narrative pass); the first rung keeps vanilla's half output; the electric saw mills on the world's technology |
 | 10.127 | a technology with a naval research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain had no first movers) | in force; built (`entry_weight_rule.naval_lowered`, `make_book12.mjs --naval-lowered 1`), in the book `m12c-first` (`e355eeb1`), not measured |
 | 10.128 | the price decline (PI, PP) is an aim of the mod's own class, never read against vanilla; the loss's level part on 0.8 × vanilla's 1935 index is wrong under it (F285); the reading to be built first: decade by decade, five goods classes with expected directions (industry output clearly down, the main one), by market and in aggregate; the user wants a significantly stronger decline, sized so t0 sheds workers once t2 is significant and t1 once t3 is (F285 §6) | in force; built: the ledger's price panel ("Option A", `fill_prices.mjs`) and the loss's price term, the industry-output aggregate's 1935 ÷ 1900 ≤ 0.75 ("Aggregate fall, ~25%"), weight 2, in place of PI and PP (`lib_prices.mjs`) |
+| 10.129 | the mod 1.2 technology pass, first rulings: every research-entry reference the 1.2 book broke or misplaced is fixed first (F287 §1; combustion engine's sources among them); mining workers a source for nitroglycerin (150,000) and dynamite (250,000); the financial and administration entries that run ahead are held and a follower's mark goes from ½ to ¼; refused: army size as a source (farmable), other new condition types for now, dropping the standing −20% AI weight; parked: a lower literacy line for a follower; open: military-industry marks, pumpjacks' dynamite prerequisite, faster tech spread | in force; the open parts ruled in §10.130 |
+| 10.130 | the technology pass, second rulings, built as `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped); the research marks of arms, artillery and munition × 0.25; no entry for navigation; shift work's AI research weight × 1.2 and no entry; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels; a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build (L56) | in force; built, not measured |
 
 ---
 
@@ -750,8 +753,12 @@ What §1.2 and §1.3 leave out:
   runs (claude.ai/artifact/JDdqJ13XanbEZvwmtA4W6y): the deposits in a section of their own, prices by goods class, and the loss under
   §10.128's price term, 12.34 (industry prices 0.89 of their 1900 level against the 0.75 aim, 6.49 of it).
   **Its successor `m12c-first`** (2026-11-22, sha256 `e355eeb1823040bd`, `make_book12.mjs --prefix m12c --naval-lowered 1`) adds only
-  §10.127 (naval technologies lowered only while their entry ticks); built as the alternate `mod_m12c`, not measured, not deployed. Next
-  within 1.2, before the balance fine tuning: a deeper technology pass (the user, 2026-11-22; ROADMAP, BACKLOG).
+  §10.127 (naval technologies lowered only while their entry ticks); built as the alternate `mod_m12c`, not measured, not deployed.
+  **The technology pass** (the user, 2026-11-22; F286, F287; §10.129, §10.130) **is built as `m12d-first`** (sha256 `2e25dfe4c09dd51f`,
+  `make_book12.mjs --prefix m12d --naval-lowered 1 --tech-pass 1`, the alternate `mod_m12d`): the research-entry references the 1.2
+  book broke (railways, flash freezing, navigation, combustion engine's sources), pumpjacks on rotary valve engine in place of dynamite,
+  mining workers as a source for nitroglycerin and dynamite, the military industries' marks × 0.25, the financial entries and
+  macroeconomics held, shift work's AI weight × 1.2. Not measured, not deployed. Next: its first centuries, on the user's go-ahead.
 
 - **Game 1.15.2** (installed 2026-11-19; mod 1.1.2, the same canon, released the same day): the mod is measured only by the smoke test
   (F273: it loads and runs; two error classes were ours, the BOM fixed as landmine L53). **Vanilla 1.15.2's eight centuries** (F274,

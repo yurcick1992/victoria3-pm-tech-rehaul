@@ -304,8 +304,12 @@ for (const [tech, e] of Object.entries(EXTRA)) {
   //   generation the electric saw mills): both rulings stand — the entry keeps its extra sources at their own mark (§10.95) and the rung's
   //   source at the tier mark (§10.125's standard rung entries); any one source ticks the bar (the entries are non-additive). Any other
   //   collision still throws.
+  // ⭐ `merge: true` (2026-11-22, BALANCE_FRAMEWORK §10.129 item 2: mining workers a source for nitroglycerin and dynamite): a RULED extra
+  //   source beside a ladder technology's own rung sources — the rung sources keep their tier mark, the extra ones take this entry's mark.
+  //   It must find a ladder entry to join (a stale flag throws).
+  if (e.merge === true && !(anchors[tech] && anchors[tech].rule !== 'extra' && anchors[tech].sources.length > 0)) throw new Error(`extra_entries[${tech}]: merge is set, but the ladder gives '${tech}' no entry to join`);
   const mergeInto = anchors[tech] && anchors[tech].rule !== 'extra' && anchors[tech].sources.length > 0
-    && anchors[tech].sources.every(s => s.building && CFG.industries.some(x => x.deposit && (x.tiers || []).some(t => t.key === s.building)));
+    && (e.merge === true || anchors[tech].sources.every(s => s.building && CFG.industries.some(x => x.deposit && (x.tiers || []).some(t => t.key === s.building))));
   if (anchors[tech] && !mergeInto) throw new Error(`extra_entries: '${tech}' already has an entry (rule ${anchors[tech].rule}) — an extra entry is for a technology the ladder does not cover`);
   for (const r of (e.requires || [])) if (!TECH[r]) throw new Error(`extra_entries[${tech}].requires names unknown technology '${r}'`);
   if (!(e.mark > 0)) throw new Error(`extra_entries[${tech}]: no mark`);
@@ -314,7 +318,11 @@ for (const [tech, e] of Object.entries(EXTRA)) {
     for (const id of src.industries || []) {
       const ind = CFG.industries.find(x => x.id === id);
       if (!ind || ind.disabled) throw new Error(`extra_entries[${tech}]: industry '${id}' is unknown or disabled — name its vanilla buildings instead`);
-      for (const t of ind.tiers || []) { if (t.model_only || (src.crafts === false && t.craft)) continue; types.push({ key: t.key, emp: tierEmp(t, ind), methods: null }); }
+      // `min_tier` (2026-11-22, BALANCE_FRAMEWORK §10.130): only the industry's rungs of that tier and later — how an entry names "the engine-pump
+      //   rungs" of a tiered deposit, whose methods are rungs now (the railways and flash-freezing entries counted vanilla methods no building
+      //   carried any more: F287 §1)
+      if (src.min_tier != null && !(Number.isInteger(src.min_tier) && src.min_tier >= 0)) throw new Error(`extra_entries[${tech}]: min_tier must be a tier number`);
+      for (const t of ind.tiers || []) { if (t.model_only || t.variant || (src.crafts === false && t.craft) || (src.min_tier != null && t.era < src.min_tier)) continue; types.push({ key: t.key, emp: tierEmp(t, ind), methods: null }); }
     }
     for (const k of src.buildings || []) {
       if (!VAN.buildings[k]) throw new Error(`extra_entries[${tech}]: unknown building '${k}'`);
@@ -333,12 +341,12 @@ for (const [tech, e] of Object.entries(EXTRA)) {
   if (!sources.length) throw new Error(`extra_entries[${tech}]: no sources`);
   if (mergeInto) {
     const a = anchors[tech]; a.sources.push(...sources); a.mark = e.mark; a.requires = e.requires || [];
-    extraMerged.push(`${tech} (deposit rung source at the e${a.era} mark + ${sources.length} extra source(s) at ${e.mark})`);
+    extraMerged.push(`${tech} (${e.merge === true ? 'ruled merge: rung' : 'deposit rung'} source at the e${a.era} mark + ${sources.length} extra source(s) at ${e.mark})`);
     continue;
   }
   anchors[tech] = { rule: 'extra', era: narrativeEraOf(T0.era), sources, mark: e.mark, requires: e.requires || [] };
 }
-if (extraMerged.length) console.log(`research events: extra entries merged into a deposit rung's entry: ${extraMerged.join('; ')}`);
+if (extraMerged.length) console.log(`research events: extra entries merged into a rung's entry: ${extraMerged.join('; ')}`);
 
 // ⭐⭐ §10.98 (user-ruled 2026-10-12) — entries beyond production, and the art chain left to vanilla.
 //   `research_events.exclude_techs` = technologies that get NO entry of ours (vanilla's own universal entries advance them: the art chain —
@@ -531,7 +539,9 @@ const condDisplay = (tech, e) => {
     const unit = x => (cd.unit || 'fully staffed levels').replace(/levels$/, x === 1 ? 'level' : 'levels');
     const full = `${cd.name}: ${fmtN(+m[2] / per)} ${unit(+m[2] / per)}${of} (now ${live(nowSv)})${notes}`;
     loc.push([dFull, full]);
-    if (mh) loc.push([dHalf, fmtN(+mh[2] / per) === fmtN(+m[2] / per) ? full : `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${of} (now ${live(nowSv)}); halved${notes}`]);
+    // the follower's mark is a half by default and a QUARTER on the entries held in §10.129 item 3 (the config states both numbers): say which
+    const cut = mh ? (Math.abs(+mh[2] * 2 - +m[2]) <= 1 ? 'halved' : Math.abs(+mh[2] * 4 - +m[2]) <= 3 ? 'a quarter of the mark' : 'lowered') : '';
+    if (mh) loc.push([dHalf, fmtN(+mh[2] / per) === fmtN(+m[2] / per) ? full : `${cd.name}: ${fmtN(+mh[2] / per)} ${unit(+mh[2] / per)}${of} (now ${live(nowSv)}); ${cut}${notes}`]);
     return { dFull, dHalf, bullet: full };
   }
   const lawRefs = [...e.label.matchAll(/\$(law_[a-z_0-9]+)\$/g)].map(x => x[1]);

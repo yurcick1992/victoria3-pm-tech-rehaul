@@ -1,7 +1,20 @@
 // THE MOD 1.2 BOOK — the canon's recorded chain (tools/replay_canon_chain.mjs, then the 1.15 steps of the 1.1.1 canon) with the 1.2
 // rulings carried through it, every intermediate book under a prefix so nothing existing is touched.
 //
-//   node tools/make_book12.mjs [--prefix m12] [--name m12-first] [--naval-lowered 0.8]
+//   node tools/make_book12.mjs [--prefix m12] [--name m12-first] [--naval-lowered 0.8] [--tech-pass 1]
+//
+// --tech-pass 1: the mod 1.2 technology pass (BALANCE_FRAMEWORK §10.129, §10.130, ruled 2026-11-22 after F286 and F287); off by default, so
+// m12b-first and m12c-first regenerate from their recorded commands. It carries:
+//   - the research-entry references the 1.2 book broke: railways on the coal and iron engine-pump rungs, flash freezing on the steam trawler
+//     and steam whaling rungs (`min_tier` on an industries source), no entry for navigation (its only source needed navigation itself),
+//     combustion engine on the motor's Compound Engines rung or its Electric Engines rung (two sources, never summed) beside the first oil rung;
+//   - pumpjacks ← steam donkey + rotary valve engine, dynamite dropped (`make_tier4_techs.mjs --prereq-swap pumping-engines`);
+//   - mining workers as a source for nitroglycerin (150,000) and dynamite (250,000) (`merge: true` extra entries);
+//   - the financial-district entries held, 40 / 60 / 80 / 100 levels → 100 / 150 / 400 / 700, their follower mark a quarter; macroeconomics
+//     on 200 administration levels (from 30), its follower mark the usual half;
+//   - the research marks of arms, artillery and munition at × 0.25 (from × 0.5; explosives and synthetics stay × 0.5);
+//   - shift work's AI research weight × 1.2 (`tech_ai_weight_bespoke`);
+//   - `research_events.require_live_sources`: a research source that cannot exist fails the build from this book on (landmine L56).
 //
 // --naval-lowered: the standing multiply on a technology with a NAVAL research entry (`entry_weight_rule.naval_lowered`). The default
 // 0.8 is the rule `m12b-first` was built with (its recorded command has no flag and still reproduces it); since BALANCE_FRAMEWORK §10.127
@@ -36,6 +49,7 @@ const opt = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] :
 const P = opt('--prefix', 'm12'); if (!/^[a-z0-9]+$/.test(P)) throw new Error('--prefix <lowercase letters/digits>');
 const NAME = opt('--name', `${P}-first`);
 const NAVAL_LOWERED = +opt('--naval-lowered', '0.8');
+const TECH_PASS = opt('--tech-pass', '0') === '1';
 if (!(NAVAL_LOWERED > 0 && NAVAL_LOWERED <= 1)) throw new Error('--naval-lowered <a multiplier in (0, 1]>');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const SNAP_OLD = 'C:/claude-code/vic3_game_1.13.11/game';
@@ -52,7 +66,7 @@ const T4 = `${P}-tier4`;
 
 // ---- the canon's chain, with the 1.2 structure, slope, desire and the quarter ------------------------------------------------------------
 run(['tools/make_tier4_config.mjs', '--insert', 'motor'], { TIER4_SUFFIX: T4 });
-run(['tools/make_tier4_techs.mjs'], { TIER4_SUFFIX: T4 });
+run(['tools/make_tier4_techs.mjs', ...(TECH_PASS ? ['--prereq-swap', 'pumping-engines'] : [])], { TIER4_SUFFIX: T4 });
 run(['tools/make_ab_config.mjs', '--base', `config/mod_config.${T4}.json`, '--A', '2.2', '--B', '1.64', '--in0', '1.2', '--cost-ratio', '2.0',
   '--in0-for', 'motor:1', '--divisor', '0.000125', '--anchor-cost', '--ai-ladder', '455,1000,2200,4840', '--ai-defines',
   'MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR=0.95,MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD=1.0,MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD=2.0,CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED=0.1,PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD=160,PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD=240',
@@ -118,6 +132,49 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
   j.craft_seed_fixes = true;
   j.agri_steps = { world_gate: worldGate,
     irrigation: { methods: irrigation, steam_coal_per_engine: 1, diesel: { engines_mult: 0.5, oil_value_of_steam_coal: 0.5, tech: 'compression_ignition', name: 'Diesel Pump Irrigation' } } };
+  // ---- the technology pass (§10.129, §10.130) -----------------------------------------------------------------------------------------
+  let techPass = null;
+  if (TECH_PASS) {
+    const RE = j.research_events; const X = RE.extra_entries; const C = RE.condition_entries;
+    const need = (o, k, what) => { if (!o || o[k] == null) throw new Error(`tech pass: ${what} has no '${k}' - the chain moved, re-rule before building`); return o[k]; };
+    // 1. the references the tiered deposits and the motor ladder broke (F287 §1)
+    need(X, 'railways', 'extra_entries').sources = [{ industries: ['coal_mine', 'iron_mine'], min_tier: 1, label: 'Coal Mines and Iron Mines (Tier 1 and later)' }];
+    need(X, 'flash_freezing', 'extra_entries').sources = [{ industries: ['fishing_wharf', 'whaling_station'], min_tier: 2, label: 'Fishing Wharves and Whaling Stations (Tier 2)' }];
+    if ((RE.exclude_techs || []).includes('navigation')) throw new Error('tech pass: navigation is already excluded');
+    RE.exclude_techs = [...(RE.exclude_techs || []), 'navigation'];
+    need(RE.necessity_anchors, 'automotive', 'necessity_anchors');
+    // two sources, each at its own mark, as every rung anchor is (the user, 2026-11-22: "We usually don't go into sums"); the Diesel rung,
+    //   which needs combustion engine itself, is left out
+    RE.necessity_anchors.automotive = ['building_motor_industry_compound_engines', 'building_motor_industry_electric_engines'];
+    // from this book on a source that cannot exist FAILS the build (tools/lint_research_sources.mjs, landmine L56)
+    RE.require_live_sources = true;
+    // 2. mining workers: the explosives' customers (§10.129 item 2)
+    const mines = ['coal_mine', 'iron_mine', 'lead_mine', 'sulfur_mine', 'copper_mine', 'gold_mine'];
+    for (const m of mines) if (!j.industries.some(i => i.id === m && i.deposit && !i.disabled)) throw new Error(`tech pass: '${m}' is not a tiered deposit of this book`);
+    for (const [t, mark] of [['nitroglycerin', 150000], ['dynamite', 250000]]) { if (X[t]) throw new Error(`tech pass: extra_entries already has ${t}`);
+      X[t] = { merge: true, sources: [{ industries: mines, label: 'Mines of every kind (every tier)' }], mark }; }
+    // 3. the entries that ran ahead, held; the financial ones' follower mark a quarter (§10.129 item 3, §10.130)
+    const FIN = { 40: 100, 60: 150, 80: 400, 100: 700 }; const held = [];
+    for (const [k, e] of Object.entries(C)) { const m = /^pmr_cv_fin >= (\d+)\b/.exec(e.trigger || ''); if (!m) continue;
+      const to = FIN[m[1]]; if (!to) throw new Error(`tech pass: ${k} sits on ${m[1]} financial-district levels, which the ruling does not name`);
+      const q = Math.ceil(to / 4); const hm = /^pmr_cv_fin >= (\d+)\b/.exec(e.half_trigger || ''); if (!hm) throw new Error(`tech pass: ${k} has no follower mark`);
+      if (!e.label.includes(`at least ${m[1]} levels`)) throw new Error(`tech pass: ${k}'s label does not state its mark`);
+      e.trigger = e.trigger.replace(m[0], `pmr_cv_fin >= ${to}`); e.half_trigger = e.half_trigger.replace(hm[0], `pmr_cv_fin >= ${q}`); e.label = e.label.replace(`at least ${m[1]} levels`, `at least ${to} levels`);
+      held.push(`${k} ${m[1]} -> ${to} (follower ${q})`); }
+    if (held.length !== 9) throw new Error(`tech pass: ${held.length} financial entries found, 9 expected`);
+    { const e = need(C, 'macroeconomics', 'condition_entries'); if (e.trigger !== 'pmr_cv_gov >= 30' || e.half_trigger !== 'pmr_cv_gov >= 15') throw new Error('tech pass: macroeconomics is not on 30 / 15 administration levels');
+      e.trigger = 'pmr_cv_gov >= 200'; e.half_trigger = 'pmr_cv_gov >= 100'; e.label = e.label.replace('at least 30 ', 'at least 200 '); held.push('macroeconomics 30 -> 200 administration levels (follower 100)'); }
+    // 4. the military industries' marks (§10.130)
+    for (const k of ['arms', 'artillery', 'munition']) { if (RE.threshold_mult[k] !== 0.5) throw new Error(`tech pass: threshold_mult.${k} is not 0.5`); RE.threshold_mult[k] = 0.25; }
+    // 5. shift work: no entry, a bespoke AI research weight (§10.130)
+    j.tech_ai_weight_bespoke = { shift_work: 1.2 };
+    techPass = { ruled: '2026-11-22, BALANCE_FRAMEWORK §10.129 and §10.130 (after F286, F287)',
+      references: 'railways -> coal and iron mines, tier 1 and later; flash_freezing -> fishing wharves and whaling stations, tier 2; navigation excluded; automotive necessity anchor -> the motor\'s Compound Engines rung, or its Electric Engines rung (two sources)',
+      prerequisite: 'pumpjacks <- steam_donkey + rotary_valve_engine (dynamite dropped; lib_tier4_spec PREREQ_SWAPS pumping-engines)',
+      mining_sources: 'nitroglycerin 150000, dynamite 250000 workers in the six tiered mines (merge)', held, threshold_mult: 'arms, artillery, munition 0.5 -> 0.25',
+      tech_ai_weight_bespoke: 'shift_work 1.2' };
+    j._tech_pass = techPass;
+  }
   j._book12 = { name: NAME, game_version: gameVersion, generated: new Date().toISOString(), command: 'node tools/make_book12.mjs ' + argv.join(' '),
     rulings: {
       'motor ladder (insert motor)': '§10.116 ruling 4, §10.116.2 (Compound Engines on pumpjacks, shown as Pumping Engines)',
@@ -127,7 +184,8 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
       'research_events.mark_rule higher': '§10.119 item 6a', 'research_events.entry_weight_rule 0.8 / 0.5, tick': '§10.119 item 3 (ruled 2026-11-21)',
       'secondary_sizing tier': '§10.119 item 2', 'power_lines_engines': '§10.116 ruling 8', 'craft_seed_fixes': '§10.119 item 7',
       'agri_steps': '§10.124 items 1 and 3; §10.116.1',
-      ...(NAVAL_LOWERED !== 0.8 ? { [`research_events.entry_weight_rule.naval_lowered ${NAVAL_LOWERED}`]: '§10.127 (ruled 2026-11-22)' } : {}) } };
+      ...(NAVAL_LOWERED !== 0.8 ? { [`research_events.entry_weight_rule.naval_lowered ${NAVAL_LOWERED}`]: '§10.127 (ruled 2026-11-22)' } : {}),
+      ...(TECH_PASS ? { 'the technology pass (_tech_pass)': '§10.129, §10.130 (ruled 2026-11-22)' } : {}) } };
   writeFileSync(b('pre'), JSON.stringify(j));
   writeFileSync(`config/tech_tree_options.${P}-pre.json`, readFileSync(`config/tech_tree_options.${P}-dep.json`));
   console.log(`\n(hand) ${b('pre')}: the 1.2 book fields (mark rule, weight rule, tier-scaled lines, engines on the power lines, craft fixes, ${worldGate.length} world-gated methods, ${irrigation.length} irrigation drives)`);
