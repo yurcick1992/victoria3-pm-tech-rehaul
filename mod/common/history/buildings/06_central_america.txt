@@ -23,7 +23,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -125,7 +125,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 		region_state:GBR={
@@ -168,7 +168,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_port"
@@ -203,7 +203,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}
@@ -257,7 +257,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 		region_state:MKT={
@@ -393,7 +393,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_rice_farm"

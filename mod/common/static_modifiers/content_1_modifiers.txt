@@ -937,8 +937,17 @@ siberia_mining = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
 	state_migration_pull_mult = 2
 	building_coal_mine_throughput_add = 0.25
+	building_coal_mine_atmospheric_engine_pump_throughput_add = 0.25
+	building_coal_mine_condensing_engine_pump_throughput_add = 0.25
+	building_coal_mine_diesel_pump_throughput_add = 0.25
 	building_iron_mine_throughput_add = 0.25
+	building_iron_mine_atmospheric_engine_pump_throughput_add = 0.25
+	building_iron_mine_condensing_engine_pump_throughput_add = 0.25
+	building_iron_mine_diesel_pump_throughput_add = 0.25
 	building_sulfur_mine_throughput_add = 0.25
+	building_sulfur_mine_atmospheric_engine_pump_throughput_add = 0.25
+	building_sulfur_mine_condensing_engine_pump_throughput_add = 0.25
+	building_sulfur_mine_diesel_pump_throughput_add = 0.25
 }
 
 siberia_infrastructure = {

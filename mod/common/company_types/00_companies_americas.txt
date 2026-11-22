@@ -12,10 +12,16 @@ company_fundidora_monterrey = {
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -72,6 +78,9 @@ company_fundidora_monterrey = {
 	prosperity_modifier = {
 		building_railway_throughput_add = 0.05
 		building_iron_mine_throughput_add = 0.1
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.1
+		building_iron_mine_diesel_pump_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -116,6 +125,7 @@ company_el_aguila = {
 
 	building_types = {
 		building_oil_rig
+		building_oil_rig_combustion_derricks
 	}
 
 	extension_building_types = {
@@ -140,7 +150,10 @@ company_el_aguila = {
 			region = sr:region_central_america
 			is_incorporated = yes
 			any_scope_building = {
-				is_building_type = building_oil_rig
+				OR = {
+					is_building_type = building_oil_rig
+					is_building_type = building_oil_rig_combustion_derricks
+				}
 				level >= 5
 			}
 			is_coastal = yes
@@ -171,6 +184,14 @@ company_el_aguila = {
 				is_coastal = yes
 			}
 		}
+		building_oil_rig_combustion_derricks = {
+			level = 5
+			state_trigger = {
+				region = sr:region_central_america
+				is_incorporated = yes
+				is_coastal = yes
+			}
+		}
 	}
 
 	ai_weight = {
@@ -189,11 +210,17 @@ company_csfa = {
 
 	building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 		building_railway
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	potential = {
@@ -214,11 +241,31 @@ company_csfa = {
 			state_region = s:STATE_ANTOFAGASTA
 			is_incorporated = yes
 		}
-		has_building_levels_in_state_region = {
-			region = STATE_ANTOFAGASTA
-			building = building_sulfur_mine
-			levels >= 5
-			is_incorporated = yes
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_ANTOFAGASTA
+				building = building_sulfur_mine
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ANTOFAGASTA
+				building = building_sulfur_mine_atmospheric_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ANTOFAGASTA
+				building = building_sulfur_mine_condensing_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ANTOFAGASTA
+				building = building_sulfur_mine_diesel_pump
+				levels >= 5
+				is_incorporated = yes
+			}
 		}
 	}
 
@@ -242,6 +289,24 @@ company_csfa = {
 				state_region = s:STATE_ANTOFAGASTA
 			}
 		}
+		building_sulfur_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_ANTOFAGASTA
+			}
+		}
+		building_sulfur_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_ANTOFAGASTA
+			}
+		}
+		building_sulfur_mine_diesel_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_ANTOFAGASTA
+			}
+		}
 	}
 
 	ai_weight = {
@@ -260,6 +325,7 @@ company_caribbean_petroleum = {
 
 	building_types = {
 		building_oil_rig
+		building_oil_rig_combustion_derricks
 	}
 
 	extension_building_types = {
@@ -290,7 +356,10 @@ company_caribbean_petroleum = {
 			}
 			is_incorporated = yes
 			any_scope_building = {
-				is_building_type = building_oil_rig
+				OR = {
+					is_building_type = building_oil_rig
+					is_building_type = building_oil_rig_combustion_derricks
+				}
 				level >= 5
 			}
 		}
@@ -314,6 +383,15 @@ company_caribbean_petroleum = {
 
 	ai_construction_targets = {
 		building_oil_rig = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_ZULIA
+					state_region = s:STATE_MIRANDA
+				}
+			}
+		}
+		building_oil_rig_combustion_derricks = {
 			level = 5
 			state_trigger = {
 				OR = {
@@ -447,6 +525,9 @@ company_la_rosada = {
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -509,6 +590,9 @@ company_la_rosada = {
 	prosperity_modifier = {
 		unit_defense_mult = 0.05
 		building_iron_mine_throughput_add = 0.1
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.1
+		building_iron_mine_diesel_pump_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -764,6 +848,9 @@ company_kablin = {
 
 	extension_building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -845,6 +932,8 @@ company_hbc = {
 
 	building_types = {
 		building_fishing_wharf
+		building_fishing_wharf_fishing_trawlers
+		building_fishing_wharf_steam_trawlers
 		building_logging_camp
 	}
 

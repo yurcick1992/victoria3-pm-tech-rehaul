@@ -4,9 +4,9 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = russian
-				size = 724543
+				size = 722543
 			}
-			create_pop = { pop_type = shopkeepers culture = russian size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = russian size = 26000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = estonian
 				size = 29910
@@ -42,9 +42,9 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = russian
-				size = 996711
+				size = 980711
 			}
-			create_pop = { pop_type = shopkeepers culture = russian size = 48000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = russian size = 64000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = east_german
 				size = 18590
@@ -61,9 +61,10 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = russian
-				size = 1321590
+				size = 1320190
 			}
-			create_pop = { pop_type = shopkeepers culture = russian size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = machinists culture = russian size = 1000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = russian size = 6400 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = ashkenazi
 				size = 13410

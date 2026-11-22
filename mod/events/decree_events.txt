@@ -367,8 +367,8 @@ decree_events.4 = {
 			state_has_decree_variant = { DECREE = decree_promote_social_mobility }
 			any_scope_building = {
 				OR = {
-					is_building_type = building_whaling_station
-					is_building_type = building_fishing_wharf
+					pmr_is_whaling_station = yes
+					pmr_is_fishing_wharf = yes
 				}
 			}
 		}
@@ -402,8 +402,8 @@ decree_events.4 = {
 			random_scope_building = {
 				limit = {
 					OR = {
-						is_building_type = building_whaling_station
-						is_building_type = building_fishing_wharf
+						pmr_is_whaling_station = yes
+						pmr_is_fishing_wharf = yes
 					}
 				}
 				save_scope_as = decree_building

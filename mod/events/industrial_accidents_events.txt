@@ -563,10 +563,10 @@ industrial_accident_events.6 = {
 		# triggered by on_action - on_yearly_events
 		any_scope_state = {
 			OR = {
-				has_building = building_coal_mine
-				has_building = building_iron_mine
-				has_building = building_lead_mine
-				has_building = building_sulfur_mine
+				pmr_has_coal_mine = yes
+				pmr_has_iron_mine = yes
+				pmr_has_lead_mine = yes
+				pmr_has_sulfur_mine = yes
 			}
 		}
 		NOT = {
@@ -580,10 +580,10 @@ industrial_accident_events.6 = {
 		random_scope_state = {
 			limit = {
 				OR = {
-					has_building = building_coal_mine
-					has_building = building_iron_mine
-					has_building = building_lead_mine
-					has_building = building_sulfur_mine
+					pmr_has_coal_mine = yes
+					pmr_has_iron_mine = yes
+					pmr_has_lead_mine = yes
+					pmr_has_sulfur_mine = yes
 				}
 			}
 			save_scope_as = mining_accident_state

@@ -11,10 +11,13 @@
 //   - pumpjacks ← steam donkey + rotary valve engine, dynamite dropped (`make_tier4_techs.mjs --prereq-swap pumping-engines`);
 //   - mining workers as a source for nitroglycerin (150,000) and dynamite (250,000) (`merge: true` extra entries);
 //   - the financial-district entries held, 40 / 60 / 80 / 100 levels → 100 / 150 / 400 / 700, their follower mark a quarter; macroeconomics
-//     on 200 administration levels (from 30), its follower mark the usual half;
+//     on 200 administration levels (from 30), its follower mark the usual half (a quarter at --tech-pass 2);
 //   - the research marks of arms, artillery and munition at × 0.25 (from × 0.5; explosives and synthetics stay × 0.5);
 //   - shift work's AI research weight × 1.2 (`tech_ai_weight_bespoke`);
 //   - `research_events.require_live_sources`: a research source that cannot exist fails the build from this book on (landmine L56).
+// --tech-pass 2 (§10.131, 2026-11-22; the 1.2 canon): all of the above, and the administration and urban-centre entries held, every held
+//   entry's follower mark a quarter: identification documents 18 -> 90 administration levels, mass surveillance 30 -> 220, macroeconomics
+//   200 (follower 50), elevator 80 -> 130 levels of the largest urban centre, paved roads 160 -> 310.
 //
 // --naval-lowered: the standing multiply on a technology with a NAVAL research entry (`entry_weight_rule.naval_lowered`). The default
 // 0.8 is the rule `m12b-first` was built with (its recorded command has no flag and still reproduces it); since BALANCE_FRAMEWORK §10.127
@@ -49,7 +52,8 @@ const opt = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] :
 const P = opt('--prefix', 'm12'); if (!/^[a-z0-9]+$/.test(P)) throw new Error('--prefix <lowercase letters/digits>');
 const NAME = opt('--name', `${P}-first`);
 const NAVAL_LOWERED = +opt('--naval-lowered', '0.8');
-const TECH_PASS = opt('--tech-pass', '0') === '1';
+const TECH_PASS_LEVEL = +opt('--tech-pass', '0'); if (![0, 1, 2].includes(TECH_PASS_LEVEL)) throw new Error('--tech-pass 0 | 1 | 2');
+const TECH_PASS = TECH_PASS_LEVEL >= 1;
 if (!(NAVAL_LOWERED > 0 && NAVAL_LOWERED <= 1)) throw new Error('--naval-lowered <a multiplier in (0, 1]>');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const SNAP_OLD = 'C:/claude-code/vic3_game_1.13.11/game';
@@ -164,6 +168,21 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
     if (held.length !== 9) throw new Error(`tech pass: ${held.length} financial entries found, 9 expected`);
     { const e = need(C, 'macroeconomics', 'condition_entries'); if (e.trigger !== 'pmr_cv_gov >= 30' || e.half_trigger !== 'pmr_cv_gov >= 15') throw new Error('tech pass: macroeconomics is not on 30 / 15 administration levels');
       e.trigger = 'pmr_cv_gov >= 200'; e.half_trigger = 'pmr_cv_gov >= 100'; e.label = e.label.replace('at least 30 ', 'at least 200 '); held.push('macroeconomics 30 -> 200 administration levels (follower 100)'); }
+    // 3b. --tech-pass 2: the administration and urban-centre entries held too, every held entry's follower a quarter (§10.131, the user,
+    //     2026-11-22: "macroeconomics, as well as other gov admins and autoscaling-based JEs, do need a huge increase ... for these techs,
+    //     the ruled followers discount to the threshold is -75%"). The marks are the builder's (§10.131), set so the 2nd-3rd largest
+    //     administration of the m12b-first runs reaches them near the tier anchor; the urban ones estimated from the half-majors path.
+    if (TECH_PASS_LEVEL >= 2) {
+      const HOLD = { identification_documents: ['pmr_cv_gov', 18, 90], mass_surveillance: ['pmr_cv_gov', 30, 220], macroeconomics: ['pmr_cv_gov', 200, 200],
+        elevator: ['pmr_cv_urban', 80, 130], paved_roads: ['pmr_cv_urban', 160, 310] };
+      for (const [k, [cv, from, to]] of Object.entries(HOLD)) { const e = need(C, k, 'condition_entries');
+        if (e.trigger !== `${cv} >= ${from}`) throw new Error(`tech pass 2: ${k} is not on ${cv} >= ${from} (${e.trigger})`);
+        if (!/^pmr_cv_[a-z]+ >= \d+$/.test(e.half_trigger || '')) throw new Error(`tech pass 2: ${k} has no plain follower mark`);
+        const q = Math.ceil(to / 4); e.trigger = `${cv} >= ${to}`; e.half_trigger = `${cv} >= ${q}`;
+        if (from !== to) { const lbl = e.label.replace(`at least ${from} `, `at least ${to} `).replace(`: ${from} levels`, `: ${to} levels`);
+          if (lbl === e.label) throw new Error(`tech pass 2: ${k}'s label does not state its mark`); e.label = lbl; }
+        held.push(`${k} ${from} -> ${to} (follower ${q})`); }
+    }
     // 4. the military industries' marks (§10.130)
     for (const k of ['arms', 'artillery', 'munition']) { if (RE.threshold_mult[k] !== 0.5) throw new Error(`tech pass: threshold_mult.${k} is not 0.5`); RE.threshold_mult[k] = 0.25; }
     // 5. shift work: no entry, a bespoke AI research weight (§10.130)
@@ -173,6 +192,7 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
       prerequisite: 'pumpjacks <- steam_donkey + rotary_valve_engine (dynamite dropped; lib_tier4_spec PREREQ_SWAPS pumping-engines)',
       mining_sources: 'nitroglycerin 150000, dynamite 250000 workers in the six tiered mines (merge)', held, threshold_mult: 'arms, artillery, munition 0.5 -> 0.25',
       tech_ai_weight_bespoke: 'shift_work 1.2' };
+    if (TECH_PASS_LEVEL >= 2) techPass.level2 = 'the administration and urban-centre entries held, every held follower a quarter (§10.131, ruled 2026-11-22)';
     j._tech_pass = techPass;
   }
   j._book12 = { name: NAME, game_version: gameVersion, generated: new Date().toISOString(), command: 'node tools/make_book12.mjs ' + argv.join(' '),
@@ -185,7 +205,8 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
       'secondary_sizing tier': '§10.119 item 2', 'power_lines_engines': '§10.116 ruling 8', 'craft_seed_fixes': '§10.119 item 7',
       'agri_steps': '§10.124 items 1 and 3; §10.116.1',
       ...(NAVAL_LOWERED !== 0.8 ? { [`research_events.entry_weight_rule.naval_lowered ${NAVAL_LOWERED}`]: '§10.127 (ruled 2026-11-22)' } : {}),
-      ...(TECH_PASS ? { 'the technology pass (_tech_pass)': '§10.129, §10.130 (ruled 2026-11-22)' } : {}) } };
+      ...(TECH_PASS ? { 'the technology pass (_tech_pass)': '§10.129, §10.130 (ruled 2026-11-22)' } : {}),
+      ...(TECH_PASS_LEVEL >= 2 ? { 'the administration and urban-centre holds, followers a quarter': '§10.131 (ruled 2026-11-22)' } : {}) } };
   writeFileSync(b('pre'), JSON.stringify(j));
   writeFileSync(`config/tech_tree_options.${P}-pre.json`, readFileSync(`config/tech_tree_options.${P}-dep.json`));
   console.log(`\n(hand) ${b('pre')}: the 1.2 book fields (mark rule, weight rule, tier-scaled lines, engines on the power lines, craft fixes, ${worldGate.length} world-gated methods, ${irrigation.length} irrigation drives)`);

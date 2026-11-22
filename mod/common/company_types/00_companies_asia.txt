@@ -343,6 +343,7 @@ company_orient_express = {
 
 	extension_building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}
@@ -419,6 +420,9 @@ company_great_indian_railway = {
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	potential = {
@@ -496,7 +500,11 @@ company_tata = {
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}
@@ -942,7 +950,13 @@ company_william_sandford = {
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {

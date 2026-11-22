@@ -111,6 +111,78 @@ building_chemical_plant_nitrogen_fixation_throughput_add={
 	}
 }
 
+building_coal_mine_atmospheric_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_coal_mine_condensing_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_coal_mine_diesel_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_copper_mine_atmospheric_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_copper_mine_condensing_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_copper_mine_diesel_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_fishing_wharf_fishing_trawlers_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_fishing_wharf_steam_trawlers_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
 building_food_industry_sweeteners_throughput_add={
 	decimals=0
 	color=good
@@ -130,6 +202,69 @@ building_furniture_manufactory_lathe_throughput_add={
 }
 
 building_furniture_manufactory_mechanized_workshops_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_iron_mine_atmospheric_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_iron_mine_condensing_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_iron_mine_diesel_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_lead_mine_atmospheric_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_lead_mine_condensing_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_lead_mine_diesel_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_motor_industry_compound_engines_throughput_add={
 	decimals=0
 	color=good
 	percent=yes
@@ -193,6 +328,33 @@ building_steel_mill_bessemer_process_throughput_add={
 }
 
 building_steel_mill_open_hearth_process_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_sulfur_mine_atmospheric_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_sulfur_mine_condensing_engine_pump_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_sulfur_mine_diesel_pump_throughput_add={
 	decimals=0
 	color=good
 	percent=yes

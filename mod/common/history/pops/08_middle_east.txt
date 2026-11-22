@@ -527,9 +527,9 @@ POPS = {
 			create_pop = {
 				culture = mashriqi
 				religion = sunni
-				size = 282000
+				size = 281000
 			}
-			create_pop = { pop_type = shopkeepers culture = mashriqi religion = sunni size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = mashriqi religion = sunni size = 13000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = mashriqi
 				religion = orthodox
@@ -567,9 +567,9 @@ POPS = {
 			create_pop = {
 				culture = mashriqi
 				religion = sunni
-				size = 160000
+				size = 159000
 			}
-			create_pop = { pop_type = shopkeepers culture = mashriqi religion = sunni size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = mashriqi religion = sunni size = 7000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = mashriqi
 				religion = shiite
@@ -636,9 +636,9 @@ POPS = {
 			create_pop = {
 				culture = mashriqi
 				religion = sunni
-				size = 198608
+				size = 196608
 			}
-			create_pop = { pop_type = shopkeepers culture = mashriqi religion = sunni size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = mashriqi religion = sunni size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = mashriqi
 				size = 116000
@@ -985,9 +985,9 @@ POPS = {
 		region_state:PER = {
 			create_pop = {
 				culture = persian
-				size = 596733
+				size = 595733
 			}
-			create_pop = { pop_type = shopkeepers culture = persian size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = persian size = 7000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = kurdish
 				size = 72012
@@ -1221,9 +1221,9 @@ POPS = {
 		region_state:PER = {
 			create_pop = {
 				culture = azerbaijani
-				size = 694400
+				size = 690400
 			}
-			create_pop = { pop_type = shopkeepers culture = azerbaijani size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = azerbaijani size = 16000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = persian
 				size = 100061
@@ -1453,9 +1453,9 @@ POPS = {
 		region_state:TUR = {
 			create_pop = {
 				culture = turkish
-				size = 534129
+				size = 530129
 			}
-			create_pop = { pop_type = shopkeepers culture = turkish size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = turkish size = 22000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = armenian
 				size = 7368

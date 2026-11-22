@@ -434,9 +434,9 @@ POPS = {
 			}
 			create_pop = {
 				culture = polish
-				size = 1863469
+				size = 1859469
 			}
-			create_pop = { pop_type = shopkeepers culture = polish size = 36000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = polish size = 40000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = polish
 				religion = protestant
@@ -471,9 +471,9 @@ POPS = {
 		region_state:POL = {
 			create_pop = {
 				culture = polish
-				size = 603163
+				size = 602163
 			}
-			create_pop = { pop_type = shopkeepers culture = polish size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = polish size = 13000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = polish
 				religion = protestant
@@ -517,9 +517,9 @@ POPS = {
 			}
 			create_pop = {
 				culture = finnish
-				size = 406941
+				size = 402941
 			}
-			create_pop = { pop_type = shopkeepers culture = finnish size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = finnish size = 16000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = swedish religion = protestant size = 5400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = finnish religion = protestant size = 12600 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -740,9 +740,9 @@ POPS = {
 			create_pop = {
 				culture = byelorussian
 				religion = catholic # Uniate Greek Catholic Church (Pre Synod of Polotsk)
-				size = 274068
+				size = 272068
 			}
-			create_pop = { pop_type = shopkeepers culture = byelorussian religion = catholic size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = byelorussian religion = catholic size = 20000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = byelorussian
 				size = 277646
@@ -863,9 +863,10 @@ POPS = {
 			}
 			create_pop = {
 				culture = ukrainian
-				size = 2292020
+				size = 2289220
 			}
-			create_pop = { pop_type = shopkeepers culture = ukrainian size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = machinists culture = ukrainian size = 2000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = ukrainian size = 30800 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = east_german
 				size = 30125
@@ -1269,9 +1270,9 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = russian
-				size = 1211720
+				size = 1207720
 			}
-			create_pop = { pop_type = shopkeepers culture = russian size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = russian size = 28000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = tatar
 				size = 7452
@@ -1300,9 +1301,9 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = russian
-				size = 1420715
+				size = 1416715
 			}
-			create_pop = { pop_type = shopkeepers culture = russian size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = russian size = 16000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = chuvash
 				size = 34193

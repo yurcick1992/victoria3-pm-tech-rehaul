@@ -432,9 +432,9 @@ POPS = {
 		region_state:NPU = {
 			create_pop = {
 				culture = south_andean
-				size = 242000
+				size = 240000
 			}
-			create_pop = { pop_type = shopkeepers culture = south_andean size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = south_andean size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = quechua
 				size = 212000

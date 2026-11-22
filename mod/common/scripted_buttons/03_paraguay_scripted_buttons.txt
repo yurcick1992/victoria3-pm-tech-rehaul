@@ -57,7 +57,7 @@ ybycui_iron_works_button = {
 		any_scope_state = {
 			state_region = s:STATE_BAJO_PARAGUAY
             any_scope_building = {
-                is_building_type = building_iron_mine
+                pmr_is_iron_mine = yes
                 level >= 3
                 occupancy >= 0.5
             }

@@ -21,6 +21,9 @@ company_mitsui = {
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -112,16 +115,23 @@ company_mitsubishi = {
 	building_types = {
 		building_shipyard
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_paper_mill_sulfite_pulping
 		building_paper_mill_continuous_web
 	}
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 		building_artillery_foundry
@@ -202,6 +212,9 @@ company_mantetsu = {
 	building_types = {
 		building_railway
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_glassworks_leaded_glass
 		building_glassworks_crystal_glass
 		building_glassworks_houseware_plastics

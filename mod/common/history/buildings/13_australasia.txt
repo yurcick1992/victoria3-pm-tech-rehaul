@@ -28,6 +28,19 @@
 				activate_production_methods={ "pm_simple_farming"  "pm_tools_disabled" "pm_citrus_orchards" }
 			}
 			create_building={
+				building="building_whaling_station_wooden_whaling_ships"
+				add_ownership={
+					building={
+						type="building_financial_district"
+						country="c:GBR"
+						levels=1
+						region="STATE_HOME_COUNTIES"
+					}
+				}
+				reserves=1
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_whaling_station_wooden_whaling_ships" }
+			}
+			create_building={
 				building="building_whaling_station"
 				add_ownership={
 					building={
@@ -38,7 +51,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_wooden_whaling_ships" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_whaling_station_simple_whaling" }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -224,7 +237,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_copper_mine" }
+				activate_production_methods={ "pm_main_copper_mine_picks_and_shovels" }
 			}
 		}
 		region_state:KAU={
@@ -252,7 +265,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 		}
 	}

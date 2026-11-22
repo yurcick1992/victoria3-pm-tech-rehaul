@@ -12,11 +12,21 @@
     arable_land = 50
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_coal_mine = 28
-        building_iron_mine = 30
+        building_coal_mine = 14
+        building_coal_mine_atmospheric_engine_pump = 14
+        building_coal_mine_condensing_engine_pump = 14
+        building_coal_mine_diesel_pump = 14
+        building_iron_mine = 15
+        building_iron_mine_atmospheric_engine_pump = 15
+        building_iron_mine_condensing_engine_pump = 15
+        building_iron_mine_diesel_pump = 15
         building_logging_camp = 14
-        building_fishing_wharf = 6
-        building_whaling_station = 4
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
+        building_whaling_station = 3
+        building_whaling_station_wooden_whaling_ships = 3
+        building_whaling_station_steam_whaling_ships = 3
     }
     resource = {
         type = "building_rubber_plantation"
@@ -39,7 +49,9 @@ STATE_GUAYANA = {
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_coffee_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 20
-        building_fishing_wharf = 6
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
     }
     resource = {
         type = "building_gold_field"
@@ -52,7 +64,7 @@ STATE_GUAYANA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3062
 }
@@ -70,10 +82,18 @@ STATE_ZULIA = {
     arable_land = 80
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_coffee_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_coal_mine = 24
-        building_sulfur_mine = 32
+        building_coal_mine = 12
+        building_coal_mine_atmospheric_engine_pump = 12
+        building_coal_mine_condensing_engine_pump = 12
+        building_coal_mine_diesel_pump = 12
+        building_sulfur_mine = 16
+        building_sulfur_mine_atmospheric_engine_pump = 16
+        building_sulfur_mine_condensing_engine_pump = 16
+        building_sulfur_mine_diesel_pump = 16
         building_logging_camp = 9
-        building_fishing_wharf = 7
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     resource = {
         type = "building_rubber_plantation"
@@ -81,7 +101,7 @@ STATE_ZULIA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 100
+        undiscovered_amount = 75
     }
     naval_exit_id = 3025
 }
@@ -99,7 +119,9 @@ STATE_MIRANDA = {
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 7
-        building_fishing_wharf = 5
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
     }
     resource = {
         type = "building_rubber_plantation"
@@ -107,7 +129,7 @@ STATE_MIRANDA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 100
+        undiscovered_amount = 75
     }
     naval_exit_id = 3025
 }
@@ -125,9 +147,14 @@ STATE_BOLIVAR = {
     arable_land = 40
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_iron_mine = 30
+        building_iron_mine = 15
+        building_iron_mine_atmospheric_engine_pump = 15
+        building_iron_mine_condensing_engine_pump = 15
+        building_iron_mine_diesel_pump = 15
         building_logging_camp = 25
-        building_fishing_wharf = 3
+        building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
     }
     resource = {
         type = "building_rubber_plantation"
@@ -135,7 +162,7 @@ STATE_BOLIVAR = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 50
+        undiscovered_amount = 38
     }
     naval_exit_id = 3025
 }
@@ -153,11 +180,18 @@ STATE_ANTIOQUIA = {
     arable_land = 120
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_dam_small_cheap = 1
-        building_coal_mine = 32
-        building_iron_mine = 36
+        building_coal_mine = 16
+        building_coal_mine_atmospheric_engine_pump = 16
+        building_coal_mine_condensing_engine_pump = 16
+        building_coal_mine_diesel_pump = 16
+        building_iron_mine = 18
+        building_iron_mine_atmospheric_engine_pump = 18
+        building_iron_mine_condensing_engine_pump = 18
+        building_iron_mine_diesel_pump = 18
         building_logging_camp = 13
-        building_fishing_wharf = 8
+        building_fishing_wharf = 6
+        building_fishing_wharf_fishing_trawlers = 6
+        building_fishing_wharf_steam_trawlers = 6
     }
     resource = {
         type = "building_rubber_plantation"
@@ -165,7 +199,7 @@ STATE_ANTIOQUIA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3025
 }
@@ -202,8 +236,10 @@ STATE_CUNDINAMARCA = {
     arable_land = 50
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_opium_plantation" }
     capped_resources = {
-        building_dam_small_cheap = 1
-        building_coal_mine = 20
+        building_coal_mine = 10
+        building_coal_mine_atmospheric_engine_pump = 10
+        building_coal_mine_condensing_engine_pump = 10
+        building_coal_mine_diesel_pump = 10
         building_logging_camp = 7
     }
     resource = {
@@ -227,10 +263,17 @@ STATE_CAUCA = {
     arable_land = 80
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_coal_mine = 20
+        building_coal_mine = 10
+        building_coal_mine_atmospheric_engine_pump = 10
+        building_coal_mine_condensing_engine_pump = 10
+        building_coal_mine_diesel_pump = 10
         building_logging_camp = 8
-        building_fishing_wharf = 6
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
         building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
     }
     resource = {
         type = "building_rubber_plantation"
@@ -253,7 +296,10 @@ STATE_PASTAZA = {
     arable_land = 30
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_dye_plantation" "building_sugar_plantation" "building_banana_plantation" "building_tobacco_plantation" }
     capped_resources = {
-        building_coal_mine = 28
+        building_coal_mine = 14
+        building_coal_mine_atmospheric_engine_pump = 14
+        building_coal_mine_condensing_engine_pump = 14
+        building_coal_mine_diesel_pump = 14
         building_logging_camp = 25
     }
     resource = {
@@ -263,7 +309,7 @@ STATE_PASTAZA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
 }
 
@@ -280,11 +326,24 @@ STATE_TARAPACA = {
     arable_land = 10
     arable_resources = { "building_livestock_ranch" "building_dye_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_iron_mine = 18
-        building_sulfur_mine = 24
-        building_copper_mine = 18
-        building_whaling_station = 3
-        building_fishing_wharf = 5
+        building_iron_mine = 9
+        building_iron_mine_atmospheric_engine_pump = 9
+        building_iron_mine_condensing_engine_pump = 9
+        building_iron_mine_diesel_pump = 9
+        building_sulfur_mine = 12
+        building_sulfur_mine_atmospheric_engine_pump = 12
+        building_sulfur_mine_condensing_engine_pump = 12
+        building_sulfur_mine_diesel_pump = 12
+        building_copper_mine = 9
+        building_copper_mine_atmospheric_engine_pump = 9
+        building_copper_mine_condensing_engine_pump = 9
+        building_copper_mine_diesel_pump = 9
+        building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
     }
     naval_exit_id = 3152
     min_cold_effect = 0.05
@@ -304,10 +363,21 @@ STATE_ANTOFAGASTA = {
     arable_land = 10
     arable_resources = { "building_livestock_ranch" }
     capped_resources = {
-        building_iron_mine = 30
-        building_sulfur_mine = 48
-        building_copper_mine = 36
-        building_fishing_wharf = 5
+        building_iron_mine = 15
+        building_iron_mine_atmospheric_engine_pump = 15
+        building_iron_mine_condensing_engine_pump = 15
+        building_iron_mine_diesel_pump = 15
+        building_sulfur_mine = 24
+        building_sulfur_mine_atmospheric_engine_pump = 24
+        building_sulfur_mine_condensing_engine_pump = 24
+        building_sulfur_mine_diesel_pump = 24
+        building_copper_mine = 18
+        building_copper_mine_atmospheric_engine_pump = 18
+        building_copper_mine_condensing_engine_pump = 18
+        building_copper_mine_diesel_pump = 18
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
     }
     resource = {
         type = "building_gold_field"
@@ -340,7 +410,7 @@ STATE_SANTA_CRUZ = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 50
+        undiscovered_amount = 38
     }
 }
 
@@ -356,8 +426,14 @@ STATE_LA_PAZ = {
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_coffee_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
         building_logging_camp = 20
-        building_gold_mine = 4
-        building_copper_mine = 6
+        building_gold_mine = 3
+        building_gold_mine_atmospheric_engine_pump = 2
+        building_gold_mine_condensing_engine_pump = 2
+        building_gold_mine_diesel_pump = 2
+        building_copper_mine = 3
+        building_copper_mine_atmospheric_engine_pump = 3
+        building_copper_mine_condensing_engine_pump = 3
+        building_copper_mine_diesel_pump = 3
     }
     resource = {
         type = "building_rubber_plantation"
@@ -365,7 +441,7 @@ STATE_LA_PAZ = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 50
+        undiscovered_amount = 38
     }
     min_cold_effect = 0.18
     max_cold_effect = 0.40
@@ -383,10 +459,19 @@ STATE_POTOSI = {
     arable_land = 20
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_coffee_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_lead_mine = 6
-        building_copper_mine = 7
+        building_lead_mine = 3
+        building_lead_mine_atmospheric_engine_pump = 3
+        building_lead_mine_condensing_engine_pump = 3
+        building_lead_mine_diesel_pump = 3
+        building_copper_mine = 4
+        building_copper_mine_atmospheric_engine_pump = 4
+        building_copper_mine_condensing_engine_pump = 4
+        building_copper_mine_diesel_pump = 4
         building_logging_camp = 9
-        building_gold_mine = 4
+        building_gold_mine = 3
+        building_gold_mine_atmospheric_engine_pump = 2
+        building_gold_mine_condensing_engine_pump = 2
+        building_gold_mine_diesel_pump = 2
     }
     min_cold_effect = 0.20
     max_cold_effect = 0.45
@@ -405,10 +490,17 @@ STATE_CAJAMARCA = {
     arable_land = 60
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_coal_mine = 20
+        building_coal_mine = 10
+        building_coal_mine_atmospheric_engine_pump = 10
+        building_coal_mine_condensing_engine_pump = 10
+        building_coal_mine_diesel_pump = 10
         building_logging_camp = 6
-        building_whaling_station = 3
-        building_fishing_wharf = 7
+        building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     resource = {
         type = "building_gold_field"
@@ -417,7 +509,7 @@ STATE_CAJAMARCA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3024
     min_cold_effect = 0.06
@@ -437,14 +529,29 @@ STATE_LIMA = {
     arable_land = 40
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_dam_small_cheap = 1
-        building_gold_mine = 6
-        building_iron_mine = 21
-        building_lead_mine = 30
-        building_sulfur_mine = 28
+        building_gold_mine = 4
+        building_gold_mine_atmospheric_engine_pump = 3
+        building_gold_mine_condensing_engine_pump = 3
+        building_gold_mine_diesel_pump = 3
+        building_iron_mine = 11
+        building_iron_mine_atmospheric_engine_pump = 11
+        building_iron_mine_condensing_engine_pump = 11
+        building_iron_mine_diesel_pump = 11
+        building_lead_mine = 15
+        building_lead_mine_atmospheric_engine_pump = 15
+        building_lead_mine_condensing_engine_pump = 15
+        building_lead_mine_diesel_pump = 15
+        building_sulfur_mine = 14
+        building_sulfur_mine_atmospheric_engine_pump = 14
+        building_sulfur_mine_condensing_engine_pump = 14
+        building_sulfur_mine_diesel_pump = 14
         building_logging_camp = 11
-        building_whaling_station = 5
-        building_fishing_wharf = 7
+        building_whaling_station = 4
+        building_whaling_station_wooden_whaling_ships = 4
+        building_whaling_station_steam_whaling_ships = 4
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     naval_exit_id = 3024
 }
@@ -462,10 +569,18 @@ STATE_ICA = {
     arable_land = 50
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_iron_mine = 36
-        building_sulfur_mine = 32
+        building_iron_mine = 18
+        building_iron_mine_atmospheric_engine_pump = 18
+        building_iron_mine_condensing_engine_pump = 18
+        building_iron_mine_diesel_pump = 18
+        building_sulfur_mine = 16
+        building_sulfur_mine_atmospheric_engine_pump = 16
+        building_sulfur_mine_condensing_engine_pump = 16
+        building_sulfur_mine_diesel_pump = 16
         building_logging_camp = 11
-        building_fishing_wharf = 4
+        building_fishing_wharf = 3
+        building_fishing_wharf_fishing_trawlers = 3
+        building_fishing_wharf_steam_trawlers = 3
     }
     naval_exit_id = 3152
 }
@@ -483,11 +598,22 @@ STATE_AREQUIPA = {
     arable_land = 25
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_iron_mine = 21
-        building_sulfur_mine = 32
-        building_copper_mine = 6
+        building_iron_mine = 11
+        building_iron_mine_atmospheric_engine_pump = 11
+        building_iron_mine_condensing_engine_pump = 11
+        building_iron_mine_diesel_pump = 11
+        building_sulfur_mine = 16
+        building_sulfur_mine_atmospheric_engine_pump = 16
+        building_sulfur_mine_condensing_engine_pump = 16
+        building_sulfur_mine_diesel_pump = 16
+        building_copper_mine = 3
+        building_copper_mine_atmospheric_engine_pump = 3
+        building_copper_mine_condensing_engine_pump = 3
+        building_copper_mine_diesel_pump = 3
         building_logging_camp = 4
-        building_fishing_wharf = 5
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
     }
     naval_exit_id = 3152
     min_cold_effect = 0.10
@@ -508,12 +634,16 @@ STATE_URUGUAY = {
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_vineyard" }
     capped_resources = {
         building_logging_camp = 9
-        building_fishing_wharf = 6
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
         building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3065
     min_cold_effect = 0.00
@@ -532,10 +662,19 @@ STATE_JUJUY = {
     arable_land = 50
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" }
     capped_resources = {
-        building_iron_mine = 36
-        building_lead_mine = 18
+        building_iron_mine = 18
+        building_iron_mine_atmospheric_engine_pump = 18
+        building_iron_mine_condensing_engine_pump = 18
+        building_iron_mine_diesel_pump = 18
+        building_lead_mine = 9
+        building_lead_mine_atmospheric_engine_pump = 9
+        building_lead_mine_condensing_engine_pump = 9
+        building_lead_mine_diesel_pump = 9
         building_logging_camp = 8
-        building_gold_mine = 3
+        building_gold_mine = 2
+        building_gold_mine_atmospheric_engine_pump = 2
+        building_gold_mine_condensing_engine_pump = 2
+        building_gold_mine_diesel_pump = 2
     }
     min_cold_effect = 0.10
     max_cold_effect = 0.35
@@ -557,7 +696,7 @@ STATE_ALTO_PARAGUAY = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     min_cold_effect = 0.00
     max_cold_effect = 0.01
@@ -575,12 +714,15 @@ STATE_BAJO_PARAGUAY = {
     arable_land = 120
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_cotton_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_iron_mine = 15
+        building_iron_mine = 8
+        building_iron_mine_atmospheric_engine_pump = 8
+        building_iron_mine_condensing_engine_pump = 8
+        building_iron_mine_diesel_pump = 8
         building_logging_camp = 14
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     min_cold_effect = 0.00
     max_cold_effect = 0.02
@@ -600,7 +742,9 @@ STATE_BUENOS_AIRES = {
     arable_resources = { "building_wheat_farm" "building_livestock_ranch" "building_vineyard" }
     capped_resources = {
         building_logging_camp = 9
-        building_fishing_wharf = 12
+        building_fishing_wharf = 8
+        building_fishing_wharf_fishing_trawlers = 8
+        building_fishing_wharf_steam_trawlers = 8
     }
     naval_exit_id = 3065
     min_cold_effect = 0.00
@@ -620,13 +764,21 @@ STATE_PATAGONIA = {
     arable_land = 150
     arable_resources = { "building_livestock_ranch" }
     capped_resources = {
-        building_coal_mine = 32
-        building_sulfur_mine = 20
-        building_fishing_wharf = 7
+        building_coal_mine = 16
+        building_coal_mine_atmospheric_engine_pump = 16
+        building_coal_mine_condensing_engine_pump = 16
+        building_coal_mine_diesel_pump = 16
+        building_sulfur_mine = 10
+        building_sulfur_mine_atmospheric_engine_pump = 10
+        building_sulfur_mine_condensing_engine_pump = 10
+        building_sulfur_mine_diesel_pump = 10
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3066
     min_cold_effect = 0.10
@@ -646,8 +798,14 @@ STATE_RIO_NEGRO = {
     arable_land = 120
     arable_resources = { "building_wheat_farm" "building_livestock_ranch" "building_dye_plantation" "building_sugar_plantation" "building_vineyard" }
     capped_resources = {
-        building_coal_mine = 40
-        building_sulfur_mine = 52
+        building_coal_mine = 20
+        building_coal_mine_atmospheric_engine_pump = 20
+        building_coal_mine_condensing_engine_pump = 20
+        building_coal_mine_diesel_pump = 20
+        building_sulfur_mine = 26
+        building_sulfur_mine_atmospheric_engine_pump = 26
+        building_sulfur_mine_condensing_engine_pump = 26
+        building_sulfur_mine_diesel_pump = 26
     }
     min_cold_effect = 0.00
     max_cold_effect = 0.11
@@ -686,10 +844,12 @@ STATE_SANTA_FE = {
     capped_resources = {
         building_logging_camp = 11
         building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3065
     min_cold_effect = 0.00
@@ -712,7 +872,7 @@ STATE_CORRIENTES = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     min_cold_effect = 0.00
     max_cold_effect = 0.03
@@ -730,9 +890,18 @@ STATE_TUCUMAN = {
     arable_land = 60
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_iron_mine = 39
-        building_lead_mine = 15
-        building_gold_mine = 3
+        building_iron_mine = 20
+        building_iron_mine_atmospheric_engine_pump = 20
+        building_iron_mine_condensing_engine_pump = 20
+        building_iron_mine_diesel_pump = 20
+        building_lead_mine = 8
+        building_lead_mine_atmospheric_engine_pump = 8
+        building_lead_mine_condensing_engine_pump = 8
+        building_lead_mine_diesel_pump = 8
+        building_gold_mine = 2
+        building_gold_mine_atmospheric_engine_pump = 2
+        building_gold_mine_condensing_engine_pump = 2
+        building_gold_mine_diesel_pump = 2
         building_logging_camp = 6
     }
     min_cold_effect = 0.00
@@ -771,13 +940,29 @@ STATE_SANTIAGO = {
     arable_land = 50
     arable_resources = { "building_wheat_farm" "building_livestock_ranch" "building_tobacco_plantation" "building_sugar_plantation" "building_vineyard" }
     capped_resources = {
-        building_gold_mine = 5
-        building_iron_mine = 33
-        building_sulfur_mine = 36
-        building_copper_mine = 15
+        building_gold_mine = 3
+        building_gold_mine_atmospheric_engine_pump = 3
+        building_gold_mine_condensing_engine_pump = 3
+        building_gold_mine_diesel_pump = 3
+        building_iron_mine = 17
+        building_iron_mine_atmospheric_engine_pump = 17
+        building_iron_mine_condensing_engine_pump = 17
+        building_iron_mine_diesel_pump = 17
+        building_sulfur_mine = 18
+        building_sulfur_mine_atmospheric_engine_pump = 18
+        building_sulfur_mine_condensing_engine_pump = 18
+        building_sulfur_mine_diesel_pump = 18
+        building_copper_mine = 8
+        building_copper_mine_atmospheric_engine_pump = 8
+        building_copper_mine_condensing_engine_pump = 8
+        building_copper_mine_diesel_pump = 8
         building_logging_camp = 6
         building_whaling_station = 2
-        building_fishing_wharf = 8
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
+        building_fishing_wharf = 6
+        building_fishing_wharf_fishing_trawlers = 6
+        building_fishing_wharf_steam_trawlers = 6
     }
     naval_exit_id = 3152
     min_cold_effect = 0.00
@@ -798,13 +983,29 @@ STATE_LOS_RIOS = {
     arable_land = 70
     arable_resources = { "building_wheat_farm" "building_livestock_ranch" "building_tobacco_plantation" "building_sugar_plantation" "building_vineyard" }
     capped_resources = {
-        building_coal_mine = 60
-        building_lead_mine = 24
-        building_sulfur_mine = 32
+        building_coal_mine = 30
+        building_coal_mine_atmospheric_engine_pump = 30
+        building_coal_mine_condensing_engine_pump = 30
+        building_coal_mine_diesel_pump = 30
+        building_lead_mine = 12
+        building_lead_mine_atmospheric_engine_pump = 12
+        building_lead_mine_condensing_engine_pump = 12
+        building_lead_mine_diesel_pump = 12
+        building_sulfur_mine = 16
+        building_sulfur_mine_atmospheric_engine_pump = 16
+        building_sulfur_mine_condensing_engine_pump = 16
+        building_sulfur_mine_diesel_pump = 16
         building_logging_camp = 20
-        building_whaling_station = 3
-        building_fishing_wharf = 10
-        building_copper_mine = 6
+        building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
+        building_fishing_wharf = 7
+        building_fishing_wharf_fishing_trawlers = 7
+        building_fishing_wharf_steam_trawlers = 7
+        building_copper_mine = 3
+        building_copper_mine_atmospheric_engine_pump = 3
+        building_copper_mine_condensing_engine_pump = 3
+        building_copper_mine_diesel_pump = 3
     }
     naval_exit_id = 3152
 }
@@ -822,9 +1023,14 @@ STATE_ARAUCANIA = {
     arable_land = 10
     arable_resources = { "building_livestock_ranch" }
     capped_resources = {
-        building_sulfur_mine = 40
+        building_sulfur_mine = 20
+        building_sulfur_mine_atmospheric_engine_pump = 20
+        building_sulfur_mine_condensing_engine_pump = 20
+        building_sulfur_mine_diesel_pump = 20
         building_logging_camp = 30
-        building_fishing_wharf = 15
+        building_fishing_wharf = 10
+        building_fishing_wharf_fishing_trawlers = 10
+        building_fishing_wharf_steam_trawlers = 10
     }
     resource = {
         type = "building_gold_field"
@@ -833,7 +1039,7 @@ STATE_ARAUCANIA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3151
     min_cold_effect = 0.01
@@ -855,8 +1061,12 @@ STATE_SOUTH_ATLANTIC_ISLANDS = {
     arable_land = 10
     arable_resources = { "building_livestock_ranch" }
     capped_resources = {
-        building_whaling_station = 3
+        building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
         building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
     }
     naval_exit_id = 3066
     min_cold_effect = 0.12
@@ -878,8 +1088,13 @@ STATE_PARA = {
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_cotton_plantation" "building_tobacco_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 9
-        building_fishing_wharf = 3
-        building_iron_mine = 78
+        building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
+        building_iron_mine = 39
+        building_iron_mine_atmospheric_engine_pump = 39
+        building_iron_mine_condensing_engine_pump = 39
+        building_iron_mine_diesel_pump = 39
     }
     resource = {
         type = "building_rubber_plantation"
@@ -887,7 +1102,7 @@ STATE_PARA = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3142
     blockade_locator = {
@@ -910,7 +1125,9 @@ STATE_MARANHAO = {
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 16
-        building_fishing_wharf = 7
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     resource = {
         type = "building_rubber_plantation"
@@ -940,7 +1157,7 @@ STATE_AMAZONAS = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
 }
 
@@ -977,7 +1194,9 @@ STATE_GOIAS = {
     arable_resources = { "building_rice_farm" "building_livestock_ranch" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_coffee_plantation" }
     capped_resources = {
         building_logging_camp = 16
-        building_fishing_wharf = 7
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     resource = {
         type = "building_rubber_plantation"
@@ -998,7 +1217,10 @@ STATE_MATO_GROSSO = {
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 29
-        building_iron_mine = 18
+        building_iron_mine = 9
+        building_iron_mine_atmospheric_engine_pump = 9
+        building_iron_mine_condensing_engine_pump = 9
+        building_iron_mine_diesel_pump = 9
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1006,7 +1228,7 @@ STATE_MATO_GROSSO = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
 }
 
@@ -1023,15 +1245,25 @@ STATE_RIO_GRANDE_DO_SUL = {
     arable_land = 80
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_dye_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_coal_mine = 28
+        building_coal_mine = 14
+        building_coal_mine_atmospheric_engine_pump = 14
+        building_coal_mine_condensing_engine_pump = 14
+        building_coal_mine_diesel_pump = 14
         building_logging_camp = 11
-        building_fishing_wharf = 6
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
         building_whaling_station = 2
-        building_lead_mine = 30
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
+        building_lead_mine = 15
+        building_lead_mine_atmospheric_engine_pump = 15
+        building_lead_mine_condensing_engine_pump = 15
+        building_lead_mine_diesel_pump = 15
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3064
     min_cold_effect = 0.00
@@ -1051,10 +1283,17 @@ STATE_PARANA = {
     arable_land = 40
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tea_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_coal_mine = 20
+        building_coal_mine = 10
+        building_coal_mine_atmospheric_engine_pump = 10
+        building_coal_mine_condensing_engine_pump = 10
+        building_coal_mine_diesel_pump = 10
         building_logging_camp = 30
-        building_fishing_wharf = 3
+        building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
         building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
     }
     naval_exit_id = 3064
     min_cold_effect = 0.00
@@ -1074,10 +1313,17 @@ STATE_SANTA_CATARINA = {
     arable_land = 40
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tea_plantation" "building_sugar_plantation" "building_banana_plantation" "building_vineyard" }
     capped_resources = {
-        building_coal_mine = 20
+        building_coal_mine = 10
+        building_coal_mine_atmospheric_engine_pump = 10
+        building_coal_mine_condensing_engine_pump = 10
+        building_coal_mine_diesel_pump = 10
         building_logging_camp = 7
         building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
         building_whaling_station = 2
+        building_whaling_station_wooden_whaling_ships = 2
+        building_whaling_station_steam_whaling_ships = 2
     }
     naval_exit_id = 3064
     min_cold_effect = 0.00
@@ -1097,9 +1343,10 @@ STATE_SAO_PAULO = {
     arable_land = 130
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_dye_plantation" "building_tea_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_dam_small_cheap = 2
         building_logging_camp = 22
-        building_fishing_wharf = 5
+        building_fishing_wharf = 4
+        building_fishing_wharf_fishing_trawlers = 4
+        building_fishing_wharf_steam_trawlers = 4
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1107,7 +1354,7 @@ STATE_SAO_PAULO = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
     naval_exit_id = 3064
     min_cold_effect = 0.00
@@ -1126,8 +1373,17 @@ STATE_MINAS_GERAIS = {
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
         building_gold_mine = 2
-        building_iron_mine = 45
-        building_lead_mine = 30
+        building_gold_mine_atmospheric_engine_pump = 1
+        building_gold_mine_condensing_engine_pump = 1
+        building_gold_mine_diesel_pump = 1
+        building_iron_mine = 23
+        building_iron_mine_atmospheric_engine_pump = 23
+        building_iron_mine_condensing_engine_pump = 23
+        building_iron_mine_diesel_pump = 23
+        building_lead_mine = 15
+        building_lead_mine_atmospheric_engine_pump = 15
+        building_lead_mine_condensing_engine_pump = 15
+        building_lead_mine_diesel_pump = 15
         building_logging_camp = 24
     }
     resource = {
@@ -1141,7 +1397,7 @@ STATE_MINAS_GERAIS = {
     }
     resource = {
         type = "building_oil_rig"
-        undiscovered_amount = 20
+        undiscovered_amount = 15
     }
 }
 
@@ -1158,10 +1414,13 @@ STATE_RIO_DE_JANEIRO = {
     arable_land = 80
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_dye_plantation" "building_tea_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_dam_small_cheap = 1
         building_logging_camp = 9
-        building_fishing_wharf = 9
-        building_whaling_station = 4
+        building_fishing_wharf = 6
+        building_fishing_wharf_fishing_trawlers = 6
+        building_fishing_wharf_steam_trawlers = 6
+        building_whaling_station = 3
+        building_whaling_station_wooden_whaling_ships = 3
+        building_whaling_station_steam_whaling_ships = 3
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1185,10 +1444,14 @@ STATE_BAHIA = {
     arable_land = 80
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_dam_small_cheap = 2
-        building_iron_mine = 15
+        building_iron_mine = 8
+        building_iron_mine_atmospheric_engine_pump = 8
+        building_iron_mine_condensing_engine_pump = 8
+        building_iron_mine_diesel_pump = 8
         building_logging_camp = 18
-        building_fishing_wharf = 8
+        building_fishing_wharf = 6
+        building_fishing_wharf_fishing_trawlers = 6
+        building_fishing_wharf_steam_trawlers = 6
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1211,7 +1474,9 @@ STATE_RIO_GRANDE_DO_NORTE = {
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 7
-        building_fishing_wharf = 4
+        building_fishing_wharf = 3
+        building_fishing_wharf_fishing_trawlers = 3
+        building_fishing_wharf_steam_trawlers = 3
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1233,9 +1498,14 @@ STATE_CEARA = {
     arable_land = 30
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_iron_mine = 18
+        building_iron_mine = 9
+        building_iron_mine_atmospheric_engine_pump = 9
+        building_iron_mine_condensing_engine_pump = 9
+        building_iron_mine_diesel_pump = 9
         building_logging_camp = 7
-        building_fishing_wharf = 3
+        building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1257,9 +1527,14 @@ STATE_PIAUI = {
     arable_land = 30
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
-        building_iron_mine = 36
+        building_iron_mine = 18
+        building_iron_mine_atmospheric_engine_pump = 18
+        building_iron_mine_condensing_engine_pump = 18
+        building_iron_mine_diesel_pump = 18
         building_logging_camp = 14
-        building_fishing_wharf = 7
+        building_fishing_wharf = 5
+        building_fishing_wharf_fishing_trawlers = 5
+        building_fishing_wharf_steam_trawlers = 5
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1283,6 +1558,8 @@ STATE_PARAIBA = {
     capped_resources = {
         building_logging_camp = 4
         building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
     }
     resource = {
         type = "building_rubber_plantation"
@@ -1305,7 +1582,9 @@ STATE_PERNAMBUCO = {
     arable_resources = { "building_maize_farm" "building_livestock_ranch" "building_coffee_plantation" "building_cotton_plantation" "building_tobacco_plantation" "building_sugar_plantation" "building_banana_plantation" }
     capped_resources = {
         building_logging_camp = 5
-        building_fishing_wharf = 3
+        building_fishing_wharf = 2
+        building_fishing_wharf_fishing_trawlers = 2
+        building_fishing_wharf_steam_trawlers = 2
     }
     resource = {
         type = "building_rubber_plantation"

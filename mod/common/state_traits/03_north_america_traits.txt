@@ -1,4 +1,5 @@
-﻿state_trait_yukon_river_salmon_run = {
+﻿# PM & Tech Rehaul: regenerated from vanilla every build by tools/emit_vanilla_refs.mjs (the tier-reference fix, TIER_REFERENCE_AUDIT.md). Do not hand-edit.
+state_trait_yukon_river_salmon_run = {
     icon = "gfx/interface/icons/state_trait_icons/resources_fish.dds"
 	modifier = {
 		building_group_bg_fishing_throughput_add = 0.2
@@ -132,6 +133,9 @@ state_trait_bone_valley = {
     icon = "gfx/interface/icons/state_trait_icons/resources_ore.dds"
 	modifier = {
 		building_sulfur_mine_throughput_add = 0.1
+		building_sulfur_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_sulfur_mine_condensing_engine_pump_throughput_add = 0.1
+		building_sulfur_mine_diesel_pump_throughput_add = 0.1
 	}
 }
 
@@ -175,6 +179,9 @@ state_trait_appalachian_coal = {
 	icon = "gfx/interface/icons/state_trait_icons/resources_ore.dds"
 	modifier = {
 		building_coal_mine_throughput_add = 0.1
+		building_coal_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_coal_mine_condensing_engine_pump_throughput_add = 0.1
+		building_coal_mine_diesel_pump_throughput_add = 0.1
 	}
 }
 
@@ -245,6 +252,9 @@ state_trait_sierra_maestra = {
 		building_coffee_plantation_throughput_add = 0.1
 		building_group_bg_ranching_throughput_add = 0.1
 		building_iron_mine_throughput_add = 0.05
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.05
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.05
+		building_iron_mine_diesel_pump_throughput_add = 0.05
 		building_group_bg_agriculture_throughput_add = 0.1
 		building_group_bg_plantations_throughput_add = 0.1
 	}
@@ -321,6 +331,9 @@ state_trait_copper_country = {
 
 	modifier = {
 		building_copper_mine_throughput_add = 0.2
+		building_copper_mine_atmospheric_engine_pump_throughput_add = 0.2
+		building_copper_mine_condensing_engine_pump_throughput_add = 0.2
+		building_copper_mine_diesel_pump_throughput_add = 0.2
 	}
 }
 
@@ -329,5 +342,8 @@ state_trait_american_copper_belt = {
 
 	modifier = {
 		building_copper_mine_throughput_add = 0.1
+		building_copper_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_copper_mine_condensing_engine_pump_throughput_add = 0.1
+		building_copper_mine_diesel_pump_throughput_add = 0.1
 	}
 }

@@ -16,6 +16,9 @@ company_ingolstadt_electrical_company = {
 		building_textile_mill_sewing_machines
 		building_livestock_ranch
 		building_copper_mine
+		building_copper_mine_atmospheric_engine_pump
+		building_copper_mine_condensing_engine_pump
+		building_copper_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {

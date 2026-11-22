@@ -1,4 +1,5 @@
-﻿state_trait_scandinavian_forests = {
+﻿# PM & Tech Rehaul: regenerated from vanilla every build by tools/emit_vanilla_refs.mjs (the tier-reference fix, TIER_REFERENCE_AUDIT.md). Do not hand-edit.
+state_trait_scandinavian_forests = {
 	icon = "gfx/interface/icons/state_trait_icons/resources_lumber.dds"
 
 	modifier = {
@@ -11,7 +12,13 @@ state_trait_bergslagen = {
 
 	modifier = {
 		building_iron_mine_throughput_add = 0.15
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.15
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.15
+		building_iron_mine_diesel_pump_throughput_add = 0.15
 		building_lead_mine_throughput_add = 0.1
+		building_lead_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_lead_mine_condensing_engine_pump_throughput_add = 0.1
+		building_lead_mine_diesel_pump_throughput_add = 0.1
 	}
 }
 
@@ -20,6 +27,9 @@ state_trait_malmberget = {
 
 	modifier = {
 		building_iron_mine_throughput_add = 0.2
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.2
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.2
+		building_iron_mine_diesel_pump_throughput_add = 0.2
 	}
 }
 
@@ -91,6 +101,9 @@ state_trait_kongsberg_silver_mine = {
 
 	modifier = {
 		building_iron_mine_throughput_add = 0.2
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.2
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.2
+		building_iron_mine_diesel_pump_throughput_add = 0.2
 	}
 }
 

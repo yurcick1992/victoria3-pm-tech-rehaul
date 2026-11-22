@@ -241,6 +241,15 @@ corporate_charters = {
 
 	ai_weight = {
 		value = 3 # very important tech
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_corporate_charters }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = corporate_charters  progress >= 0.99 } }
@@ -539,6 +548,15 @@ egalitarianism = {
 			}
 			add = -0.5
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_egalitarianism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = egalitarianism  progress >= 0.99 } }
@@ -564,6 +582,15 @@ pharmaceuticals = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_pharmaceuticals }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = pharmaceuticals  progress >= 0.99 } }
@@ -592,6 +619,15 @@ modern_sewerage = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_modern_sewerage }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = modern_sewerage  progress >= 0.99 } }
@@ -642,6 +678,15 @@ quinine = {
 				add = 3
 			}
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_quinine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = quinine  progress >= 0.99 } }
@@ -665,6 +710,15 @@ organized_sports = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_organized_sports }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = organized_sports  progress >= 0.99 } }
@@ -743,6 +797,15 @@ central_archives = {
 			}
 			add = 5
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_central_archives }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = central_archives  progress >= 0.99 } }
@@ -768,6 +831,15 @@ central_banking = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_central_banking }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = central_banking  progress >= 0.99 } }
@@ -793,6 +865,15 @@ joint_stock_companies = {
 
 	ai_weight = {
 		value = 2 # important tech
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_joint_stock_companies }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = joint_stock_companies  progress >= 0.99 } }
@@ -818,6 +899,15 @@ dialectics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_dialectics }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = dialectics  progress >= 0.99 } }
@@ -844,6 +934,15 @@ psychiatry = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_psychiatry }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = psychiatry  progress >= 0.99 } }
@@ -940,6 +1039,15 @@ nationalism = {
 			}
 			multiply = 4
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_nationalism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = nationalism  progress >= 0.99 } }
@@ -991,6 +1099,15 @@ labor_movement = {
 			}
 			add = -0.5
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_labor_movement }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = labor_movement  progress >= 0.99 } }
@@ -1019,6 +1136,15 @@ postal_savings = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_postal_savings }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = postal_savings  progress >= 0.99 } }
@@ -1072,6 +1198,15 @@ human_rights = {
 				}
 			}
 			add = -0.5
+		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_human_rights }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -1147,6 +1282,15 @@ feminism = {
 			}
 			add = -0.5
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_feminism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = feminism  progress >= 0.99 } }
@@ -1217,6 +1361,15 @@ civilizing_mission = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_civilizing_mission }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = civilizing_mission  progress >= 0.99 } }
@@ -1254,6 +1407,15 @@ anarchism = {
 				}
 			}
 			add = -0.5
+		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_anarchism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -1307,6 +1469,15 @@ socialism = {
 				}
 			}
 			add = 1
+		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_socialism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -1420,6 +1591,15 @@ corporatism = {
 			}
 			add = 1.5
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_corporatism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = corporatism  progress >= 0.99 } }
@@ -1499,6 +1679,15 @@ mutual_funds = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_mutual_funds }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = mutual_funds  progress >= 0.99 } }
@@ -1525,6 +1714,15 @@ investment_banks = {
 
 	ai_weight = {
 		value = 2 # important tech
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_investment_banks }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = investment_banks  progress >= 0.99 } }
@@ -1576,6 +1774,15 @@ philosophical_pragmatism = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_philosophical_pragmatism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = philosophical_pragmatism  progress >= 0.99 } }
@@ -1603,6 +1810,15 @@ identification_documents = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_identification_documents }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = identification_documents  progress >= 0.99 } }
@@ -1631,6 +1847,15 @@ elevator = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_elevator }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = elevator  progress >= 0.99 } }
@@ -1694,6 +1919,15 @@ malaria_prevention = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_malaria_prevention }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = malaria_prevention  progress >= 0.99 } }
@@ -1723,6 +1957,15 @@ central_planning = {
 
 	ai_weight = {
 		value = 1.5 # Important in general
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_central_planning }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = central_planning  progress >= 0.99 } }
@@ -1770,6 +2013,15 @@ political_agitation = {
 			}
 			add = -0.5
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_political_agitation }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = political_agitation  progress >= 0.99 } }
@@ -1796,6 +2048,15 @@ international_exchange_standards = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_international_exchange_standards }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = international_exchange_standards  progress >= 0.99 } }
@@ -1820,6 +2081,15 @@ corporate_management = {
 
 	ai_weight = {
 		value = 2 # important tech
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_corporate_management }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = corporate_management  progress >= 0.99 } }
@@ -1847,6 +2117,15 @@ psychoanalysis = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_psychoanalysis }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = psychoanalysis  progress >= 0.99 } }
@@ -1931,6 +2210,15 @@ mass_surveillance = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_mass_surveillance }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = mass_surveillance  progress >= 0.99 } }
@@ -1955,6 +2243,15 @@ antibiotics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_antibiotics }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = antibiotics  progress >= 0.99 } }
@@ -2010,6 +2307,15 @@ modern_financial_instruments = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_modern_financial_instruments }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = modern_financial_instruments  progress >= 0.99 } }
@@ -2035,6 +2341,15 @@ macroeconomics = {
 
 	ai_weight = {
 		value = 3 # very important tech
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_macroeconomics }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = macroeconomics  progress >= 0.99 } }
@@ -2061,6 +2376,15 @@ behaviorism = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_behaviorism }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = behaviorism  progress >= 0.99 } }
@@ -2084,6 +2408,15 @@ analytical_philosophy = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_analytical_philosophy }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = analytical_philosophy  progress >= 0.99 } }
@@ -2108,6 +2441,15 @@ paved_roads = {
 
 	ai_weight = {
 		value = 2 # Important for those nice-looking roads!
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_paved_roads }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = paved_roads  progress >= 0.99 } }

@@ -109,9 +109,9 @@ POPS = {
 		region_state:SIC = {
 			create_pop = {
 				culture = south_italian
-				size = 2473396
+				size = 2472396
 			}
-			create_pop = { pop_type = shopkeepers culture = south_italian size = 36000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = south_italian size = 37000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = south_italian religion = catholic size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = south_italian religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = south_italian religion = catholic size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
@@ -206,9 +206,9 @@ POPS = {
 		region_state:LUC = {
 			create_pop = {
 				culture = north_italian
-				size = 88408
+				size = 86408
 			}
-			create_pop = { pop_type = shopkeepers culture = north_italian size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = north_italian size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = north_italian religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = north_italian religion = catholic size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -223,9 +223,9 @@ POPS = {
 		region_state:TUS = {
 			create_pop = {
 				culture = north_italian
-				size = 1567400
+				size = 1563400
 			}
-			create_pop = { pop_type = shopkeepers culture = north_italian size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = north_italian size = 22000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = north_italian
 				religion = jewish
@@ -272,9 +272,9 @@ POPS = {
 		region_state:AUS = {
 			create_pop = {
 				culture = north_italian
-				size = 1655196
+				size = 1636196
 			}
-			create_pop = { pop_type = shopkeepers culture = north_italian size = 96000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = north_italian size = 115000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = north_italian
 				religion = jewish
@@ -313,15 +313,15 @@ POPS = {
 		region_state:SPA = {
 			create_pop = {
 				culture = spanish
-				size = 1496858
+				size = 1490858
 			}
-			create_pop = { pop_type = shopkeepers culture = spanish size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = spanish size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 6600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 15400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 7000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 11400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 26600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 12000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 28000 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_GALICIA = {
@@ -419,7 +419,7 @@ POPS = {
 				culture = catalan
 				size = 852100
 			}
-			create_pop = { pop_type = shopkeepers culture = catalan size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = catalan size = 32000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = spanish
 				size = 50010
@@ -428,8 +428,8 @@ POPS = {
 			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 7800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 18200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 7200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 16800 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 		# Carlist controlled territories + 50k moved here for gameplay reasons
 		region_state:SPC = {
@@ -455,12 +455,12 @@ POPS = {
 		region_state:SPA = {
 			create_pop = {
 				culture = spanish
-				size = 1193991
+				size = 1195991
 			}
 			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = spanish religion = catholic size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = spanish religion = catholic size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -583,9 +583,9 @@ POPS = {
 		region_state:POR = {
 			create_pop = {
 				culture = portuguese
-				size = 757012
+				size = 755012
 			}
-			create_pop = { pop_type = shopkeepers culture = portuguese size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = portuguese size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = portuguese religion = catholic size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = portuguese religion = catholic size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = portuguese religion = catholic size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
@@ -816,9 +816,9 @@ POPS = {
 			}
 			create_pop = {
 				culture = bulgarian
-				size = 479600
+				size = 475600
 			}
-			create_pop = { pop_type = shopkeepers culture = bulgarian size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = bulgarian size = 22000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = greek
 				size = 40004
@@ -1250,9 +1250,9 @@ POPS = {
 			}
 			create_pop = {
 				culture = greek
-				size = 294000
+				size = 288000
 			}
-			create_pop = { pop_type = shopkeepers culture = greek size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = greek size = 30000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = bulgarian
 				size = 80000

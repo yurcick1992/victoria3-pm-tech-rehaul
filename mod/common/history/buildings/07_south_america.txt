@@ -36,7 +36,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -224,7 +224,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_trade_center"
@@ -356,7 +356,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -416,7 +416,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -429,7 +429,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}
@@ -496,7 +496,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -509,7 +509,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}
@@ -537,7 +537,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_sugar_plantation"
@@ -595,7 +595,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries" }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -670,7 +670,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -683,7 +683,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}
@@ -723,7 +723,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_port"
@@ -799,7 +799,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -866,7 +866,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries"  }
 			}
 			create_building={
 				building="building_gold_mine"
@@ -877,7 +877,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -955,7 +955,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1020,7 +1020,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -1070,7 +1070,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 		}
 	}
@@ -1104,7 +1104,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_construction_sector"
@@ -1126,7 +1126,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_maize_farm"
@@ -1158,7 +1158,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_dye_plantation"
@@ -1469,7 +1469,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 		}
 	}
@@ -1516,7 +1516,7 @@
 				}
 				subsidized=yes
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_iron_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1675,7 +1675,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_port"
@@ -1710,7 +1710,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -1723,7 +1723,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 		region_state:PAT={
@@ -1778,7 +1778,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -1804,7 +1804,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -1842,7 +1842,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1887,7 +1887,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -1956,7 +1956,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_textile_mill"
@@ -1969,7 +1969,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -1997,7 +1997,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 		}
 	}
@@ -2081,7 +2081,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_iron_mine"
@@ -2094,7 +2094,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_iron_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -2202,7 +2202,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2700,7 +2700,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_tooling_workshop"
@@ -2726,7 +2726,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 		}
 	}
@@ -2765,7 +2765,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_gold_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_gold_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_iron_mine"
@@ -2778,7 +2778,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_picks_and_shovels_building_iron_mine" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
+				activate_production_methods={ "pm_main_iron_mine_picks_and_shovels" "pm_no_explosives" "pm_no_steam_automation" "pm_road_carts"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -2918,7 +2918,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries"  }
 			}
 			create_building={
 				building = "building_paper_mill"
@@ -2950,7 +2950,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_coffee_plantation"
@@ -3161,7 +3161,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_port"
@@ -3239,7 +3239,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 		}
 	}
@@ -3295,7 +3295,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 		}
 	}
@@ -3342,7 +3342,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -3409,7 +3409,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_sugar_plantation"
@@ -3528,7 +3528,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_paper_mill"

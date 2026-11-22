@@ -4,7 +4,7 @@ POPS = {
 		region_state:EGY = {
 			create_pop = {
 				culture = misri
-				size = 2204347
+				size = 2206347
 			}
 			create_pop = { pop_type = shopkeepers culture = misri size = 36000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
@@ -62,8 +62,8 @@ POPS = {
 			}
 			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = misri religion = sunni size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 10800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = misri religion = sunni size = 25200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 10200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = misri religion = sunni size = 23800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 7800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = misri religion = sunni size = 18200 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -360,7 +360,7 @@ POPS = {
 			}
 			create_pop = {
 				culture = nuba
-				size = 338100
+				size = 336100
 			}
 			create_pop = {
 				culture = dinka
@@ -385,8 +385,8 @@ POPS = {
 			}
 			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = misri religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = misri religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = misri religion = sunni size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = misri religion = sunni size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = misri religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
 		}

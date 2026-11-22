@@ -42,9 +42,9 @@ building_art_academy = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 211
+	required_construction = 200
 	ai_value = {
-		value = 1000
+		value = 455
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_art_academy (common/buildings/06_urban_center.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = { # AI Metternich really wants arts academies
 			limit = {
@@ -150,9 +150,9 @@ building_art_academy_photographic_art = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 760
+	required_construction = 800
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_art_academy (common/buildings/06_urban_center.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = { # AI Metternich really wants arts academies
 			limit = {
@@ -204,9 +204,9 @@ building_art_academy_film_art = {
 		pmg_ownership_building_art_academy
 		pmg_principle_freedom_of_movement_3
 	}
-	required_construction = 1444
+	required_construction = 1600
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_art_academy (common/buildings/06_urban_center.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = { # AI Metternich really wants arts academies
 			limit = {

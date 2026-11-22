@@ -341,6 +341,336 @@ pmr_bar_atmospheric_engine = {
 				value = 0
 			}
 		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_1 >= 3 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 15000 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_1_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_atmospheric_engine_1 >= 5 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 25000 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_1_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_1_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_atmospheric_engine_1"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_2 >= 3 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 15000 }  AND = { pmr_src_atmospheric_engine_1 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_2_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_2_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_atmospheric_engine_2 >= 5 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 25000 }  AND = { pmr_src_atmospheric_engine_1 >= 5 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_2"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_2_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_2_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_atmospheric_engine_2"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_3 >= 3 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 15000 }  AND = { pmr_src_atmospheric_engine_1 >= 3 }  AND = { pmr_src_atmospheric_engine_2 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_3_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_3_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_atmospheric_engine_3 >= 5 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 25000 }  AND = { pmr_src_atmospheric_engine_1 >= 5 }  AND = { pmr_src_atmospheric_engine_2 >= 5 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_3"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_3_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_3_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_atmospheric_engine_3"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_4 >= 3 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 15000 }  AND = { pmr_src_atmospheric_engine_1 >= 3 }  AND = { pmr_src_atmospheric_engine_2 >= 3 }  AND = { pmr_src_atmospheric_engine_3 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_4_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_4_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_atmospheric_engine_4 >= 5 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 25000 }  AND = { pmr_src_atmospheric_engine_1 >= 5 }  AND = { pmr_src_atmospheric_engine_2 >= 5 }  AND = { pmr_src_atmospheric_engine_3 >= 5 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_4"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_4_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_4_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_atmospheric_engine_4"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_5 >= 3 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 15000 }  AND = { pmr_src_atmospheric_engine_1 >= 3 }  AND = { pmr_src_atmospheric_engine_2 >= 3 }  AND = { pmr_src_atmospheric_engine_3 >= 3 }  AND = { pmr_src_atmospheric_engine_4 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_5_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_5_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_atmospheric_engine_5 >= 5 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 25000 }  AND = { pmr_src_atmospheric_engine_1 >= 5 }  AND = { pmr_src_atmospheric_engine_2 >= 5 }  AND = { pmr_src_atmospheric_engine_3 >= 5 }  AND = { pmr_src_atmospheric_engine_4 >= 5 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_5"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_5_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_5_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_atmospheric_engine_5"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_atmospheric_engine_6 >= 3 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 15000 }  AND = { pmr_src_atmospheric_engine_1 >= 3 }  AND = { pmr_src_atmospheric_engine_2 >= 3 }  AND = { pmr_src_atmospheric_engine_3 >= 3 }  AND = { pmr_src_atmospheric_engine_4 >= 3 }  AND = { pmr_src_atmospheric_engine_5 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_6_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_6_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_atmospheric_engine_6 >= 5 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_atmospheric_engine_0 >= 25000 }  AND = { pmr_src_atmospheric_engine_1 >= 5 }  AND = { pmr_src_atmospheric_engine_2 >= 5 }  AND = { pmr_src_atmospheric_engine_3 >= 5 }  AND = { pmr_src_atmospheric_engine_4 >= 5 }  AND = { pmr_src_atmospheric_engine_5 >= 5 } } }
+				}
+				add = {
+					desc = "pmr_term_atmospheric_engine_6"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_atmospheric_engine_6_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_atmospheric_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_atmospheric_engine_6_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_atmospheric_engine_6"
+				value = 0
+			}
+		}
 	}
 }
 
@@ -398,7 +728,7 @@ pmr_bar_automatic_machine_guns = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_automatic_machine_guns_0 >= 12 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_automatic_machine_guns_0 >= 6 }
 			}
 			add = {
 				desc = "pmr_term_automatic_machine_guns_0_half"
@@ -407,7 +737,7 @@ pmr_bar_automatic_machine_guns = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_automatic_machine_guns_0 >= 23 }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_automatic_machine_guns  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_automatic_machine_guns_0 >= 12 }
 			}
 			add = {
 				desc = "pmr_term_automatic_machine_guns_0"
@@ -600,7 +930,7 @@ pmr_bar_bolt_action_rifles = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_bolt_action_rifles_0 >= 12 }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_bolt_action_rifles_0 >= 6 }
 			}
 			add = {
 				desc = "pmr_term_bolt_action_rifles_0_half"
@@ -609,7 +939,7 @@ pmr_bar_bolt_action_rifles = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_bolt_action_rifles_0 >= 24 }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_bolt_action_rifles  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_bolt_action_rifles_0 >= 12 }
 			}
 			add = {
 				desc = "pmr_term_bolt_action_rifles_0"
@@ -828,7 +1158,7 @@ pmr_bar_central_banking = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 25  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_central_banking_0_half"
@@ -837,7 +1167,7 @@ pmr_bar_central_banking = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_central_banking  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_central_banking_0"
@@ -1054,6 +1384,61 @@ pmr_bar_combustion_engine = {
 				value = 0
 			}
 		}
+		if = {
+			limit = {
+				literacy_rate >= 0.55  has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_combustion_engine_2 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 8 }  AND = { pmr_src_combustion_engine_1 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_combustion_engine_2_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_combustion_engine_2_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_combustion_engine_2 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_combustion_engine_0 >= 15 }  AND = { pmr_src_combustion_engine_1 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_combustion_engine_2"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_combustion_engine_2_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_combustion_engine  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_combustion_engine_2_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_combustion_engine_2"
+				value = 0
+			}
+		}
 	}
 }
 
@@ -1150,6 +1535,336 @@ pmr_bar_compression_ignition = {
 		else = {
 			add = {
 				desc = "pmr_term_compression_ignition_1"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_2 >= 24 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 }  AND = { pmr_src_compression_ignition_1 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_2_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_2_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_2 >= 47 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 }  AND = { pmr_src_compression_ignition_1 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_2"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_2_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_2_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_compression_ignition_2"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_3 >= 24 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 }  AND = { pmr_src_compression_ignition_1 >= 24 }  AND = { pmr_src_compression_ignition_2 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_3_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_3_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_3 >= 47 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 }  AND = { pmr_src_compression_ignition_1 >= 47 }  AND = { pmr_src_compression_ignition_2 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_3"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_3_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_3_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_compression_ignition_3"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_4 >= 24 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 }  AND = { pmr_src_compression_ignition_1 >= 24 }  AND = { pmr_src_compression_ignition_2 >= 24 }  AND = { pmr_src_compression_ignition_3 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_4_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_4_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_4 >= 47 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 }  AND = { pmr_src_compression_ignition_1 >= 47 }  AND = { pmr_src_compression_ignition_2 >= 47 }  AND = { pmr_src_compression_ignition_3 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_4"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_4_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_4_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_compression_ignition_4"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_5 >= 24 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 }  AND = { pmr_src_compression_ignition_1 >= 24 }  AND = { pmr_src_compression_ignition_2 >= 24 }  AND = { pmr_src_compression_ignition_3 >= 24 }  AND = { pmr_src_compression_ignition_4 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_5_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_5_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_5 >= 47 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 }  AND = { pmr_src_compression_ignition_1 >= 47 }  AND = { pmr_src_compression_ignition_2 >= 47 }  AND = { pmr_src_compression_ignition_3 >= 47 }  AND = { pmr_src_compression_ignition_4 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_5"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_5_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_5_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_compression_ignition_5"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_6 >= 24 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 }  AND = { pmr_src_compression_ignition_1 >= 24 }  AND = { pmr_src_compression_ignition_2 >= 24 }  AND = { pmr_src_compression_ignition_3 >= 24 }  AND = { pmr_src_compression_ignition_4 >= 24 }  AND = { pmr_src_compression_ignition_5 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_6_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_6_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_6 >= 47 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 }  AND = { pmr_src_compression_ignition_1 >= 47 }  AND = { pmr_src_compression_ignition_2 >= 47 }  AND = { pmr_src_compression_ignition_3 >= 47 }  AND = { pmr_src_compression_ignition_4 >= 47 }  AND = { pmr_src_compression_ignition_5 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_6"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_6_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_6_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_compression_ignition_6"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.65  has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_compression_ignition_7 >= 24 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 24 }  AND = { pmr_src_compression_ignition_1 >= 24 }  AND = { pmr_src_compression_ignition_2 >= 24 }  AND = { pmr_src_compression_ignition_3 >= 24 }  AND = { pmr_src_compression_ignition_4 >= 24 }  AND = { pmr_src_compression_ignition_5 >= 24 }  AND = { pmr_src_compression_ignition_6 >= 24 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_7_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_7_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_compression_ignition_7 >= 47 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_compression_ignition_0 >= 47 }  AND = { pmr_src_compression_ignition_1 >= 47 }  AND = { pmr_src_compression_ignition_2 >= 47 }  AND = { pmr_src_compression_ignition_3 >= 47 }  AND = { pmr_src_compression_ignition_4 >= 47 }  AND = { pmr_src_compression_ignition_5 >= 47 }  AND = { pmr_src_compression_ignition_6 >= 47 } } }
+				}
+				add = {
+					desc = "pmr_term_compression_ignition_7"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_compression_ignition_7_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_compression_ignition  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_compression_ignition_7_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_compression_ignition_7"
 				value = 0
 			}
 		}
@@ -1254,7 +1969,7 @@ pmr_bar_corporate_charters = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 25  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_corporate_charters_0_half"
@@ -1263,7 +1978,7 @@ pmr_bar_corporate_charters = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_corporate_charters  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_corporate_charters_0"
@@ -1298,7 +2013,7 @@ pmr_bar_corporate_management = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_corporate_management_0_half"
@@ -1307,7 +2022,7 @@ pmr_bar_corporate_management = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 80  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_corporate_management  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 400  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_corporate_management_0"
@@ -1699,7 +2414,7 @@ pmr_bar_dynamite = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dynamite_1 >= 4 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dynamite_1 >= 2 }
 			}
 			if = {
 				limit = {
@@ -1719,7 +2434,7 @@ pmr_bar_dynamite = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_dynamite_1 >= 8 }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_dynamite_1 >= 4 }
 			}
 			if = {
 				limit = {
@@ -1749,6 +2464,61 @@ pmr_bar_dynamite = {
 		else = {
 			add = {
 				desc = "pmr_term_dynamite_1"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.45  has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_dynamite_2 >= 125000 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_dynamite_0 >= 4 }  AND = { pmr_src_dynamite_1 >= 2 } } }
+				}
+				add = {
+					desc = "pmr_term_dynamite_2_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_dynamite_2_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_dynamite_2 >= 250000 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_dynamite_0 >= 8 }  AND = { pmr_src_dynamite_1 >= 4 } } }
+				}
+				add = {
+					desc = "pmr_term_dynamite_2"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_dynamite_2_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_dynamite  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_dynamite_2_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_dynamite_2"
 				value = 0
 			}
 		}
@@ -2022,7 +2792,7 @@ pmr_bar_elevator = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 40 } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 33 } }
 			}
 			add = {
 				desc = "pmr_term_elevator_0_half"
@@ -2031,7 +2801,7 @@ pmr_bar_elevator = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 80 } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_elevator  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 130 } }
 			}
 			add = {
 				desc = "pmr_term_elevator_0"
@@ -2170,6 +2940,105 @@ pmr_bar_fractional_distillation = {
 	}
 }
 
+pmr_bar_gantry_cranes = {
+	name = "pmr_bar_gantry_cranes"
+	desc = "pmr_bar_desc_36"
+	default_green = yes
+	start_value = 0
+	min_value = 0
+	max_value = 36
+	monthly_progress = {
+		if = {
+			limit = {
+				literacy_rate >= 0.45  has_global_variable = pmr_held_gantry_cranes  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_gantry_cranes_0 >= 8 }
+			}
+			add = {
+				desc = "pmr_term_gantry_cranes_0_half"
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_gantry_cranes  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_gantry_cranes_0 >= 15 }
+			}
+			add = {
+				desc = "pmr_term_gantry_cranes_0"
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_gantry_cranes  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_gantry_cranes_0_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_gantry_cranes_0"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.45  has_global_variable = pmr_held_gantry_cranes  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_gantry_cranes_1 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_gantry_cranes_0 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_gantry_cranes_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_gantry_cranes_1_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_gantry_cranes  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_gantry_cranes_1 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_gantry_cranes_0 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_gantry_cranes_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_gantry_cranes_1_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_gantry_cranes  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_gantry_cranes_1_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_gantry_cranes_1"
+				value = 0
+			}
+		}
+	}
+}
+
 pmr_bar_general_staff = {
 	name = "pmr_bar_general_staff"
 	desc = "pmr_bar_desc_12"
@@ -2232,7 +3101,7 @@ pmr_bar_identification_documents = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 9 } }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 23 } }
 			}
 			add = {
 				desc = "pmr_term_identification_documents_0_half"
@@ -2241,7 +3110,7 @@ pmr_bar_identification_documents = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_gov >= 18 } }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_identification_documents  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_gov >= 90 } }
 			}
 			add = {
 				desc = "pmr_term_identification_documents_0"
@@ -2364,7 +3233,7 @@ pmr_bar_international_exchange_standards = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.55  has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.55  has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_international_exchange_standards_0_half"
@@ -2373,7 +3242,7 @@ pmr_bar_international_exchange_standards = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 80  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.55  NOT = { AND = { has_global_variable = pmr_held_international_exchange_standards  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 400  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_international_exchange_standards_0"
@@ -2408,7 +3277,7 @@ pmr_bar_investment_banks = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 30  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 38  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_investment_banks_0_half"
@@ -2417,7 +3286,7 @@ pmr_bar_investment_banks = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 60  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_investment_banks  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 150  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_investment_banks_0"
@@ -2478,7 +3347,7 @@ pmr_bar_joint_stock_companies = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 25  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_joint_stock_companies_0_half"
@@ -2487,7 +3356,7 @@ pmr_bar_joint_stock_companies = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_joint_stock_companies  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_joint_stock_companies_0"
@@ -2702,7 +3571,7 @@ pmr_bar_macroeconomics = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 15 } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 50 } }
 			}
 			add = {
 				desc = "pmr_term_macroeconomics_0_half"
@@ -2711,7 +3580,7 @@ pmr_bar_macroeconomics = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_gov >= 30 } }
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_macroeconomics  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_gov >= 200 } }
 			}
 			add = {
 				desc = "pmr_term_macroeconomics_0"
@@ -2772,7 +3641,7 @@ pmr_bar_mass_surveillance = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 15 } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_gov >= 55 } }
 			}
 			add = {
 				desc = "pmr_term_mass_surveillance_0_half"
@@ -2781,7 +3650,7 @@ pmr_bar_mass_surveillance = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_gov >= 30 } }
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_mass_surveillance  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_gov >= 220 } }
 			}
 			add = {
 				desc = "pmr_term_mass_surveillance_0"
@@ -2816,7 +3685,7 @@ pmr_bar_mechanical_tools = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_0 >= 3 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_mechanical_tools_0_half"
@@ -2825,7 +3694,7 @@ pmr_bar_mechanical_tools = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanical_tools_0 >= 5 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanical_tools_0 >= 15 }
 			}
 			add = {
 				desc = "pmr_term_mechanical_tools_0"
@@ -2849,11 +3718,11 @@ pmr_bar_mechanical_tools = {
 		}
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_1 >= 25 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_mechanical_tools_1 >= 75 }
 			}
 			if = {
 				limit = {
-					NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 3 } } }
+					NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 8 } } }
 				}
 				add = {
 					desc = "pmr_term_mechanical_tools_1_half"
@@ -2869,11 +3738,11 @@ pmr_bar_mechanical_tools = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanical_tools_1 >= 50 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_mechanical_tools  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_mechanical_tools_1 >= 150 }
 			}
 			if = {
 				limit = {
-					NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 5 } } }
+					NOT = { OR = { AND = { pmr_src_mechanical_tools_0 >= 15 } } }
 				}
 				add = {
 					desc = "pmr_term_mechanical_tools_1"
@@ -3084,7 +3953,7 @@ pmr_bar_modern_financial_instruments = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 50  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 175  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_modern_financial_instruments_0_half"
@@ -3093,7 +3962,7 @@ pmr_bar_modern_financial_instruments = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_modern_financial_instruments  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 700  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_modern_financial_instruments_0"
@@ -3198,7 +4067,7 @@ pmr_bar_mutual_funds = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 30  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 38  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_mutual_funds_0_half"
@@ -3207,7 +4076,7 @@ pmr_bar_mutual_funds = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 60  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_mutual_funds  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 150  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_mutual_funds_0"
@@ -3366,6 +4235,61 @@ pmr_bar_nitroglycerin = {
 		else = {
 			add = {
 				desc = "pmr_term_nitroglycerin_0"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_nitroglycerin_1 >= 75000 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_nitroglycerin_0 >= 2 } } }
+				}
+				add = {
+					desc = "pmr_term_nitroglycerin_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_nitroglycerin_1_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_nitroglycerin_1 >= 150000 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_nitroglycerin_0 >= 3 } } }
+				}
+				add = {
+					desc = "pmr_term_nitroglycerin_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_nitroglycerin_1_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_nitroglycerin  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_nitroglycerin_1_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_nitroglycerin_1"
 				value = 0
 			}
 		}
@@ -3558,7 +4482,7 @@ pmr_bar_paved_roads = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.65  has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 80 } }
+				literacy_rate >= 0.65  has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_urban >= 78 } }
 			}
 			add = {
 				desc = "pmr_term_paved_roads_0_half"
@@ -3567,7 +4491,7 @@ pmr_bar_paved_roads = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 160 } }
+				literacy_rate >= 0.65  NOT = { AND = { has_global_variable = pmr_held_paved_roads  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_urban >= 310 } }
 			}
 			add = {
 				desc = "pmr_term_paved_roads_0"
@@ -3602,7 +4526,7 @@ pmr_bar_percussion_cap = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_percussion_cap_0 >= 10000 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_percussion_cap_0 >= 5000 }
 			}
 			add = {
 				desc = "pmr_term_percussion_cap_0_half"
@@ -3611,7 +4535,7 @@ pmr_bar_percussion_cap = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_percussion_cap_0 >= 15000 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_percussion_cap  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_percussion_cap_0 >= 10000 }
 			}
 			add = {
 				desc = "pmr_term_percussion_cap_0"
@@ -3830,7 +4754,7 @@ pmr_bar_postal_savings = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 20  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { AND = { pmr_cv_fin >= 25  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_postal_savings_0_half"
@@ -3839,7 +4763,7 @@ pmr_bar_postal_savings = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 40  NOT = { has_law = law_type:law_traditionalism } } }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_postal_savings  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { AND = { pmr_cv_fin >= 100  NOT = { has_law = law_type:law_traditionalism } } }
 			}
 			add = {
 				desc = "pmr_term_postal_savings_0"
@@ -3972,6 +4896,50 @@ pmr_bar_psychoanalysis = {
 		else = {
 			add = {
 				desc = "pmr_term_psychoanalysis_0"
+				value = 0
+			}
+		}
+	}
+}
+
+pmr_bar_pumpjacks = {
+	name = "pmr_bar_pumpjacks"
+	desc = "pmr_bar_desc_36"
+	default_green = yes
+	start_value = 0
+	min_value = 0
+	max_value = 36
+	monthly_progress = {
+		if = {
+			limit = {
+				literacy_rate >= 0.45  has_global_variable = pmr_held_pumpjacks  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_pumpjacks_0 >= 3 }
+			}
+			add = {
+				desc = "pmr_term_pumpjacks_0_half"
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_pumpjacks  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_pumpjacks_0 >= 5 }
+			}
+			add = {
+				desc = "pmr_term_pumpjacks_0"
+				value = 1
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_pumpjacks  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_pumpjacks_0_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_pumpjacks_0"
 				value = 0
 			}
 		}
@@ -4146,7 +5114,7 @@ pmr_bar_repeaters = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.45  has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_repeaters_0 >= 4 }
+				literacy_rate >= 0.45  has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_repeaters_0 >= 2 }
 			}
 			add = {
 				desc = "pmr_term_repeaters_0_half"
@@ -4155,7 +5123,7 @@ pmr_bar_repeaters = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_repeaters_0 >= 8 }
+				literacy_rate >= 0.45  NOT = { AND = { has_global_variable = pmr_held_repeaters  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_repeaters_0 >= 4 }
 			}
 			add = {
 				desc = "pmr_term_repeaters_0"
@@ -4190,7 +5158,7 @@ pmr_bar_rifling = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rifling_0 >= 2 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_rifling_0 >= 1 }
 			}
 			add = {
 				desc = "pmr_term_rifling_0_half"
@@ -4199,7 +5167,7 @@ pmr_bar_rifling = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_rifling_0 >= 3 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_rifling  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_rifling_0 >= 2 }
 			}
 			add = {
 				desc = "pmr_term_rifling_0"
@@ -4374,7 +5342,7 @@ pmr_bar_shell_gun = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_shell_gun_0 >= 2 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_shell_gun_0 >= 1 }
 			}
 			add = {
 				desc = "pmr_term_shell_gun_0_half"
@@ -4383,7 +5351,7 @@ pmr_bar_shell_gun = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_shell_gun_0 >= 3 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_shell_gun  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_shell_gun_0 >= 2 }
 			}
 			add = {
 				desc = "pmr_term_shell_gun_0"
@@ -4892,7 +5860,7 @@ pmr_bar_watertube_boiler = {
 	monthly_progress = {
 		if = {
 			limit = {
-				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_0 >= 15000 }
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_0 >= 8 }
 			}
 			add = {
 				desc = "pmr_term_watertube_boiler_0_half"
@@ -4901,7 +5869,7 @@ pmr_bar_watertube_boiler = {
 		}
 		else_if = {
 			limit = {
-				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_0 >= 30000 }
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_0 >= 15 }
 			}
 			add = {
 				desc = "pmr_term_watertube_boiler_0"
@@ -4920,6 +5888,336 @@ pmr_bar_watertube_boiler = {
 		else = {
 			add = {
 				desc = "pmr_term_watertube_boiler_0"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_1 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_1_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_1_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_1 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_1"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_1_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_watertube_boiler_1_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_watertube_boiler_1"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_2 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 8 }  AND = { pmr_src_watertube_boiler_1 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_2_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_2_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_2 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 15 }  AND = { pmr_src_watertube_boiler_1 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_2"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_2_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_watertube_boiler_2_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_watertube_boiler_2"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_3 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 8 }  AND = { pmr_src_watertube_boiler_1 >= 8 }  AND = { pmr_src_watertube_boiler_2 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_3_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_3_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_3 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 15 }  AND = { pmr_src_watertube_boiler_1 >= 15 }  AND = { pmr_src_watertube_boiler_2 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_3"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_3_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_watertube_boiler_3_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_watertube_boiler_3"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_4 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 8 }  AND = { pmr_src_watertube_boiler_1 >= 8 }  AND = { pmr_src_watertube_boiler_2 >= 8 }  AND = { pmr_src_watertube_boiler_3 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_4_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_4_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_4 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 15 }  AND = { pmr_src_watertube_boiler_1 >= 15 }  AND = { pmr_src_watertube_boiler_2 >= 15 }  AND = { pmr_src_watertube_boiler_3 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_4"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_4_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_watertube_boiler_4_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_watertube_boiler_4"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_5 >= 8 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 8 }  AND = { pmr_src_watertube_boiler_1 >= 8 }  AND = { pmr_src_watertube_boiler_2 >= 8 }  AND = { pmr_src_watertube_boiler_3 >= 8 }  AND = { pmr_src_watertube_boiler_4 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_5_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_5_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_5 >= 15 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 15 }  AND = { pmr_src_watertube_boiler_1 >= 15 }  AND = { pmr_src_watertube_boiler_2 >= 15 }  AND = { pmr_src_watertube_boiler_3 >= 15 }  AND = { pmr_src_watertube_boiler_4 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_5"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_5_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_watertube_boiler_5_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_watertube_boiler_5"
+				value = 0
+			}
+		}
+		if = {
+			limit = {
+				literacy_rate >= 0.35  has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }  AND = { pmr_src_watertube_boiler_6 >= 15000 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 8 }  AND = { pmr_src_watertube_boiler_1 >= 8 }  AND = { pmr_src_watertube_boiler_2 >= 8 }  AND = { pmr_src_watertube_boiler_3 >= 8 }  AND = { pmr_src_watertube_boiler_4 >= 8 }  AND = { pmr_src_watertube_boiler_5 >= 8 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_6_half"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_6_half_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				literacy_rate >= 0.35  NOT = { AND = { has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism } } }  AND = { pmr_src_watertube_boiler_6 >= 30000 }
+			}
+			if = {
+				limit = {
+					NOT = { OR = { AND = { pmr_src_watertube_boiler_0 >= 15 }  AND = { pmr_src_watertube_boiler_1 >= 15 }  AND = { pmr_src_watertube_boiler_2 >= 15 }  AND = { pmr_src_watertube_boiler_3 >= 15 }  AND = { pmr_src_watertube_boiler_4 >= 15 }  AND = { pmr_src_watertube_boiler_5 >= 15 } } }
+				}
+				add = {
+					desc = "pmr_term_watertube_boiler_6"
+					value = 1
+				}
+			}
+			else = {
+				add = {
+					desc = "pmr_term_watertube_boiler_6_also"
+					value = 0
+				}
+			}
+		}
+		else_if = {
+			limit = {
+				has_global_variable = pmr_held_watertube_boiler  NOT = { has_law_or_variant = law_type:law_isolationism }
+			}
+			add = {
+				desc = "pmr_term_watertube_boiler_6_half"
+				value = 0
+			}
+		}
+		else = {
+			add = {
+				desc = "pmr_term_watertube_boiler_6"
 				value = 0
 			}
 		}

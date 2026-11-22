@@ -513,14 +513,14 @@ type = country_event
 			any_scope_building = {
 				OR = {
 					is_building_type = building_logging_camp
-					is_building_type = building_coal_mine
-					is_building_type = building_iron_mine
-					is_building_type = building_lead_mine
-					is_building_type = building_sulfur_mine
+					pmr_is_coal_mine = yes
+					pmr_is_iron_mine = yes
+					pmr_is_lead_mine = yes
+					pmr_is_sulfur_mine = yes
 					is_building_type = building_gold_field
-					is_building_type = building_fishing_wharf
-					is_building_type = building_whaling_station
-					is_building_type = building_oil_rig
+					pmr_is_fishing_wharf = yes
+					pmr_is_whaling_station = yes
+					pmr_is_oil_rig = yes
 					is_building_type = building_rubber_plantation
 				}
 				weekly_profit > 0
@@ -548,14 +548,14 @@ type = country_event
 				limit = {
 					OR = {
 						is_building_type = building_logging_camp
-						is_building_type = building_coal_mine
-						is_building_type = building_iron_mine
-						is_building_type = building_lead_mine
-						is_building_type = building_sulfur_mine
+						pmr_is_coal_mine = yes
+						pmr_is_iron_mine = yes
+						pmr_is_lead_mine = yes
+						pmr_is_sulfur_mine = yes
 						is_building_type = building_gold_field
-						is_building_type = building_fishing_wharf
-						is_building_type = building_whaling_station
-						is_building_type = building_oil_rig
+						pmr_is_fishing_wharf = yes
+						pmr_is_whaling_station = yes
+						pmr_is_oil_rig = yes
 						is_building_type = building_rubber_plantation
 					}
 					weekly_profit > 0
@@ -621,14 +621,14 @@ type = country_event
 			any_scope_building = {
 				OR = {
 					is_building_type = building_logging_camp
-					is_building_type = building_coal_mine
-					is_building_type = building_iron_mine
-					is_building_type = building_lead_mine
-					is_building_type = building_sulfur_mine
+					pmr_is_coal_mine = yes
+					pmr_is_iron_mine = yes
+					pmr_is_lead_mine = yes
+					pmr_is_sulfur_mine = yes
 					is_building_type = building_gold_field
-					is_building_type = building_fishing_wharf
-					is_building_type = building_whaling_station
-					is_building_type = building_oil_rig
+					pmr_is_fishing_wharf = yes
+					pmr_is_whaling_station = yes
+					pmr_is_oil_rig = yes
 					is_building_type = building_rubber_plantation
 				}
 				weekly_profit > 0
@@ -658,14 +658,14 @@ type = country_event
 				limit = {
 					OR = {
 						is_building_type = building_logging_camp
-						is_building_type = building_coal_mine
-						is_building_type = building_iron_mine
-						is_building_type = building_lead_mine
-						is_building_type = building_sulfur_mine
+						pmr_is_coal_mine = yes
+						pmr_is_iron_mine = yes
+						pmr_is_lead_mine = yes
+						pmr_is_sulfur_mine = yes
 						is_building_type = building_gold_field
-						is_building_type = building_fishing_wharf
-						is_building_type = building_whaling_station
-						is_building_type = building_oil_rig
+						pmr_is_fishing_wharf = yes
+						pmr_is_whaling_station = yes
+						pmr_is_oil_rig = yes
 						is_building_type = building_rubber_plantation
 					}
 					weekly_profit > 0

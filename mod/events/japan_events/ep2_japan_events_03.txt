@@ -388,7 +388,7 @@ japan_events.34 = {
 			has_famine = yes
 			is_incorporated = yes
 			any_scope_building = {
-				is_building_type = building_whaling_station
+				pmr_is_whaling_station = yes
 				level >= 2
 			}
 		}
@@ -400,7 +400,7 @@ japan_events.34 = {
 				has_famine = yes
 				is_incorporated = yes
 				any_scope_building = {
-					is_building_type = building_whaling_station
+					pmr_is_whaling_station = yes
 					level >= 2
 				}
 			}

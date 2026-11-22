@@ -1261,6 +1261,7 @@ industrialists_cars_unrestricted = {
 automobile_regulations = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_negative.dds
 	building_motor_industry_throughput_add = -0.1
+	building_motor_industry_compound_engines_throughput_add = -0.1
 	building_motor_industry_electric_engines_throughput_add = -0.1
 	building_motor_industry_diesel_engines_throughput_add = -0.1
 }
@@ -1516,9 +1517,21 @@ tractor_production = {
 atmospheric_engine_mining = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
 	building_coal_mine_throughput_add = 0.33
+	building_coal_mine_atmospheric_engine_pump_throughput_add = 0.33
+	building_coal_mine_condensing_engine_pump_throughput_add = 0.33
+	building_coal_mine_diesel_pump_throughput_add = 0.33
 	building_iron_mine_throughput_add = 0.33
+	building_iron_mine_atmospheric_engine_pump_throughput_add = 0.33
+	building_iron_mine_condensing_engine_pump_throughput_add = 0.33
+	building_iron_mine_diesel_pump_throughput_add = 0.33
 	building_lead_mine_throughput_add = 0.33
+	building_lead_mine_atmospheric_engine_pump_throughput_add = 0.33
+	building_lead_mine_condensing_engine_pump_throughput_add = 0.33
+	building_lead_mine_diesel_pump_throughput_add = 0.33
 	building_sulfur_mine_throughput_add = 0.33
+	building_sulfur_mine_atmospheric_engine_pump_throughput_add = 0.33
+	building_sulfur_mine_condensing_engine_pump_throughput_add = 0.33
+	building_sulfur_mine_diesel_pump_throughput_add = 0.33
 }
 
 plastic_production_modifier = {
@@ -1542,9 +1555,21 @@ dynamite_production_modifier = {
 mining_production_modifier = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
 	building_iron_mine_throughput_add = 0.2
+	building_iron_mine_atmospheric_engine_pump_throughput_add = 0.2
+	building_iron_mine_condensing_engine_pump_throughput_add = 0.2
+	building_iron_mine_diesel_pump_throughput_add = 0.2
 	building_coal_mine_throughput_add = 0.2
+	building_coal_mine_atmospheric_engine_pump_throughput_add = 0.2
+	building_coal_mine_condensing_engine_pump_throughput_add = 0.2
+	building_coal_mine_diesel_pump_throughput_add = 0.2
 	building_lead_mine_throughput_add = 0.2
+	building_lead_mine_atmospheric_engine_pump_throughput_add = 0.2
+	building_lead_mine_condensing_engine_pump_throughput_add = 0.2
+	building_lead_mine_diesel_pump_throughput_add = 0.2
 	building_sulfur_mine_throughput_add = 0.2
+	building_sulfur_mine_atmospheric_engine_pump_throughput_add = 0.2
+	building_sulfur_mine_condensing_engine_pump_throughput_add = 0.2
+	building_sulfur_mine_diesel_pump_throughput_add = 0.2
 }
 
 munitions_production_modifier = {
@@ -1556,6 +1581,7 @@ munitions_production_modifier = {
 motor_industry_production_modifier = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
 	building_motor_industry_throughput_add = 0.33
+	building_motor_industry_compound_engines_throughput_add = 0.33
 	building_motor_industry_electric_engines_throughput_add = 0.33
 	building_motor_industry_diesel_engines_throughput_add = 0.33
 }
@@ -1568,6 +1594,7 @@ public_trasportation_modifier = {
 engine_production_modifier = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
 	building_motor_industry_throughput_add = 0.33
+	building_motor_industry_compound_engines_throughput_add = 0.33
 	building_motor_industry_electric_engines_throughput_add = 0.33
 	building_motor_industry_diesel_engines_throughput_add = 0.33
 }
@@ -1595,6 +1622,8 @@ whaling_state_mortality_modifier = {
 whaling_state_modifier = {
 	icon = gfx/interface/icons/timed_modifier_icons/modifier_gear_positive.dds
 	building_whaling_station_throughput_add = 0.33
+	building_whaling_station_wooden_whaling_ships_throughput_add = 0.33
+	building_whaling_station_steam_whaling_ships_throughput_add = 0.33
 }
 
 oil_production_modifier = {

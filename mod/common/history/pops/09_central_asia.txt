@@ -173,9 +173,9 @@ POPS = {
 		region_state:RUS = {
 			create_pop = {
 				culture = georgian
-				size = 574950
+				size = 572950
 			}
-			create_pop = { pop_type = shopkeepers culture = georgian size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = georgian size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = sephardic
 				size = 9459

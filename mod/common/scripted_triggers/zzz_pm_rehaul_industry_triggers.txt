@@ -97,6 +97,15 @@ pmr_has_automotive = {
 	}
 }
 
+pmr_has_coal_mine = {
+	OR = {
+		has_building = building_coal_mine
+		has_building = building_coal_mine_atmospheric_engine_pump
+		has_building = building_coal_mine_condensing_engine_pump
+		has_building = building_coal_mine_diesel_pump
+	}
+}
+
 pmr_has_fertilizer = {
 	OR = {
 		has_building = building_chemical_plant
@@ -136,9 +145,28 @@ pmr_has_glass = {
 	}
 }
 
+pmr_has_iron_mine = {
+	OR = {
+		has_building = building_iron_mine
+		has_building = building_iron_mine_atmospheric_engine_pump
+		has_building = building_iron_mine_condensing_engine_pump
+		has_building = building_iron_mine_diesel_pump
+	}
+}
+
+pmr_has_lead_mine = {
+	OR = {
+		has_building = building_lead_mine
+		has_building = building_lead_mine_atmospheric_engine_pump
+		has_building = building_lead_mine_condensing_engine_pump
+		has_building = building_lead_mine_diesel_pump
+	}
+}
+
 pmr_has_motor = {
 	OR = {
 		has_building = building_motor_industry
+		has_building = building_motor_industry_compound_engines
 		has_building = building_motor_industry_electric_engines
 		has_building = building_motor_industry_diesel_engines
 	}
@@ -148,6 +176,13 @@ pmr_has_munition = {
 	OR = {
 		has_building = building_munition_plant
 		has_building = building_munition_plant_explosive_shells
+	}
+}
+
+pmr_has_oil_rig = {
+	OR = {
+		has_building = building_oil_rig
+		has_building = building_oil_rig_combustion_derricks
 	}
 }
 
@@ -164,6 +199,15 @@ pmr_has_steel = {
 		has_building = building_steel_mill
 		has_building = building_steel_mill_bessemer_process
 		has_building = building_steel_mill_open_hearth_process
+	}
+}
+
+pmr_has_sulfur_mine = {
+	OR = {
+		has_building = building_sulfur_mine
+		has_building = building_sulfur_mine_atmospheric_engine_pump
+		has_building = building_sulfur_mine_condensing_engine_pump
+		has_building = building_sulfur_mine_diesel_pump
 	}
 }
 
@@ -237,6 +281,15 @@ pmr_is_automotive = {
 	}
 }
 
+pmr_is_coal_mine = {
+	OR = {
+		is_building_type = building_coal_mine
+		is_building_type = building_coal_mine_atmospheric_engine_pump
+		is_building_type = building_coal_mine_condensing_engine_pump
+		is_building_type = building_coal_mine_diesel_pump
+	}
+}
+
 pmr_is_explosives = {
 	OR = {
 		is_building_type = building_explosives_factory
@@ -251,6 +304,14 @@ pmr_is_fertilizer = {
 		is_building_type = building_chemical_plant
 		is_building_type = building_chemical_plant_nitrogen_fixation
 		is_building_type = building_chemical_plant_catalytic_synthesis
+	}
+}
+
+pmr_is_fishing_wharf = {
+	OR = {
+		is_building_type = building_fishing_wharf
+		is_building_type = building_fishing_wharf_fishing_trawlers
+		is_building_type = building_fishing_wharf_steam_trawlers
 	}
 }
 
@@ -293,6 +354,15 @@ pmr_is_glass_nc = {
 	}
 }
 
+pmr_is_gold_mine = {
+	OR = {
+		is_building_type = building_gold_mine
+		is_building_type = building_gold_mine_atmospheric_engine_pump
+		is_building_type = building_gold_mine_condensing_engine_pump
+		is_building_type = building_gold_mine_diesel_pump
+	}
+}
+
 pmr_is_industrialized_building = {
 	OR = {
 		has_active_production_method = pm_mechanized_looms_textile_mill_sewing_machines
@@ -313,9 +383,28 @@ pmr_is_industrialized_building = {
 	}
 }
 
+pmr_is_iron_mine = {
+	OR = {
+		is_building_type = building_iron_mine
+		is_building_type = building_iron_mine_atmospheric_engine_pump
+		is_building_type = building_iron_mine_condensing_engine_pump
+		is_building_type = building_iron_mine_diesel_pump
+	}
+}
+
+pmr_is_lead_mine = {
+	OR = {
+		is_building_type = building_lead_mine
+		is_building_type = building_lead_mine_atmospheric_engine_pump
+		is_building_type = building_lead_mine_condensing_engine_pump
+		is_building_type = building_lead_mine_diesel_pump
+	}
+}
+
 pmr_is_motor = {
 	OR = {
 		is_building_type = building_motor_industry
+		is_building_type = building_motor_industry_compound_engines
 		is_building_type = building_motor_industry_electric_engines
 		is_building_type = building_motor_industry_diesel_engines
 	}
@@ -325,6 +414,13 @@ pmr_is_munition = {
 	OR = {
 		is_building_type = building_munition_plant
 		is_building_type = building_munition_plant_explosive_shells
+	}
+}
+
+pmr_is_oil_rig = {
+	OR = {
+		is_building_type = building_oil_rig
+		is_building_type = building_oil_rig_combustion_derricks
 	}
 }
 
@@ -351,6 +447,15 @@ pmr_is_steel = {
 	}
 }
 
+pmr_is_sulfur_mine = {
+	OR = {
+		is_building_type = building_sulfur_mine
+		is_building_type = building_sulfur_mine_atmospheric_engine_pump
+		is_building_type = building_sulfur_mine_condensing_engine_pump
+		is_building_type = building_sulfur_mine_diesel_pump
+	}
+}
+
 pmr_is_textile_nc = {
 	OR = {
 		is_building_type = building_textile_mill_dye_workshops
@@ -364,6 +469,18 @@ pmr_is_tooling_nc = {
 		is_building_type = building_tooling_workshop_steel
 		is_building_type = building_tooling_workshop_rubber_grips
 	}
+}
+
+pmr_is_whaling_station = {
+	OR = {
+		is_building_type = building_whaling_station
+		is_building_type = building_whaling_station_wooden_whaling_ships
+		is_building_type = building_whaling_station_steam_whaling_ships
+	}
+}
+
+pmr_runs_pm_atmospheric_engine_pump_building_coal_mine = {
+	is_building_type = building_coal_mine_atmospheric_engine_pump
 }
 
 pmr_runs_pm_automobile_production = {
@@ -395,19 +512,26 @@ pmr_runs_pm_traditional_art = {
 }
 
 pmr_runs_sec_pm_craftsman_sewing = {
-	has_active_production_method = pm_craftsman_sewing_textile
+	OR = {
+		has_active_production_method = pm_craftsman_sewing_textile_t0
+		has_active_production_method = pm_craftsman_sewing_textile_t1
+		has_active_production_method = pm_craftsman_sewing_textile_t2_3
+	}
 }
 
 pmr_runs_sec_pm_patent_stills = {
-	has_active_production_method = pm_patent_stills_food
+	has_active_production_method = pm_patent_stills_food_t1_2
 }
 
 pmr_runs_sec_pm_pot_stills = {
-	has_active_production_method = pm_pot_stills_food
+	OR = {
+		has_active_production_method = pm_pot_stills_food_t0
+		has_active_production_method = pm_pot_stills_food_t1_2
+	}
 }
 
 pmr_runs_sec_pm_radios = {
-	has_active_production_method = pm_radios_electrics
+	has_active_production_method = pm_radios_electrics_t2
 }
 
 pmr_runs_watertube_boiler = {

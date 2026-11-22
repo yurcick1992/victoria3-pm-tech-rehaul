@@ -5,7 +5,7 @@ POPS = {
 		region_state:BIC = {
 			create_pop = {
 				culture = bihari
-				size = 9915689
+				size = 9969689
 			}
 			create_pop = {
 				culture = british
@@ -33,14 +33,6 @@ POPS = {
 				religion = sunni
 				size = 128903
 			}
-			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 12600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 29400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_WEST_BENGAL = {
@@ -48,9 +40,9 @@ POPS = {
 			create_pop = {
 				culture = bengali
 				religion = hindu
-				size = 12549021
+				size = 12532021
 			}
-			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 72000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 89000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = bengali
 				size = 3572012
@@ -131,9 +123,9 @@ POPS = {
 			}
 			create_pop = {
 				culture = bengali
-				size = 14593600
+				size = 14529600
 			}
-			create_pop = { pop_type = shopkeepers culture = bengali size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = bengali size = 32000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = pashtun
 				size = 20102
@@ -164,6 +156,14 @@ POPS = {
 				size = 301
 				pop_type = bureaucrats
 			}
+			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 13200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 30800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_ASSAM = {
@@ -275,9 +275,9 @@ POPS = {
 			create_pop = {
 				culture = hindustani
 				religion = hindu
-				size = 1875169
+				size = 1873169
 			}
-			create_pop = { pop_type = shopkeepers culture = hindustani religion = hindu size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = hindustani religion = hindu size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = panjabi
 				religion = hindu
@@ -308,9 +308,9 @@ POPS = {
 			create_pop = {
 				culture = hindustani
 				religion = hindu
-				size = 317557
+				size = 313557
 			}
-			create_pop = { pop_type = shopkeepers culture = hindustani religion = hindu size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = hindustani religion = hindu size = 16000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = panjabi
 				religion = hindu
@@ -357,9 +357,9 @@ POPS = {
 			create_pop = {
 				culture = avadhi
 				religion = hindu
-				size = 4232835
+				size = 4228835
 			}
-			create_pop = { pop_type = shopkeepers culture = avadhi religion = hindu size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = avadhi religion = hindu size = 28000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = panjabi
 				religion = sikh
@@ -418,9 +418,9 @@ POPS = {
 			create_pop = {
 				culture = gujarati
 				religion = hindu
-				size = 820102
+				size = 818102
 			}
-			create_pop = { pop_type = shopkeepers culture = gujarati religion = hindu size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = gujarati religion = hindu size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = gujarati
 				religion = sunni
@@ -648,9 +648,9 @@ POPS = {
 			create_pop = {
 				culture = gujarati
 				religion = hindu
-				size = 2178321
+				size = 2176321
 			}
-			create_pop = { pop_type = shopkeepers culture = gujarati religion = hindu size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = gujarati religion = hindu size = 26000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = gujarati
 				religion = sunni
@@ -808,9 +808,9 @@ POPS = {
 			create_pop = {
 				culture = bundeli
 				religion = hindu
-				size = 109012
+				size = 107012
 			}
-			create_pop = { pop_type = shopkeepers culture = bundeli religion = hindu size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = bundeli religion = hindu size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = rajput
 				religion = hindu
@@ -848,9 +848,9 @@ POPS = {
 		region_state:KAS = {
 			create_pop = {
 				culture = kashmiri
-				size = 888002
+				size = 886002
 			}
-			create_pop = { pop_type = shopkeepers culture = kashmiri size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = kashmiri size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = panjabi
 				size = 37727
@@ -917,9 +917,9 @@ POPS = {
 			create_pop = {
 				culture = panjabi
 				religion = sunni
-				size = 3385500
+				size = 3377500
 			}
-			create_pop = { pop_type = shopkeepers culture = panjabi religion = sunni size = 36000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = panjabi religion = sunni size = 44000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = pashtun
 				religion = sunni
@@ -1286,9 +1286,9 @@ POPS = {
 		region_state:JAI = {
 			create_pop = {
 				culture = rajput
-				size = 1391530
+				size = 1389530
 			}
-			create_pop = { pop_type = shopkeepers culture = rajput size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = rajput size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = hindustani
 				size = 111640
@@ -1631,9 +1631,9 @@ POPS = {
 		region_state:BIC = {
 			create_pop = {
 				culture = telegu
-				size = 2203020
+				size = 2193020
 			}
-			create_pop = { pop_type = shopkeepers culture = telegu size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = telegu size = 40000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = tamil
 				size = 270201
@@ -1719,9 +1719,9 @@ POPS = {
 		region_state:MYS = {
 			create_pop = {
 				culture = kannada
-				size = 3309340
+				size = 3305340
 			}
-			create_pop = { pop_type = shopkeepers culture = kannada size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = kannada size = 16000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = kannada
 				religion = hindu # jainism
@@ -1894,9 +1894,9 @@ POPS = {
 		region_state:BIC = {
 			create_pop = {
 				culture = tamil
-				size = 7048370
+				size = 7042370
 			}
-			create_pop = { pop_type = shopkeepers culture = tamil size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = tamil size = 32000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = tamil
 				religion = protestant
@@ -1944,8 +1944,8 @@ POPS = {
 			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 7000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 22200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 51800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 21600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 50400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = bengali religion = hindu size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = hindustani religion = sunni size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 		}
@@ -2041,9 +2041,9 @@ POPS = {
 		region_state:BIC = {
 			create_pop = {
 				culture = marathi
-				size = 6808020
+				size = 6798020
 			}
-			create_pop = { pop_type = shopkeepers culture = marathi size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = marathi size = 40000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = marathi
 				religion = sunni
@@ -2319,9 +2319,9 @@ POPS = {
 		region_state:BIC = {
 			create_pop = {
 				culture = hindustani
-				size = 17950075
+				size = 17946075
 			}
-			create_pop = { pop_type = shopkeepers culture = hindustani size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = hindustani size = 16000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = hindustani
 				religion = sunni
@@ -2403,9 +2403,9 @@ POPS = {
 			create_pop = {
 				culture = panjabi
 				religion = sunni
-				size = 512084
+				size = 510084
 			}
-			create_pop = { pop_type = shopkeepers culture = panjabi religion = sunni size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = panjabi religion = sunni size = 8000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = hindustani
 				religion = sunni

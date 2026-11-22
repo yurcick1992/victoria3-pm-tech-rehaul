@@ -1021,7 +1021,11 @@ for (const [tech, a] of Object.entries(anchors).sort()) {
       (gateYear != null ? ` (before ${gateYear}, ${Math.round(100 * (DG.before_mult ?? 0.5))}% of that)` : '') + '.';
     const doneText = REP && !next ? `\nImplementation stages completed: [ROOT.GetCountry.MakeScope.ScriptValue('pmr_implv_${tech}')|0]` : '';
     const litText = LIT0 != null ? ` and our literacy is at least ${pctx(LIT0)}` : '';
-    const halfText = (HALF && HELD_TECHS.includes(tech)) ? ` Every mark is halved once another country that is not isolationist has researched ${nice}, unless we are isolationist.` : '';
+    // a condition entry whose follower mark is a quarter (§10.129 item 3, §10.130, §10.131) says so here too, as its bar line does
+    const quarterMark = (() => { const e = COND[tech]; if (!e || !e.half_trigger) return false;
+      const m = /^\s*[a-z_0-9]+\s*>=\s*([\d.]+)/.exec(e.trigger || ''), mh = /^\s*[a-z_0-9]+\s*>=\s*([\d.]+)/.exec(e.half_trigger);
+      return !!(m && mh && Math.abs(+mh[1] * 2 - +m[1]) > 1 && Math.abs(+mh[1] * 4 - +m[1]) <= 3); })();
+    const halfText = (HALF && HELD_TECHS.includes(tech)) ? ` Every mark ${quarterMark ? 'falls to a quarter' : 'is halved'} once another country that is not isolationist has researched ${nice}, unless we are isolationist.` : '';
     const bullets = srcLines.length ? '\n' + srcLines.map(l => '• ' + l).join('\n') : '';
     let flavour, rule;
     if (a.rule === 'war' && isFleetTech(tech)) {

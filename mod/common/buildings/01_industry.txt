@@ -10,6 +10,7 @@ building_food_industry = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_food_bakery
+		pmg_distillery_food_industry
 	}
 	required_construction = 6
 	ai_value = 800
@@ -30,12 +31,12 @@ building_food_industry_sweeteners = {
 		pmg_distillery_food_industry_sweeteners
 		pmg_automation_building_food_industry_food_industry_sweeteners
 	}
-	required_construction = 827
+	required_construction = 849
 	ai_value = {
 		value = 1000
 		if = {
 			limit = { owner ?= { has_technology_researched = baking_powder } }
-			add = 2000
+			add = 1200
 		}
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_food_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
@@ -66,6 +67,7 @@ building_textile_mill = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_textile_handsewn_clothes
+		pmg_luxury_building_textile_mill_textile_mill
 	}
 	required_construction = 6
 	ai_value = 800
@@ -117,12 +119,12 @@ building_textile_mill_sewing_machines = {
 		pmg_luxury_building_textile_mill_textile_mill_sewing_machines
 		pmg_automation_building_textile_mill_textile_mill_sewing_machines
 	}
-	required_construction = 1140
+	required_construction = 1200
 	ai_value = {
-		value = 3000
+		value = 2200
 		if = {
 			limit = { owner ?= { has_technology_researched = electrical_capacitors } }
-			add = 2000
+			add = 2640
 		}
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_textile_mill (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
@@ -153,6 +155,7 @@ building_furniture_manufactory = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_furniture_handcrafted_furniture
+		pmg_luxury_building_furniture_manufactory_furniture_manufactory
 	}
 	required_construction = 6
 	ai_value = 800
@@ -205,12 +208,12 @@ building_furniture_manufactory_mechanized_workshops = {
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory_mechanized_workshops
 		pmg_automation_building_furniture_manufactory_furniture_manufactory_mechanized_workshops
 	}
-	required_construction = 1571
+	required_construction = 1697
 	ai_value = {
-		value = 3000
+		value = 2200
 		if = {
 			limit = { owner ?= { has_technology_researched = spray_finishing } }
-			add = 2000
+			add = 2640
 		}
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_furniture_manufactory (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
@@ -239,6 +242,7 @@ building_glassworks = {
 	unlocking_technologies = { manufacturies }
 	production_method_groups = {
 		pmg_main_glass_forest_glass
+		pmg_luxury_building_glassworks_glassworks
 	}
 	required_construction = 6
 	ai_value = 800
@@ -289,9 +293,9 @@ building_glassworks_crystal_glass = {
 		pmg_luxury_building_glassworks_glassworks_crystal_glass
 		pmg_glassblowing_glassworks_crystal_glass
 	}
-	required_construction = 1140
+	required_construction = 1200
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_glassworks (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -321,9 +325,9 @@ building_glassworks_houseware_plastics = {
 		pmg_luxury_building_glassworks_glassworks_houseware_plastics
 		pmg_glassblowing_glassworks_houseware_plastics
 	}
-	required_construction = 2166
+	required_construction = 2400
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_glassworks (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -403,9 +407,9 @@ building_tooling_workshop_steel = {
 		pmg_main_tooling_steel
 		pmg_automation_building_tooling_workshop_tooling_workshop_steel
 	}
-	required_construction = 1140
+	required_construction = 1200
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_tooling_workshop (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -435,9 +439,9 @@ building_tooling_workshop_rubber_grips = {
 		pmg_main_tooling_rubber_grips
 		pmg_automation_building_tooling_workshop_tooling_workshop_rubber_grips
 	}
-	required_construction = 2166
+	required_construction = 2400
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_tooling_workshop (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -485,12 +489,12 @@ building_paper_mill_sulfite_pulping = {
 		pmg_main_paper_sulfite_pulping
 		pmg_automation_building_paper_mill_paper_mill_sulfite_pulping
 	}
-	required_construction = 827
+	required_construction = 849
 	ai_value = {
 		value = 1000
 		if = {
 			limit = { owner ?= { has_technology_researched = chemical_bleaching } }
-			add = 2000
+			add = 1200
 		}
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_paper_mill (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
@@ -534,9 +538,9 @@ building_paper_mill_continuous_web = {
 		pmg_main_paper_continuous_web_processing
 		pmg_automation_building_paper_mill_paper_mill_continuous_web
 	}
-	required_construction = 2166
+	required_construction = 2400
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_paper_mill (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -579,7 +583,7 @@ building_chemical_plant = {
 	production_method_groups = {
 		pmg_main_fertilizer_artificial_fertilizers
 	}
-	required_construction = 580
+	required_construction = 566
 	possible = {
 		owner = {
 			NOT = {
@@ -591,7 +595,11 @@ building_chemical_plant = {
 		}
 	}
 	ai_value = {
-		value = 1000
+		value = 455
+		if = {
+			limit = { owner ?= { has_technology_researched = improved_fertilizer } }
+			add = 545
+		}
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_chemical_plant (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -619,7 +627,7 @@ building_chemical_plant_nitrogen_fixation = {
 	production_method_groups = {
 		pmg_main_fertilizer_nitrogen_fixation
 	}
-	required_construction = 1520
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -631,7 +639,7 @@ building_chemical_plant_nitrogen_fixation = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_chemical_plant (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -659,7 +667,7 @@ building_chemical_plant_catalytic_synthesis = {
 	production_method_groups = {
 		pmg_main_fertilizer_catalytic_synthesis
 	}
-	required_construction = 2888
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {
@@ -671,7 +679,7 @@ building_chemical_plant_catalytic_synthesis = {
 		}
 	}
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_chemical_plant (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -700,7 +708,7 @@ building_explosives_factory = {
 	production_method_groups = {
 		pmg_main_explosives_leblanc_process
 	}
-	required_construction = 421
+	required_construction = 400
 	possible = {
 		owner = {
 			NOT = {
@@ -712,7 +720,7 @@ building_explosives_factory = {
 		}
 	}
 	ai_value = {
-		value = 1000
+		value = 455
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_explosives_factory (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -780,7 +788,7 @@ building_explosives_factory_vacuum_evaporation = {
 	production_method_groups = {
 		pmg_main_explosives_vacuum_evaporation
 	}
-	required_construction = 1520
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -792,7 +800,7 @@ building_explosives_factory_vacuum_evaporation = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_explosives_factory (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -820,7 +828,7 @@ building_explosives_factory_brine_electrolysis = {
 	production_method_groups = {
 		pmg_main_explosives_brine_electrolysis
 	}
-	required_construction = 2888
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {
@@ -832,7 +840,7 @@ building_explosives_factory_brine_electrolysis = {
 		}
 	}
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_explosives_factory (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -907,7 +915,7 @@ building_steel_mill = {
 		pmg_main_steel_blister_steel_process
 		pmg_automation_building_steel_mill_steel_mill
 	}
-	required_construction = 421
+	required_construction = 400
 	possible = {
 		owner = {
 			NOT = {
@@ -919,7 +927,7 @@ building_steel_mill = {
 		}
 	}
 	ai_value = {
-		value = 1000
+		value = 455
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_steel_mill (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -991,7 +999,7 @@ building_steel_mill_open_hearth_process = {
 		pmg_main_steel_open_hearth_process
 		pmg_automation_building_steel_mill_steel_mill_open_hearth_process
 	}
-	required_construction = 2095
+	required_construction = 2263
 	possible = {
 		owner = {
 			NOT = {
@@ -1003,10 +1011,10 @@ building_steel_mill_open_hearth_process = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		if = {
 			limit = { owner ?= { has_technology_researched = electric_arc_process } }
-			add = 2000
+			add = 2640
 		}
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_steel_mill (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
@@ -1036,6 +1044,47 @@ building_motor_industry = {
 	production_method_groups = {
 		pmg_main_motor_steam_engines
 		pmg_automation_building_motor_industry_motor_industry
+	}
+	required_construction = 400
+	possible = {
+		owner = {
+			NOT = {
+				OR = {
+					has_law_or_variant = law_type:law_industry_banned
+					has_law_or_variant = law_type:law_extraction_economy
+				}
+			}
+		}
+	}
+	ai_value = {
+		value = 455
+		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_motor_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
+		if = {
+			limit = {
+				owner ?= {
+					has_journal_entry = je_five_year_plan
+					je:je_five_year_plan ?= {
+						has_variable = five_year_plan_heavy_industry_var
+					}
+					five_year_plan_heavy_industry_goal_met = no
+				}
+			}
+			add = 2500
+		}
+	}
+	ownership_type = self
+	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
+}
+
+building_motor_industry_compound_engines = {
+	building_group = bg_heavy_industry
+	icon = "gfx/interface/icons/building_icons/motor_industry.dds"
+	city_type = city
+	levels_per_mesh = 50
+	unlocking_technologies = { pumpjacks }
+	production_method_groups = {
+		pmg_main_motor_compound_engines
+		pmg_automation_building_motor_industry_motor_industry_compound_engines
 	}
 	required_construction = 800
 	possible = {
@@ -1078,7 +1127,7 @@ building_motor_industry_electric_engines = {
 		pmg_main_motor_electric_engines
 		pmg_automation_building_motor_industry_motor_industry_electric_engines
 	}
-	required_construction = 1520
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -1090,7 +1139,7 @@ building_motor_industry_electric_engines = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_motor_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -1119,7 +1168,7 @@ building_motor_industry_diesel_engines = {
 		pmg_main_motor_diesel_engines
 		pmg_automation_building_motor_industry_motor_industry_diesel_engines
 	}
-	required_construction = 2888
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {
@@ -1131,7 +1180,7 @@ building_motor_industry_diesel_engines = {
 		}
 	}
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_motor_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -1206,7 +1255,7 @@ building_automotive_industry = {
 		pmg_aeroplanes_automotive_industry
 		pmg_tanks_automotive_industry
 	}
-	required_construction = 1520
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -1218,7 +1267,7 @@ building_automotive_industry = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_automotive_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -1249,7 +1298,7 @@ building_automotive_industry_mass_automobile_production = {
 		pmg_tanks_automotive_industry_mass_automobile_production
 		pmg_automation_building_automotive_industry_automotive_industry_mass_automobile_production
 	}
-	required_construction = 2888
+	required_construction = 3200
 	possible = {
 		owner = {
 			NOT = {
@@ -1261,7 +1310,7 @@ building_automotive_industry_mass_automobile_production = {
 		}
 	}
 	ai_value = {
-		value = 5000
+		value = 4840
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_automotive_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -1291,7 +1340,7 @@ building_electrics_industry = {
 		pmg_main_electrics_telephones
 		pmg_radios_category_electrics_industry
 	}
-	required_construction = 1520
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -1303,7 +1352,7 @@ building_electrics_industry = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_electrics_industry (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = {
 			limit = {
@@ -1335,8 +1384,8 @@ building_arms_industry = {
 		pmg_main_arms_muskets
 		pmg_automation_building_arms_industry_arms_industry
 	}
-	required_construction = 316
-	ai_value = 1000
+	required_construction = 300
+	ai_value = 455
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1369,8 +1418,8 @@ building_arms_industry_repeaters = {
 		pmg_main_arms_repeaters
 		pmg_automation_building_arms_industry_arms_industry_repeaters
 	}
-	required_construction = 1140
-	ai_value = 3000
+	required_construction = 1200
+	ai_value = 2200
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1386,8 +1435,8 @@ building_arms_industry_bolt_action_rifles = {
 		pmg_main_arms_bolt_action_rifles
 		pmg_automation_building_arms_industry_arms_industry_bolt_action_rifles
 	}
-	required_construction = 2166
-	ai_value = 5000
+	required_construction = 2400
+	ai_value = 4840
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1404,8 +1453,8 @@ building_artillery_foundry = {
 		pmg_main_artillery_cannons
 		pmg_automation_building_arms_industry_artillery_foundry
 	}
-	required_construction = 316
-	ai_value = 1000
+	required_construction = 300
+	ai_value = 455
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1438,8 +1487,8 @@ building_artillery_foundry_breech_loaders = {
 		pmg_main_artillery_breech_loaders
 		pmg_automation_building_arms_industry_artillery_foundry_breech_loaders
 	}
-	required_construction = 1140
-	ai_value = 3000
+	required_construction = 1200
+	ai_value = 2200
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1455,8 +1504,8 @@ building_artillery_foundry_recoiled_barrels = {
 		pmg_main_artillery_recoiled_barrels
 		pmg_automation_building_arms_industry_artillery_foundry_recoiled_barrels
 	}
-	required_construction = 2166
-	ai_value = 5000
+	required_construction = 2400
+	ai_value = 4840
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_heavy_industry.dds"
 }
@@ -1529,7 +1578,7 @@ building_munition_plant_explosive_shells = {
 		pmg_main_munition_explosive_shells
 		pmg_automation_building_munition_plant_munition_plant_explosive_shells
 	}
-	required_construction = 1520
+	required_construction = 1600
 	possible = {
 		owner = {
 			NOT = {
@@ -1541,7 +1590,7 @@ building_munition_plant_explosive_shells = {
 		}
 	}
 	ai_value = {
-		value = 3000
+		value = 2200
 		# pm_tech_rehaul: vanilla's journal-entry-conditional adds of building_munition_plant (common/buildings/01_industry.txt; BALANCE_FRAMEWORK §10.109.2)
 		if = { # The Great Reforms - military modernization
 			limit = {

@@ -679,12 +679,12 @@ has_farm_building = {
 
 is_production_building = {
 	or = {
-		is_building_type = building_coal_mine
-		is_building_type = building_iron_mine
-		is_building_type = building_lead_mine
-		is_building_type = building_sulfur_mine
+		pmr_is_coal_mine = yes
+		pmr_is_iron_mine = yes
+		pmr_is_lead_mine = yes
+		pmr_is_sulfur_mine = yes
 		is_building_type = building_logging_camp
-		is_building_type = building_oil_rig
+		pmr_is_oil_rig = yes
 		is_building_type = building_coffee_plantation
 		is_building_type = building_cotton_plantation
 		is_building_type = building_dye_plantation
@@ -695,7 +695,7 @@ is_production_building = {
 		is_building_type = building_rubber_plantation
 		is_building_type = building_banana_plantation
 		is_building_type = building_silk_plantation
-		is_building_type = building_whaling_station
+		pmr_is_whaling_station = yes
 		is_building_type = building_livestock_ranch
 		is_building_type = building_maize_farm
 		is_building_type = building_millet_farm
@@ -719,7 +719,7 @@ is_production_building = {
 		pmr_is_artillery = yes
 		pmr_is_munition = yes
 		is_building_type = building_power_plant
-		is_building_type = building_fishing_wharf
+		pmr_is_fishing_wharf = yes
 	}
 }
 
@@ -816,12 +816,12 @@ is_distillery = {
 
 is_raw_industries_building = {
 	or = {
-		is_building_type = building_coal_mine
-		is_building_type = building_iron_mine
-		is_building_type = building_lead_mine
-		is_building_type = building_sulfur_mine
+		pmr_is_coal_mine = yes
+		pmr_is_iron_mine = yes
+		pmr_is_lead_mine = yes
+		pmr_is_sulfur_mine = yes
 		is_building_type = building_logging_camp
-		is_building_type = building_whaling_station
+		pmr_is_whaling_station = yes
 	}
 }
 is_plantation_building = {
@@ -842,8 +842,8 @@ is_plantation_building = {
 
 is_economic_objective_building = {
 	or = {
-		is_building_type = building_coal_mine
-		is_building_type = building_iron_mine
+		pmr_is_coal_mine = yes
+		pmr_is_iron_mine = yes
 	}
 }
 

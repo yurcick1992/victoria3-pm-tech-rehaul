@@ -9,11 +9,20 @@ company_societe_mokta_el_hadid = {
 
 	building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	potential = {
@@ -30,10 +39,27 @@ company_societe_mokta_el_hadid = {
 
 	possible = {
 		has_technology_researched = bessemer_process
-		has_building_levels_in_state_region = {
-			region = STATE_CONSTANTINE
-			building = building_iron_mine
-			levels >= 5
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_CONSTANTINE
+				building = building_iron_mine
+				levels >= 5
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_CONSTANTINE
+				building = building_iron_mine_atmospheric_engine_pump
+				levels >= 5
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_CONSTANTINE
+				building = building_iron_mine_condensing_engine_pump
+				levels >= 5
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_CONSTANTINE
+				building = building_iron_mine_diesel_pump
+				levels >= 5
+			}
 		}
 	}
 
@@ -51,6 +77,24 @@ company_societe_mokta_el_hadid = {
 
 	ai_construction_targets = {
 		building_iron_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CONSTANTINE
+			}
+		}
+		building_iron_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CONSTANTINE
+			}
+		}
+		building_iron_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_CONSTANTINE
+			}
+		}
+		building_iron_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_CONSTANTINE
@@ -81,6 +125,7 @@ company_schneider_creusot = {
 		building_artillery_foundry_breech_loaders
 		building_artillery_foundry_recoiled_barrels
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}
@@ -193,6 +238,9 @@ company_dmc = {
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	extension_building_types = {
@@ -575,10 +623,16 @@ company_mines_anzin = {
 
 	building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	potential = {
@@ -598,11 +652,31 @@ company_mines_anzin = {
 			state_region = s:STATE_FRENCH_LOW_COUNTRIES
 			is_incorporated = yes
 		}
-		has_building_levels_in_state_region = {
-			region = STATE_FRENCH_LOW_COUNTRIES
-			building = building_coal_mine
-			levels >= 5
-			is_incorporated = yes
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_FRENCH_LOW_COUNTRIES
+				building = building_coal_mine
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_FRENCH_LOW_COUNTRIES
+				building = building_coal_mine_atmospheric_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_FRENCH_LOW_COUNTRIES
+				building = building_coal_mine_condensing_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_FRENCH_LOW_COUNTRIES
+				building = building_coal_mine_diesel_pump
+				levels >= 5
+				is_incorporated = yes
+			}
 		}
 	}
 
@@ -622,6 +696,24 @@ company_mines_anzin = {
 
 	ai_construction_targets = {
 		building_coal_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_FRENCH_LOW_COUNTRIES
+			}
+		}
+		building_coal_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_FRENCH_LOW_COUNTRIES
+			}
+		}
+		building_coal_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_FRENCH_LOW_COUNTRIES
+			}
+		}
+		building_coal_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_FRENCH_LOW_COUNTRIES

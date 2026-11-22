@@ -9,10 +9,16 @@ company_bengal_coal_company = {
 
 	building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	potential = {
@@ -33,17 +39,40 @@ company_bengal_coal_company = {
 			state_region = s:STATE_WEST_BENGAL
 			is_incorporated = yes
 		}
-		has_building_levels_in_state_region = {
-			region = STATE_WEST_BENGAL
-			building = building_coal_mine
-			levels >= 5
-			is_incorporated = yes
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_WEST_BENGAL
+				building = building_coal_mine
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_WEST_BENGAL
+				building = building_coal_mine_atmospheric_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_WEST_BENGAL
+				building = building_coal_mine_condensing_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_WEST_BENGAL
+				building = building_coal_mine_diesel_pump
+				levels >= 5
+				is_incorporated = yes
+			}
 		}
 	}
 
 	prosperity_modifier = {
 		interest_group_ig_industrialists_pol_str_mult = 0.2
 		building_iron_mine_throughput_add = 0.1
+		building_iron_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_iron_mine_condensing_engine_pump_throughput_add = 0.1
+		building_iron_mine_diesel_pump_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -55,6 +84,24 @@ company_bengal_coal_company = {
 
 	ai_construction_targets = {
 		building_coal_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+		building_coal_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+		building_coal_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_WEST_BENGAL
+			}
+		}
+		building_coal_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_WEST_BENGAL
@@ -276,6 +323,7 @@ company_bombay_burmah_trading_corporation = {
 		building_tea_plantation
 		building_cotton_plantation
 		building_oil_rig
+		building_oil_rig_combustion_derricks
 	}
 
 	possible_prestige_goods = {
@@ -571,6 +619,7 @@ company_wadia_shipbuilders = {
 		building_explosives_factory_vacuum_evaporation
 		building_explosives_factory_brine_electrolysis
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}
@@ -641,6 +690,7 @@ company_steel_brothers = {
 
 	building_types = {
 		building_oil_rig
+		building_oil_rig_combustion_derricks
 		building_rice_farm
 	}
 
@@ -677,7 +727,10 @@ company_steel_brothers = {
 		any_scope_state = {
 			has_state_trait = state_trait_burmese_teak
 			any_scope_building = {
-				is_building_type = building_oil_rig
+				OR = {
+					is_building_type = building_oil_rig
+					is_building_type = building_oil_rig_combustion_derricks
+				}
 				level >= 5
 			}
 			any_scope_building = {
@@ -705,6 +758,16 @@ company_steel_brothers = {
 
 	ai_construction_targets = {
 		building_oil_rig = {
+			level = 5
+			state_trigger = {
+				has_state_trait = state_trait_burmese_teak
+				any_scope_building = {
+					is_building_type = building_rice_farm
+					level >= 5
+				}
+			}
+		}
+		building_oil_rig_combustion_derricks = {
 			level = 5
 			state_trigger = {
 				has_state_trait = state_trait_burmese_teak
@@ -800,6 +863,9 @@ company_ralli_brothers = {
 
 	prosperity_modifier = {
 		building_sulfur_mine_throughput_add = 0.1
+		building_sulfur_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_sulfur_mine_condensing_engine_pump_throughput_add = 0.1
+		building_sulfur_mine_diesel_pump_throughput_add = 0.1
 		building_textile_mill_dye_workshops_throughput_add = 0.1
 		building_textile_mill_sewing_machines_throughput_add = 0.1
 		state_trade_advantage_mult = 0.05
@@ -857,6 +923,9 @@ company_calcutta_electric = {
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	potential = {

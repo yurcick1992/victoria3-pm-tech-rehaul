@@ -67,17 +67,30 @@
 				activate_production_methods={ "pm_basic_shipbuilding"  }
 			}
 			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:OMA"
+						levels=1
+						region="STATE_OMAN"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_fishing_wharf_fishing_trawlers" "pm_unrefrigerated"  }
+			}
+			create_building={
 				building="building_fishing_wharf"
 				add_ownership={
 					building={
 						type="building_fishing_wharf"
 						country="c:OMA"
-						levels=2
+						levels=1
 						region="STATE_OMAN"
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_fishing_trawlers" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -127,7 +140,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -365,7 +378,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -432,6 +445,19 @@
 	s:STATE_PALESTINE={
 		region_state:EGY={
 			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:EGY"
+						levels=1
+						region="STATE_PALESTINE"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_fishing_wharf_fishing_trawlers" "pm_unrefrigerated"  }
+			}
+			create_building={
 				building="building_fishing_wharf"
 				add_ownership={
 					building={
@@ -442,7 +468,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_fishing_trawlers" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -475,6 +501,19 @@
 				activate_production_methods={ "pm_simple_farming"  "pm_tools_disabled" "pm_no_secondary" }
 			}
 			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:EGY"
+						levels=1
+						region="STATE_LEBANON"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_fishing_wharf_fishing_trawlers" "pm_unrefrigerated"  }
+			}
+			create_building={
 				building="building_fishing_wharf"
 				add_ownership={
 					building={
@@ -485,7 +524,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_fishing_trawlers" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_silk_plantation"
@@ -539,7 +578,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" }
+				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 			create_building={
 				building = "building_textile_mill"
@@ -552,7 +591,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_millet_farm"
@@ -608,7 +647,20 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass"  }
+				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glass_t0"  }
+			}
+			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:EGY"
+						levels=1
+						region="STATE_ALEPPO"
+					}
+				}
+				reserves=1
+				activate_production_methods={ "pm_main_fishing_wharf_fishing_trawlers" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -621,7 +673,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_fishing_trawlers" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -671,7 +723,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_paper_mill"
@@ -701,7 +753,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_t0"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -791,7 +843,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_rice_farm"
@@ -883,7 +935,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_port"
@@ -907,7 +959,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_furniture_manufactory"
@@ -920,7 +972,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -933,7 +985,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_glass_forest_glass" }
+				activate_production_methods={ "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 		}
 	}
@@ -1026,7 +1078,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_simple_fishing" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 			create_building={
 				building="building_port"
@@ -1108,7 +1160,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_glass_forest_glass" }
+				activate_production_methods = { "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 			create_building={
 				building="building_opium_plantation"
@@ -1160,7 +1212,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_furniture_manufactory"
@@ -1173,7 +1225,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 		}
 	}
@@ -1190,7 +1242,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -1261,7 +1313,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_furniture_manufactory"
@@ -1274,7 +1326,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1287,7 +1339,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_glass_forest_glass" }
+				activate_production_methods={ "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 		}
 	}
@@ -1304,7 +1356,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_no_luxuries"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1384,7 +1436,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building="building_government_administration"
@@ -1434,7 +1486,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1447,7 +1499,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_glass_forest_glass" }
+				activate_production_methods={ "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 		}
 	}
@@ -1475,7 +1527,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_craftsman_sewing_textile_t0"  }
 			}
 			create_building={
 				building="building_logging_camp"
@@ -1553,7 +1605,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 			create_building={
 				building="building_glassworks"
@@ -1566,7 +1618,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_glass_forest_glass" }
+				activate_production_methods={ "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 		}
 	}
@@ -1658,7 +1710,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building = "building_paper_mill"
@@ -1713,7 +1765,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_tea_plantation"
@@ -1775,7 +1827,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_glass_forest_glass" }
+				activate_production_methods={ "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 			create_building={
 				building="building_food_industry"
@@ -1788,7 +1840,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" }
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_distillery" }
 			}
 			create_building={
 				building="building_furniture_manufactory"
@@ -1801,7 +1853,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" }
+				activate_production_methods={ "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0" }
 			}
 		}
 	}
@@ -1831,7 +1883,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes" }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 			create_building={
 				building = "building_furniture_manufactory"
@@ -1844,7 +1896,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_furniture_handcrafted_furniture"  }
+				activate_production_methods = { "pm_main_furniture_handcrafted_furniture" "pm_luxury_furniture_furniture_t0"  }
 			}
 			create_building={
 				building="building_fishing_wharf"
@@ -1857,7 +1909,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_wheat_farm"
@@ -1947,7 +1999,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_glass_forest_glass" }
+				activate_production_methods={ "pm_main_glass_forest_glass" "pm_ceramics_glass_t0" }
 			}
 			create_building={
 				building="building_food_industry"
@@ -1960,7 +2012,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_food_bakery" }
+				activate_production_methods={ "pm_main_food_bakery" "pm_disabled_distillery" }
 			}
 			create_building={
 				building="building_paper_mill"
@@ -2059,7 +2111,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 		}
 	}
@@ -2132,7 +2184,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_simple_fishing" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 			create_building={
 				building="building_livestock_ranch"
@@ -2188,7 +2240,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_livestock_ranch"

@@ -196,7 +196,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods = { "pm_main_textile_handsewn_clothes"  }
+				activate_production_methods = { "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes"  }
 			}
 			create_building={
 				building="building_tobacco_plantation"
@@ -332,7 +332,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -511,7 +511,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}
@@ -591,7 +591,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_main_textile_handsewn_clothes" }
+				activate_production_methods={ "pm_main_textile_handsewn_clothes" "pm_no_luxury_clothes" }
 			}
 		}
 	}
@@ -763,7 +763,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -854,6 +854,19 @@
 				activate_production_methods={ "pm_simple_forestry" "pm_no_hardwood" "pm_no_equipment" "pm_road_carts"  }
 			}
 			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:OMA"
+						levels=1
+						region="STATE_ZANZIBAR"
+					}
+				}
+				reserves=1
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_fishing_trawlers" }
+			}
+			create_building={
 				building="building_fishing_wharf"
 				add_ownership={
 					building={
@@ -864,7 +877,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_fishing_trawlers" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 			create_building={
 				building="building_barrack"
@@ -966,6 +979,19 @@
 		}
 		region_state:OMA={
 			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:OMA"
+						levels=1
+						region="STATE_KENYA"
+					}
+				}
+				reserves=1
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_fishing_trawlers" }
+			}
+			create_building={
 				building="building_fishing_wharf"
 				add_ownership={
 					building={
@@ -976,7 +1002,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_fishing_trawlers" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 		}
 		region_state:WTU={
@@ -1004,7 +1030,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_simple_fishing" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 			create_building={
 				building="building_barrack"
@@ -1030,7 +1056,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_simple_fishing" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 			create_building={
 				building="building_barrack"
@@ -1723,7 +1749,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -1762,7 +1788,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -1870,7 +1896,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={ "pm_simple_fishing" "pm_unrefrigerated"  }
+				activate_production_methods={ "pm_main_fishing_wharf_simple_fishing" "pm_unrefrigerated"  }
 			}
 			create_building={
 				building="building_barrack"
@@ -2672,6 +2698,19 @@
 				activate_production_methods={ "default_building_vineyard" "pm_road_carts"  }
 			}
 			create_building={
+				building="building_fishing_wharf_fishing_trawlers"
+				add_ownership={
+					building={
+						type="building_fishing_wharf_fishing_trawlers"
+						country="c:SAF"
+						levels=1
+						region="STATE_CAPE_COLONY"
+					}
+				}
+				reserves=1
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_fishing_trawlers" }
+			}
+			create_building={
 				building="building_fishing_wharf"
 				add_ownership={
 					building={
@@ -2682,7 +2721,7 @@
 					}
 				}
 				reserves=1
-				activate_production_methods={  "pm_unrefrigerated" "pm_fishing_trawlers" }
+				activate_production_methods={  "pm_unrefrigerated" "pm_main_fishing_wharf_simple_fishing" }
 			}
 			create_building={
 				building="building_port"

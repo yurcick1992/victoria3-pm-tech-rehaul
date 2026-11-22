@@ -58,7 +58,7 @@ POPS = {
 		region_state:USA = {
 			create_pop = {
 				culture = yankee
-				size = 2103020
+				size = 2105020
 			}
 			create_pop = {
 				culture = yankee
@@ -82,8 +82,8 @@ POPS = {
 				culture = iroquoian
 				size = 8000
 			}
-			create_pop = { pop_type = shopkeepers culture = yankee religion = protestant size = 5400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = yankee religion = protestant size = 12600 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = yankee religion = protestant size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = yankee religion = protestant size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_VIRGINIA = { # population of VA proper minus Fairfax County, which had its population figures added to DC to inflate the pop count there
@@ -830,7 +830,7 @@ POPS = {
 		region_state:USA = {
 			create_pop = {
 				culture = yankee
-				size = 1236496
+				size = 1234496
 			}
 			create_pop = {
 				culture = yankee
@@ -850,8 +850,8 @@ POPS = {
 				culture = afro_american
 				size = 43996
 			}
-			create_pop = { pop_type = shopkeepers culture = yankee religion = protestant size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = yankee religion = protestant size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = yankee religion = protestant size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = yankee religion = protestant size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_NEW_JERSEY = {
@@ -1674,9 +1674,9 @@ POPS = {
 		region_state:MEX = {
 			create_pop = {
 				culture = mexican
-				size = 691486
+				size = 690486
 			}
-			create_pop = { pop_type = shopkeepers culture = mexican size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = mexican size = 31000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = mixtec
 				religion = catholic

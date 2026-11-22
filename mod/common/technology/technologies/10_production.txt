@@ -85,6 +85,15 @@ cotton_gin = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.25)
+		if = {
+			limit = { has_variable = pmr_adv_cotton_gin }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.25 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = cotton_gin  progress >= 0.99 } }
@@ -115,6 +124,15 @@ lathe = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.25)
+		if = {
+			limit = { has_variable = pmr_adv_lathe }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.25 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = lathe  progress >= 0.99 } }
@@ -137,6 +155,15 @@ distillation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.25)
+		if = {
+			limit = { has_variable = pmr_adv_distillation }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.25 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = distillation  progress >= 0.99 } }
@@ -166,6 +193,15 @@ steelworking = {
 				}
 			}
 			add = 1
+		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.25)
+		if = {
+			limit = { has_variable = pmr_adv_steelworking }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.25 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -209,6 +245,15 @@ crystal_glass = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_crystal_glass }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = crystal_glass  progress >= 0.99 } }
@@ -241,6 +286,15 @@ intensive_agriculture = {
 			}
 			add = 2
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_intensive_agriculture }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = intensive_agriculture  progress >= 0.99 } }
@@ -262,6 +316,15 @@ fractional_distillation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_fractional_distillation }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = fractional_distillation  progress >= 0.99 } }
@@ -282,6 +345,15 @@ canneries = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_canneries }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = canneries  progress >= 0.99 } }
@@ -303,6 +375,15 @@ watertube_boiler = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_watertube_boiler }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = watertube_boiler  progress >= 0.99 } }
@@ -340,6 +421,15 @@ atmospheric_engine = {
 				}
 			}
 			add = 2
+		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_atmospheric_engine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -385,6 +475,15 @@ railways = {
 			}
 			add = 2
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_railways }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = railways  progress >= 0.99 } }
@@ -406,6 +505,15 @@ chemical_bleaching = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_chemical_bleaching }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = chemical_bleaching  progress >= 0.99 } }
@@ -434,6 +542,15 @@ nitroglycerin = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_nitroglycerin }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = nitroglycerin  progress >= 0.99 } }
@@ -462,6 +579,15 @@ bessemer_process = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_bessemer_process }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = bessemer_process  progress >= 0.99 } }
@@ -482,6 +608,15 @@ baking_powder = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_baking_powder }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = baking_powder  progress >= 0.99 } }
@@ -515,6 +650,15 @@ mechanized_workshops = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_mechanized_workshops }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = mechanized_workshops  progress >= 0.99 } }
@@ -536,6 +680,15 @@ mechanical_tools = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.35)
+		if = {
+			limit = { has_variable = pmr_adv_mechanical_tools }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.35 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = mechanical_tools  progress >= 0.99 } }
@@ -559,6 +712,15 @@ improved_fertilizer = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_improved_fertilizer }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = improved_fertilizer  progress >= 0.99 } }
@@ -590,6 +752,15 @@ steam_donkey = {
 			}
 			add = 2
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_steam_donkey }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = steam_donkey  progress >= 0.99 } }
@@ -617,6 +788,15 @@ dynamite = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_dynamite }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = dynamite  progress >= 0.99 } }
@@ -648,6 +828,15 @@ rubber_mastication = {
 			}
 			add = 3
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_rubber_mastication }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = rubber_mastication  progress >= 0.99 } }
@@ -668,6 +857,15 @@ rotary_valve_engine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_rotary_valve_engine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = rotary_valve_engine  progress >= 0.99 } }
@@ -692,6 +890,15 @@ reinforced_concrete = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_reinforced_concrete }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = reinforced_concrete  progress >= 0.99 } }
@@ -722,6 +929,15 @@ threshing_machine = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_threshing_machine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = threshing_machine  progress >= 0.99 } }
@@ -739,7 +955,7 @@ pumpjacks = {
 
 	unlocking_technologies = {
 		steam_donkey
-		dynamite
+		rotary_valve_engine
 	}
 
 	ai_weight = {
@@ -754,47 +970,14 @@ pumpjacks = {
 			}
 			add = 2
 		}
-
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
 		if = {
-			limit = {
-				country_rank >= rank_value:unrecognized_major_power
-			}
-			add = 2
+			limit = { has_variable = pmr_adv_pumpjacks }
+			multiply = 0.5
 		}
-
-		if = {
-			limit = {
-				has_technology_researched = battleship_tech
-			}
-			add = 4
-		}
-
-		if = {
-			limit = {
-				has_technology_researched = carrier_tech
-			}
-			add = 4
-		}
-
-		if = {
-			limit = {
-				has_technology_researched = destroyer
-			}
-			add = 4
-		}
-
-		if = {
-			limit = {
-				has_technology_researched = mobile_armor
-			}
-			add = 4
-		}
-
-		if = {
-			limit = {
-				has_technology_researched = submarine
-			}
-			add = 4
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -816,6 +999,15 @@ aniline = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_aniline }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = aniline  progress >= 0.99 } }
@@ -836,6 +1028,15 @@ open_hearth_process = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_open_hearth_process }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = open_hearth_process  progress >= 0.99 } }
@@ -856,6 +1057,15 @@ vulcanization = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_vulcanization }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = vulcanization  progress >= 0.99 } }
@@ -876,6 +1086,15 @@ vacuum_canning = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_vacuum_canning }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = vacuum_canning  progress >= 0.99 } }
@@ -899,6 +1118,8 @@ shift_work = {
 
 	ai_weight = {
 		value = 1
+		# PM & Tech Rehaul: a bespoke research weight (BALANCE_FRAMEWORK §10.130)
+		multiply = 1.2
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = shift_work  progress >= 0.99 } }
@@ -921,6 +1142,15 @@ steel_railway_cars = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_steel_railway_cars }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = steel_railway_cars  progress >= 0.99 } }
@@ -957,6 +1187,15 @@ electrical_generation = {
 			}
 			add = 2
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.45)
+		if = {
+			limit = { has_variable = pmr_adv_electrical_generation }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.45 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = electrical_generation  progress >= 0.99 } }
@@ -989,6 +1228,15 @@ mechanized_farming = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_mechanized_farming }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = mechanized_farming  progress >= 0.99 } }
@@ -1010,6 +1258,15 @@ art_silk = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_art_silk }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = art_silk  progress >= 0.99 } }
@@ -1030,6 +1287,15 @@ automatic_bottle_blowers = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_automatic_bottle_blowers }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = automatic_bottle_blowers  progress >= 0.99 } }
@@ -1052,6 +1318,15 @@ conveyors = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_conveyors }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = conveyors  progress >= 0.99 } }
@@ -1072,6 +1347,15 @@ pasteurization = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_pasteurization }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = pasteurization  progress >= 0.99 } }
@@ -1105,6 +1389,15 @@ electric_railway = {
 				}
 			}
 			add = 1
+		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_electric_railway }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
 		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
@@ -1140,6 +1433,15 @@ combustion_engine = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_combustion_engine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = combustion_engine  progress >= 0.99 } }
@@ -1168,6 +1470,15 @@ pneumatic_tools = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_pneumatic_tools }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = pneumatic_tools  progress >= 0.99 } }
@@ -1189,6 +1500,15 @@ nitrogen_fixation = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_nitrogen_fixation }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = nitrogen_fixation  progress >= 0.99 } }
@@ -1209,6 +1529,15 @@ electric_arc_process = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_electric_arc_process }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = electric_arc_process  progress >= 0.99 } }
@@ -1229,6 +1558,15 @@ steam_turbine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_steam_turbine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = steam_turbine  progress >= 0.99 } }
@@ -1249,6 +1587,15 @@ plastics = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_plastics }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = plastics  progress >= 0.99 } }
@@ -1281,6 +1628,15 @@ electrical_capacitors = {
 			}
 			add = 1
 		}
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_electrical_capacitors }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = electrical_capacitors  progress >= 0.99 } }
@@ -1301,6 +1657,15 @@ radio = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_radio }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = radio  progress >= 0.99 } }
@@ -1322,6 +1687,15 @@ telephone = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.55)
+		if = {
+			limit = { has_variable = pmr_adv_telephone }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.55 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = telephone  progress >= 0.99 } }
@@ -1344,6 +1718,15 @@ dough_rollers = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_dough_rollers }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = dough_rollers  progress >= 0.99 } }
@@ -1365,6 +1748,15 @@ flash_freezing = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_flash_freezing }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = flash_freezing  progress >= 0.99 } }
@@ -1385,6 +1777,15 @@ oil_turbine = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_oil_turbine }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = oil_turbine  progress >= 0.99 } }
@@ -1411,6 +1812,15 @@ arc_welding = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_arc_welding }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = arc_welding  progress >= 0.99 } }
@@ -1433,6 +1843,15 @@ compression_ignition = {
 
 	ai_weight = {
 		value = 1
+		# pmr_entry_weight - a research entry can deliver this technology (literacy, literacy 0.65)
+		if = {
+			limit = { has_variable = pmr_adv_compression_ignition }
+			multiply = 0.5
+		}
+		else_if = {
+			limit = { literacy_rate >= 0.65 }
+			multiply = 0.8
+		}
 		# pmr_finish_boost — its banked progress covers 99% of its cost: one tick of research completes it
 		if = {
 			limit = { has_technology_progress = { technology = compression_ignition  progress >= 0.99 } }

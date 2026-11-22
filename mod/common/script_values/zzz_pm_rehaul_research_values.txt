@@ -332,6 +332,30 @@ pmr_lv_coal_mine = {
 	}
 }
 
+pmr_lv_coal_mine_atmospheric_engine_pump = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lv_coal_mine_condensing_engine_pump = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lv_coal_mine_diesel_pump = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
 pmr_lv_iron_mine = {
 	value = 0
 	every_scope_building = {
@@ -340,10 +364,40 @@ pmr_lv_iron_mine = {
 	}
 }
 
+pmr_lv_iron_mine_atmospheric_engine_pump = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lv_iron_mine_condensing_engine_pump = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lv_iron_mine_diesel_pump = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
 pmr_src_atmospheric_engine_0 = {
 	value = 0
 	add = { value = pmr_lv_coal_mine  multiply = 5000 }
+	add = { value = pmr_lv_coal_mine_atmospheric_engine_pump  multiply = 5000 }
+	add = { value = pmr_lv_coal_mine_condensing_engine_pump  multiply = 5000 }
+	add = { value = pmr_lv_coal_mine_diesel_pump  multiply = 5000 }
 	add = { value = pmr_lv_iron_mine  multiply = 5000 }
+	add = { value = pmr_lv_iron_mine_atmospheric_engine_pump  multiply = 5000 }
+	add = { value = pmr_lv_iron_mine_condensing_engine_pump  multiply = 5000 }
+	add = { value = pmr_lv_iron_mine_diesel_pump  multiply = 5000 }
 }
 
 pmr_srcl_atmospheric_engine_0 = {
@@ -353,6 +407,84 @@ pmr_srcl_atmospheric_engine_0 = {
 
 pmr_srcl_atmospheric_engine_0_fl = {
 	value = pmr_srcl_atmospheric_engine_0
+	floor = yes
+}
+
+pmr_src_atmospheric_engine_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_atmospheric_engine_1_fl = {
+	value = pmr_src_atmospheric_engine_1
+	floor = yes
+}
+
+pmr_src_atmospheric_engine_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_atmospheric_engine_2_fl = {
+	value = pmr_src_atmospheric_engine_2
+	floor = yes
+}
+
+pmr_src_atmospheric_engine_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_atmospheric_engine_3_fl = {
+	value = pmr_src_atmospheric_engine_3
+	floor = yes
+}
+
+pmr_src_atmospheric_engine_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_atmospheric_engine_4_fl = {
+	value = pmr_src_atmospheric_engine_4
+	floor = yes
+}
+
+pmr_src_atmospheric_engine_5 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_atmospheric_engine_5_fl = {
+	value = pmr_src_atmospheric_engine_5
+	floor = yes
+}
+
+pmr_src_atmospheric_engine_6 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_atmospheric_engine_6_fl = {
+	value = pmr_src_atmospheric_engine_6
 	floor = yes
 }
 
@@ -614,7 +746,7 @@ pmr_implv_civilizing_mission = {
 pmr_src_combustion_engine_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_electric_engines }
+		limit = { is_building_type = building_motor_industry_compound_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -627,13 +759,26 @@ pmr_src_combustion_engine_0_fl = {
 pmr_src_combustion_engine_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_diesel_engines }
+		limit = { is_building_type = building_motor_industry_electric_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
 
 pmr_src_combustion_engine_1_fl = {
 	value = pmr_src_combustion_engine_1
+	floor = yes
+}
+
+pmr_src_combustion_engine_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_oil_rig }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_combustion_engine_2_fl = {
+	value = pmr_src_combustion_engine_2
 	floor = yes
 }
 
@@ -665,6 +810,84 @@ pmr_src_compression_ignition_1 = {
 
 pmr_src_compression_ignition_1_fl = {
 	value = pmr_src_compression_ignition_1
+	floor = yes
+}
+
+pmr_src_compression_ignition_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_2_fl = {
+	value = pmr_src_compression_ignition_2
+	floor = yes
+}
+
+pmr_src_compression_ignition_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_3_fl = {
+	value = pmr_src_compression_ignition_3
+	floor = yes
+}
+
+pmr_src_compression_ignition_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_4_fl = {
+	value = pmr_src_compression_ignition_4
+	floor = yes
+}
+
+pmr_src_compression_ignition_5 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_5_fl = {
+	value = pmr_src_compression_ignition_5
+	floor = yes
+}
+
+pmr_src_compression_ignition_6 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_6_fl = {
+	value = pmr_src_compression_ignition_6
+	floor = yes
+}
+
+pmr_src_compression_ignition_7 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_compression_ignition_7_fl = {
+	value = pmr_src_compression_ignition_7
 	floor = yes
 }
 
@@ -702,7 +925,7 @@ pmr_lx_conveyors_0_0 = {
 pmr_lx_conveyors_0_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_electric_engines }
+		limit = { is_building_type = building_motor_industry_compound_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -710,7 +933,7 @@ pmr_lx_conveyors_0_1 = {
 pmr_lx_conveyors_0_2 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_diesel_engines }
+		limit = { is_building_type = building_motor_industry_electric_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -718,12 +941,20 @@ pmr_lx_conveyors_0_2 = {
 pmr_lx_conveyors_0_3 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_automotive_industry }
+		limit = { is_building_type = building_motor_industry_diesel_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
 
 pmr_lx_conveyors_0_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_automotive_industry }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_conveyors_0_5 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_automotive_industry_mass_automobile_production }
@@ -738,6 +969,7 @@ pmr_src_conveyors_0 = {
 	add = { value = pmr_lx_conveyors_0_2  multiply = 5000 }
 	add = { value = pmr_lx_conveyors_0_3  multiply = 5000 }
 	add = { value = pmr_lx_conveyors_0_4  multiply = 5000 }
+	add = { value = pmr_lx_conveyors_0_5  multiply = 5000 }
 }
 
 pmr_srcl_conveyors_0 = {
@@ -917,6 +1149,236 @@ pmr_src_dynamite_1_fl = {
 	floor = yes
 }
 
+pmr_lx_dynamite_2_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_5 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_6 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_7 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_8 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_9 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_10 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_11 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_12 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_13 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_14 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_15 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_16 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_17 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_18 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_19 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_20 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_21 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_22 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_dynamite_2_23 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_dynamite_2 = {
+	value = 0
+	add = { value = pmr_lx_dynamite_2_0  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_1  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_2  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_3  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_4  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_5  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_6  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_7  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_8  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_9  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_10  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_11  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_12  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_13  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_14  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_15  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_16  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_17  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_18  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_19  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_20  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_21  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_22  multiply = 5000 }
+	add = { value = pmr_lx_dynamite_2_23  multiply = 5000 }
+}
+
+pmr_srcl_dynamite_2 = {
+	value = pmr_src_dynamite_2
+	divide = 5000
+}
+
+pmr_srcl_dynamite_2_fl = {
+	value = pmr_srcl_dynamite_2
+	floor = yes
+}
+
 pmr_implv_dynamite = {
 	value = 0
 	if = { limit = { has_variable = pmr_impl_dynamite }  value = var:pmr_impl_dynamite }
@@ -948,7 +1410,7 @@ pmr_implv_electric_arc_process = {
 pmr_src_electric_railway_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry }
+		limit = { is_building_type = building_motor_industry_compound_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -1005,12 +1467,20 @@ pmr_lx_electrical_generation_0_0 = {
 pmr_lx_electrical_generation_0_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_electric_engines }
+		limit = { is_building_type = building_motor_industry_compound_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
 
 pmr_lx_electrical_generation_0_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_motor_industry_electric_engines }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_electrical_generation_0_3 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_motor_industry_diesel_engines }
@@ -1023,6 +1493,7 @@ pmr_src_electrical_generation_0 = {
 	add = { value = pmr_lx_electrical_generation_0_0  multiply = 5000 }
 	add = { value = pmr_lx_electrical_generation_0_1  multiply = 5000 }
 	add = { value = pmr_lx_electrical_generation_0_2  multiply = 5000 }
+	add = { value = pmr_lx_electrical_generation_0_3  multiply = 5000 }
 }
 
 pmr_srcl_electrical_generation_0 = {
@@ -1058,7 +1529,7 @@ pmr_implv_feminism = {
 pmr_lx_flash_freezing_0_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_fishing_wharf  OR = { has_active_production_method = pm_steam_trawlers } }
+		limit = { is_building_type = building_fishing_wharf_steam_trawlers }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -1066,7 +1537,7 @@ pmr_lx_flash_freezing_0_0 = {
 pmr_lx_flash_freezing_0_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_whaling_station  OR = { has_active_production_method = pm_steam_whaling_ships } }
+		limit = { is_building_type = building_whaling_station_steam_whaling_ships }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -1136,6 +1607,37 @@ pmr_srcl_fractional_distillation_0_fl = {
 pmr_implv_fractional_distillation = {
 	value = 0
 	if = { limit = { has_variable = pmr_impl_fractional_distillation }  value = var:pmr_impl_fractional_distillation }
+}
+
+pmr_src_gantry_cranes_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_fishing_wharf_fishing_trawlers }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_gantry_cranes_0_fl = {
+	value = pmr_src_gantry_cranes_0
+	floor = yes
+}
+
+pmr_src_gantry_cranes_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_whaling_station_wooden_whaling_ships }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_gantry_cranes_1_fl = {
+	value = pmr_src_gantry_cranes_1
+	floor = yes
+}
+
+pmr_implv_gantry_cranes = {
+	value = 0
+	if = { limit = { has_variable = pmr_impl_gantry_cranes }  value = var:pmr_impl_gantry_cranes }
 }
 
 pmr_implv_general_staff = {
@@ -1502,6 +2004,236 @@ pmr_src_nitroglycerin_0_fl = {
 	floor = yes
 }
 
+pmr_lx_nitroglycerin_1_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_5 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_6 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_7 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_8 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_9 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_10 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_11 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_12 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_13 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_14 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_15 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_16 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_17 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_18 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_19 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_20 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_21 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_22 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_nitroglycerin_1_23 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_nitroglycerin_1 = {
+	value = 0
+	add = { value = pmr_lx_nitroglycerin_1_0  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_1  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_2  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_3  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_4  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_5  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_6  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_7  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_8  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_9  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_10  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_11  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_12  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_13  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_14  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_15  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_16  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_17  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_18  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_19  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_20  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_21  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_22  multiply = 5000 }
+	add = { value = pmr_lx_nitroglycerin_1_23  multiply = 5000 }
+}
+
+pmr_srcl_nitroglycerin_1 = {
+	value = pmr_src_nitroglycerin_1
+	divide = 5000
+}
+
+pmr_srcl_nitroglycerin_1_fl = {
+	value = pmr_srcl_nitroglycerin_1
+	floor = yes
+}
+
 pmr_implv_nitroglycerin = {
 	value = 0
 	if = { limit = { has_variable = pmr_impl_nitroglycerin }  value = var:pmr_impl_nitroglycerin }
@@ -1763,6 +2495,24 @@ pmr_implv_psychoanalysis = {
 	if = { limit = { has_variable = pmr_impl_psychoanalysis }  value = var:pmr_impl_psychoanalysis }
 }
 
+pmr_src_pumpjacks_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_motor_industry }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_pumpjacks_0_fl = {
+	value = pmr_src_pumpjacks_0
+	floor = yes
+}
+
+pmr_implv_pumpjacks = {
+	value = 0
+	if = { limit = { has_variable = pmr_impl_pumpjacks }  value = var:pmr_impl_pumpjacks }
+}
+
 pmr_implv_quinine = {
 	value = 0
 	if = { limit = { has_variable = pmr_impl_quinine }  value = var:pmr_impl_quinine }
@@ -1799,7 +2549,7 @@ pmr_implv_radio = {
 pmr_lx_railways_0_0 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_coal_mine  OR = { has_active_production_method = pm_atmospheric_engine_pump_building_coal_mine  has_active_production_method = pm_condensing_engine_pump_building_coal_mine  has_active_production_method = pm_diesel_pump_building_coal_mine } }
+		limit = { is_building_type = building_coal_mine_atmospheric_engine_pump }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -1807,7 +2557,39 @@ pmr_lx_railways_0_0 = {
 pmr_lx_railways_0_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_iron_mine  OR = { has_active_production_method = pm_atmospheric_engine_pump_building_iron_mine  has_active_production_method = pm_condensing_engine_pump_building_iron_mine  has_active_production_method = pm_diesel_pump_building_iron_mine } }
+		limit = { is_building_type = building_coal_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_railways_0_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_diesel_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_railways_0_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_railways_0_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_condensing_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_railways_0_5 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_diesel_pump }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
@@ -1816,6 +2598,10 @@ pmr_src_railways_0 = {
 	value = 0
 	add = { value = pmr_lx_railways_0_0  multiply = 5000 }
 	add = { value = pmr_lx_railways_0_1  multiply = 5000 }
+	add = { value = pmr_lx_railways_0_2  multiply = 5000 }
+	add = { value = pmr_lx_railways_0_3  multiply = 5000 }
+	add = { value = pmr_lx_railways_0_4  multiply = 5000 }
+	add = { value = pmr_lx_railways_0_5  multiply = 5000 }
 }
 
 pmr_srcl_railways_0 = {
@@ -1908,12 +2694,20 @@ pmr_lx_rotary_valve_engine_0_0 = {
 pmr_lx_rotary_valve_engine_0_1 = {
 	value = 0
 	every_scope_building = {
-		limit = { is_building_type = building_motor_industry_electric_engines }
+		limit = { is_building_type = building_motor_industry_compound_engines }
 		add = { value = this.level  multiply = occupancy }
 	}
 }
 
 pmr_lx_rotary_valve_engine_0_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_motor_industry_electric_engines }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_rotary_valve_engine_0_3 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_motor_industry_diesel_engines }
@@ -1926,6 +2720,7 @@ pmr_src_rotary_valve_engine_0 = {
 	add = { value = pmr_lx_rotary_valve_engine_0_0  multiply = 5000 }
 	add = { value = pmr_lx_rotary_valve_engine_0_1  multiply = 5000 }
 	add = { value = pmr_lx_rotary_valve_engine_0_2  multiply = 5000 }
+	add = { value = pmr_lx_rotary_valve_engine_0_3  multiply = 5000 }
 }
 
 pmr_srcl_rotary_valve_engine_0 = {
@@ -2298,7 +3093,85 @@ pmr_implv_vulcanization = {
 	if = { limit = { has_variable = pmr_impl_vulcanization }  value = var:pmr_impl_vulcanization }
 }
 
-pmr_lx_watertube_boiler_0_0 = {
+pmr_src_watertube_boiler_0 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_coal_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_watertube_boiler_0_fl = {
+	value = pmr_src_watertube_boiler_0
+	floor = yes
+}
+
+pmr_src_watertube_boiler_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_iron_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_watertube_boiler_1_fl = {
+	value = pmr_src_watertube_boiler_1
+	floor = yes
+}
+
+pmr_src_watertube_boiler_2 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_lead_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_watertube_boiler_2_fl = {
+	value = pmr_src_watertube_boiler_2
+	floor = yes
+}
+
+pmr_src_watertube_boiler_3 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_sulfur_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_watertube_boiler_3_fl = {
+	value = pmr_src_watertube_boiler_3
+	floor = yes
+}
+
+pmr_src_watertube_boiler_4 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_copper_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_watertube_boiler_4_fl = {
+	value = pmr_src_watertube_boiler_4
+	floor = yes
+}
+
+pmr_src_watertube_boiler_5 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_gold_mine_atmospheric_engine_pump }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_src_watertube_boiler_5_fl = {
+	value = pmr_src_watertube_boiler_5
+	floor = yes
+}
+
+pmr_lx_watertube_boiler_6_0 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_motor_industry }
@@ -2306,7 +3179,15 @@ pmr_lx_watertube_boiler_0_0 = {
 	}
 }
 
-pmr_lx_watertube_boiler_0_1 = {
+pmr_lx_watertube_boiler_6_1 = {
+	value = 0
+	every_scope_building = {
+		limit = { is_building_type = building_motor_industry_compound_engines }
+		add = { value = this.level  multiply = occupancy }
+	}
+}
+
+pmr_lx_watertube_boiler_6_2 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_motor_industry_electric_engines }
@@ -2314,7 +3195,7 @@ pmr_lx_watertube_boiler_0_1 = {
 	}
 }
 
-pmr_lx_watertube_boiler_0_2 = {
+pmr_lx_watertube_boiler_6_3 = {
 	value = 0
 	every_scope_building = {
 		limit = { is_building_type = building_motor_industry_diesel_engines }
@@ -2322,20 +3203,21 @@ pmr_lx_watertube_boiler_0_2 = {
 	}
 }
 
-pmr_src_watertube_boiler_0 = {
+pmr_src_watertube_boiler_6 = {
 	value = 0
-	add = { value = pmr_lx_watertube_boiler_0_0  multiply = 5000 }
-	add = { value = pmr_lx_watertube_boiler_0_1  multiply = 5000 }
-	add = { value = pmr_lx_watertube_boiler_0_2  multiply = 5000 }
+	add = { value = pmr_lx_watertube_boiler_6_0  multiply = 5000 }
+	add = { value = pmr_lx_watertube_boiler_6_1  multiply = 5000 }
+	add = { value = pmr_lx_watertube_boiler_6_2  multiply = 5000 }
+	add = { value = pmr_lx_watertube_boiler_6_3  multiply = 5000 }
 }
 
-pmr_srcl_watertube_boiler_0 = {
-	value = pmr_src_watertube_boiler_0
+pmr_srcl_watertube_boiler_6 = {
+	value = pmr_src_watertube_boiler_6
 	divide = 5000
 }
 
-pmr_srcl_watertube_boiler_0_fl = {
-	value = pmr_srcl_watertube_boiler_0
+pmr_srcl_watertube_boiler_6_fl = {
+	value = pmr_srcl_watertube_boiler_6
 	floor = yes
 }
 

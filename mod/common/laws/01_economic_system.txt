@@ -315,6 +315,12 @@ law_industry_banned = {
 				}
 				if = {
 					limit = {
+						has_building = building_motor_industry_compound_engines
+					}
+					remove_building = building_motor_industry_compound_engines
+				}
+				if = {
+					limit = {
 						has_building = building_motor_industry_electric_engines
 					}
 					remove_building = building_motor_industry_electric_engines
@@ -470,6 +476,12 @@ law_extraction_economy = {
 						has_building = building_motor_industry
 					}
 					remove_building = building_motor_industry
+				}
+				if = {
+					limit = {
+						has_building = building_motor_industry_compound_engines
+					}
+					remove_building = building_motor_industry_compound_engines
 				}
 				if = {
 					limit = {

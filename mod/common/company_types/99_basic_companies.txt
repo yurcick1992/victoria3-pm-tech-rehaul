@@ -419,7 +419,11 @@ company_basic_fishing = {
 
 	building_types = {
 		building_fishing_wharf
+		building_fishing_wharf_fishing_trawlers
+		building_fishing_wharf_steam_trawlers
 		building_whaling_station
+		building_whaling_station_wooden_whaling_ships
+		building_whaling_station_steam_whaling_ships
 	}
 
 	extension_building_types = {
@@ -441,8 +445,16 @@ company_basic_fishing = {
 		any_scope_state = {
 			any_scope_building = {
 				OR = {
-					is_building_type = building_fishing_wharf
-					is_building_type = building_whaling_station
+					OR = {
+						is_building_type = building_fishing_wharf
+						is_building_type = building_fishing_wharf_fishing_trawlers
+						is_building_type = building_fishing_wharf_steam_trawlers
+					}
+					OR = {
+						is_building_type = building_whaling_station
+						is_building_type = building_whaling_station_wooden_whaling_ships
+						is_building_type = building_whaling_station_steam_whaling_ships
+					}
 				}
 				level >= 5
 			}
@@ -531,16 +543,23 @@ company_basic_oil = {
 
 	building_types = {
 		building_oil_rig
+		building_oil_rig_combustion_derricks
 	}
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	possible = {
 		any_scope_state = {
 			any_scope_building = {
-				is_building_type = building_oil_rig
+				OR = {
+					is_building_type = building_oil_rig
+					is_building_type = building_oil_rig_combustion_derricks
+				}
 				level >= 5
 			}
 		}
@@ -574,16 +593,27 @@ company_basic_gold_mining = {
 
 	building_types = {
 		building_gold_mine
+		building_gold_mine_atmospheric_engine_pump
+		building_gold_mine_condensing_engine_pump
+		building_gold_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	possible = {
 		any_scope_state = {
 			any_scope_building = {
-				is_building_type = building_gold_mine
+				OR = {
+					is_building_type = building_gold_mine
+					is_building_type = building_gold_mine_atmospheric_engine_pump
+					is_building_type = building_gold_mine_condensing_engine_pump
+					is_building_type = building_gold_mine_diesel_pump
+				}
 				level >= 5
 			}
 		}
@@ -619,21 +649,48 @@ company_basic_metal_mining = {
 
 	building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 		building_copper_mine
+		building_copper_mine_atmospheric_engine_pump
+		building_copper_mine_condensing_engine_pump
+		building_copper_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	possible = {
 		any_scope_state = {
 			any_scope_building = {
 				OR = {
-					is_building_type = building_iron_mine
-					is_building_type = building_lead_mine
-					is_building_type = building_copper_mine
+					OR = {
+						is_building_type = building_iron_mine
+						is_building_type = building_iron_mine_atmospheric_engine_pump
+						is_building_type = building_iron_mine_condensing_engine_pump
+						is_building_type = building_iron_mine_diesel_pump
+					}
+					OR = {
+						is_building_type = building_lead_mine
+						is_building_type = building_lead_mine_atmospheric_engine_pump
+						is_building_type = building_lead_mine_condensing_engine_pump
+						is_building_type = building_lead_mine_diesel_pump
+					}
+					OR = {
+						is_building_type = building_copper_mine
+						is_building_type = building_copper_mine_atmospheric_engine_pump
+						is_building_type = building_copper_mine_condensing_engine_pump
+						is_building_type = building_copper_mine_diesel_pump
+					}
 				}
 				level >= 5
 			}
@@ -672,19 +729,38 @@ company_basic_mineral_mining = {
 
 	building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	possible = {
 		any_scope_state = {
 			any_scope_building = {
 				OR = {
-					is_building_type = building_sulfur_mine
-					is_building_type = building_coal_mine
+					OR = {
+						is_building_type = building_sulfur_mine
+						is_building_type = building_sulfur_mine_atmospheric_engine_pump
+						is_building_type = building_sulfur_mine_condensing_engine_pump
+						is_building_type = building_sulfur_mine_diesel_pump
+					}
+					OR = {
+						is_building_type = building_coal_mine
+						is_building_type = building_coal_mine_atmospheric_engine_pump
+						is_building_type = building_coal_mine_condensing_engine_pump
+						is_building_type = building_coal_mine_diesel_pump
+					}
 				}
 				level >= 5
 			}
@@ -847,6 +923,9 @@ company_basic_home_goods = {
 	extension_building_types = {
 		building_logging_camp
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -985,7 +1064,13 @@ company_basic_steel = {
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 	}
 
 	possible = {
@@ -1146,6 +1231,9 @@ company_basic_chemicals = {
 
 	extension_building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -1207,6 +1295,7 @@ company_basic_motors = {
 
 	building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 		building_automotive_industry
@@ -1226,6 +1315,7 @@ company_basic_motors = {
 				OR = {
 					OR = {
 						is_building_type = building_motor_industry
+						is_building_type = building_motor_industry_compound_engines
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
 					}
@@ -1277,6 +1367,9 @@ company_basic_munitions = {
 
 	extension_building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
@@ -1346,7 +1439,13 @@ company_basic_electrics = {
 
 	extension_building_types = {
 		building_copper_mine
+		building_copper_mine_atmospheric_engine_pump
+		building_copper_mine_condensing_engine_pump
+		building_copper_mine_diesel_pump
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_rubber_plantation
 	}
 
@@ -1468,6 +1567,9 @@ company_construction_power_bloc = {
 
 	extension_building_types = {
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	potential = {

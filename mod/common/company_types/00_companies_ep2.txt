@@ -9,6 +9,9 @@ company_sumitomo = {
 
 	building_types = {
 		building_copper_mine
+		building_copper_mine_atmospheric_engine_pump
+		building_copper_mine_condensing_engine_pump
+		building_copper_mine_diesel_pump
 		building_steel_mill
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
@@ -19,7 +22,13 @@ company_sumitomo = {
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_tooling_workshop_pig_iron
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
@@ -57,7 +66,12 @@ company_sumitomo = {
 				is_incorporated = yes
 				any_scope_building = {
 					OR = {
-						is_building_type = building_copper_mine
+						OR = {
+							is_building_type = building_copper_mine
+							is_building_type = building_copper_mine_atmospheric_engine_pump
+							is_building_type = building_copper_mine_condensing_engine_pump
+							is_building_type = building_copper_mine_diesel_pump
+						}
 						OR = {
 							is_building_type = building_steel_mill
 							is_building_type = building_steel_mill_bessemer_process
@@ -89,6 +103,24 @@ company_sumitomo = {
 
 	ai_construction_targets = {
 		building_copper_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_copper_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_copper_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANSAI
+			}
+		}
+		building_copper_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANSAI
@@ -148,6 +180,9 @@ company_yasuda = {
 
 	building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 		building_railway
 		building_port
 	}
@@ -157,6 +192,9 @@ company_yasuda = {
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_textile_mill_dye_workshops
 		building_textile_mill_sewing_machines
 	}
@@ -198,7 +236,12 @@ company_yasuda = {
 				is_incorporated = yes
 				any_scope_building = {
 					OR = {
-						is_building_type = building_sulfur_mine
+						OR = {
+							is_building_type = building_sulfur_mine
+							is_building_type = building_sulfur_mine_atmospheric_engine_pump
+							is_building_type = building_sulfur_mine_condensing_engine_pump
+							is_building_type = building_sulfur_mine_diesel_pump
+						}
 						is_building_type = building_railway
 						is_building_type = building_port
 					}
@@ -223,6 +266,24 @@ company_yasuda = {
 
 	ai_construction_targets = {
 		building_sulfur_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANTO
+			}
+		}
+		building_sulfur_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANTO
+			}
+		}
+		building_sulfur_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_KANTO
+			}
+		}
+		building_sulfur_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_KANTO
@@ -428,6 +489,9 @@ company_societe_francaise_charbonnages_du_tonkin = {
 
 	building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_logging_camp
 	}
 
@@ -462,7 +526,12 @@ company_societe_francaise_charbonnages_du_tonkin = {
 			any_scope_state = {
 				owner = root
 				any_scope_building = {
-					is_building_type = building_coal_mine
+					OR = {
+						is_building_type = building_coal_mine
+						is_building_type = building_coal_mine_atmospheric_engine_pump
+						is_building_type = building_coal_mine_condensing_engine_pump
+						is_building_type = building_coal_mine_diesel_pump
+					}
 					level >= 5
 				}
 			}
@@ -471,6 +540,9 @@ company_societe_francaise_charbonnages_du_tonkin = {
 
 	prosperity_modifier = {
 		building_coal_mine_throughput_add = 0.1
+		building_coal_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_coal_mine_condensing_engine_pump_throughput_add = 0.1
+		building_coal_mine_diesel_pump_throughput_add = 0.1
 		country_bureaucracy_mult = 0.05
 	}
 
@@ -483,6 +555,24 @@ company_societe_francaise_charbonnages_du_tonkin = {
 
 	ai_construction_targets = {
 		building_coal_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TONKIN
+			}
+		}
+		building_coal_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TONKIN
+			}
+		}
+		building_coal_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_TONKIN
+			}
+		}
+		building_coal_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_TONKIN
@@ -506,7 +596,13 @@ company_broken_hill_proprietary_company = {
 
 	building_types = {
 		building_gold_mine
+		building_gold_mine_atmospheric_engine_pump
+		building_gold_mine_condensing_engine_pump
+		building_gold_mine_diesel_pump
 		building_copper_mine
+		building_copper_mine_atmospheric_engine_pump
+		building_copper_mine_condensing_engine_pump
+		building_copper_mine_diesel_pump
 	}
 
 	extension_building_types = {
@@ -516,6 +612,9 @@ company_broken_hill_proprietary_company = {
 		building_automotive_industry
 		building_automotive_industry_mass_automobile_production
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -545,8 +644,18 @@ company_broken_hill_proprietary_company = {
 				owner = root
 				any_scope_building = {
 					OR = {
-						is_building_type = building_gold_mine
-						is_building_type = building_copper_mine
+						OR = {
+							is_building_type = building_gold_mine
+							is_building_type = building_gold_mine_atmospheric_engine_pump
+							is_building_type = building_gold_mine_condensing_engine_pump
+							is_building_type = building_gold_mine_diesel_pump
+						}
+						OR = {
+							is_building_type = building_copper_mine
+							is_building_type = building_copper_mine_atmospheric_engine_pump
+							is_building_type = building_copper_mine_condensing_engine_pump
+							is_building_type = building_copper_mine_diesel_pump
+						}
 					}
 					level >= 5
 				}
@@ -557,6 +666,9 @@ company_broken_hill_proprietary_company = {
 	prosperity_modifier = {
 		country_production_tech_research_speed_mult = 0.05
 		building_copper_mine_throughput_add = 0.1
+		building_copper_mine_atmospheric_engine_pump_throughput_add = 0.1
+		building_copper_mine_condensing_engine_pump_throughput_add = 0.1
+		building_copper_mine_diesel_pump_throughput_add = 0.1
 	}
 
 	ai_will_do = {
@@ -572,7 +684,43 @@ company_broken_hill_proprietary_company = {
 				state_region = s:STATE_NEW_SOUTH_WALES
 			}
 		}
+		building_gold_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+			}
+		}
+		building_gold_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+			}
+		}
+		building_gold_mine_diesel_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+			}
+		}
 		building_copper_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+			}
+		}
+		building_copper_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+			}
+		}
+		building_copper_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_NEW_SOUTH_WALES
+			}
+		}
+		building_copper_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_NEW_SOUTH_WALES
@@ -597,10 +745,14 @@ company_ramirez = {
 	building_types = {
 		building_food_industry_sweeteners
 		building_fishing_wharf
+		building_fishing_wharf_fishing_trawlers
+		building_fishing_wharf_steam_trawlers
 	}
 
 	extension_building_types = {
 		building_whaling_station
+		building_whaling_station_wooden_whaling_ships
+		building_whaling_station_steam_whaling_ships
 		building_port
 	}
 
@@ -640,7 +792,11 @@ company_ramirez = {
 					level >= 5
 				}
 				any_scope_building = {
-					is_building_type = building_fishing_wharf
+					OR = {
+						is_building_type = building_fishing_wharf
+						is_building_type = building_fishing_wharf_fishing_trawlers
+						is_building_type = building_fishing_wharf_steam_trawlers
+					}
 				}
 			}
 		}
@@ -670,6 +826,18 @@ company_ramirez = {
 				state_region = s:STATE_ALENTEJO
 			}
 		}
+		building_fishing_wharf_fishing_trawlers = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_ALENTEJO
+			}
+		}
+		building_fishing_wharf_steam_trawlers = {
+			level = 1
+			state_trigger = {
+				state_region = s:STATE_ALENTEJO
+			}
+		}
 	}
 
 	ai_weight = {
@@ -688,12 +856,21 @@ company_oriental_consolidated_mining = {
 
 	building_types = {
 		building_gold_mine
+		building_gold_mine_atmospheric_engine_pump
+		building_gold_mine_condensing_engine_pump
+		building_gold_mine_diesel_pump
 		building_logging_camp
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -722,7 +899,12 @@ company_oriental_consolidated_mining = {
 			any_scope_state = {
 				owner = root
 				any_scope_building = {
-					is_building_type = building_gold_mine
+					OR = {
+						is_building_type = building_gold_mine
+						is_building_type = building_gold_mine_atmospheric_engine_pump
+						is_building_type = building_gold_mine_condensing_engine_pump
+						is_building_type = building_gold_mine_diesel_pump
+					}
 					level >= 5
 				}
 			}
@@ -742,6 +924,24 @@ company_oriental_consolidated_mining = {
 
 	ai_construction_targets = {
 		building_gold_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_PYONGYANG
+			}
+		}
+		building_gold_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_PYONGYANG
+			}
+		}
+		building_gold_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_PYONGYANG
+			}
+		}
+		building_gold_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_PYONGYANG
@@ -848,6 +1048,7 @@ company_ferranti_ltd = {
 		building_tooling_workshop_steel
 		building_tooling_workshop_rubber_grips
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}
@@ -920,6 +1121,7 @@ company_van_vlissingen_en_dudok_van_heel = {
 
 	building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 		building_tooling_workshop_pig_iron
@@ -933,6 +1135,9 @@ company_van_vlissingen_en_dudok_van_heel = {
 		building_steel_mill_bessemer_process
 		building_steel_mill_open_hearth_process
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 		building_automotive_industry
 		building_automotive_industry_mass_automobile_production
 	}
@@ -965,6 +1170,7 @@ company_van_vlissingen_en_dudok_van_heel = {
 				any_scope_building = {
 					OR = {
 						is_building_type = building_motor_industry
+						is_building_type = building_motor_industry_compound_engines
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
 					}
@@ -988,6 +1194,12 @@ company_van_vlissingen_en_dudok_van_heel = {
 
 	ai_construction_targets = {
 		building_motor_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_HOLLAND
+			}
+		}
+		building_motor_industry_compound_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_HOLLAND
@@ -1023,6 +1235,7 @@ company_maschinenfabrik_oerlikon = {
 
 	building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 		building_tooling_workshop_pig_iron
@@ -1069,6 +1282,7 @@ company_maschinenfabrik_oerlikon = {
 				any_scope_building = {
 					OR = {
 						is_building_type = building_motor_industry
+						is_building_type = building_motor_industry_compound_engines
 						is_building_type = building_motor_industry_electric_engines
 						is_building_type = building_motor_industry_diesel_engines
 					}
@@ -1091,6 +1305,12 @@ company_maschinenfabrik_oerlikon = {
 
 	ai_construction_targets = {
 		building_motor_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_EAST_SWITZERLAND
+			}
+		}
+		building_motor_industry_compound_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_EAST_SWITZERLAND

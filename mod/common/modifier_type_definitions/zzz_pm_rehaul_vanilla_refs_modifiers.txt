@@ -54,3 +54,21 @@ building_glassworks_leaded_glass_throughput_add={
 		ai_value=0
 	}
 }
+
+building_whaling_station_steam_whaling_ships_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}
+
+building_whaling_station_wooden_whaling_ships_throughput_add={
+	decimals=0
+	color=good
+	percent=yes
+	game_data={
+		ai_value=0
+	}
+}

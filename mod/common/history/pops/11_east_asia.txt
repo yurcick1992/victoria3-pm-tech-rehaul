@@ -115,9 +115,9 @@ POPS = {
 			create_pop = {
 				culture = han # nanfaren
 				religion = mahayana
-				size = 4916000
+				size = 4914000
 			}
-			create_pop = { pop_type = shopkeepers culture = han religion = mahayana size = 84000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han religion = mahayana size = 86000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = manchu
 				size = 4096
@@ -184,9 +184,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 1640452
+				size = 1628452
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 48000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 60000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				religion = mahayana
@@ -294,9 +294,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 5294504
+				size = 5292504
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 2006504
@@ -339,9 +339,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 10967600
+				size = 10955600
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 42000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 54000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 3001021
@@ -431,9 +431,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 11365592
+				size = 11363592
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 3300092
@@ -510,9 +510,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 6339000
+				size = 6337000
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				religion = mahayana
@@ -567,9 +567,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 10498404
+				size = 10494404
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 48000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 52000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				religion = mahayana
@@ -585,10 +585,10 @@ POPS = {
 			}
 			create_pop = {
 				culture = yue
-				size = 5470000
+				size = 5466000
 				religion = mahayana
 			}
-			create_pop = { pop_type = shopkeepers culture = yue religion = mahayana size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = yue religion = mahayana size = 28000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = manchu
 				size = 5200
@@ -672,10 +672,10 @@ POPS = {
 			}
 			create_pop = {
 				culture = min
-				size = 5992004
+				size = 5989004
 				religion = mahayana
 			}
-			create_pop = { pop_type = shopkeepers culture = min religion = mahayana size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = min religion = mahayana size = 21000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = manchu
 				size = 2408
@@ -713,9 +713,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 4604400
+				size = 4586400
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 60000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 78000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 2004400
@@ -744,9 +744,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 7973904
+				size = 7971904
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 3000904
@@ -762,9 +762,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 8062192
+				size = 8059192
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 21000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 3000092
@@ -780,9 +780,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 15314400
+				size = 15310400
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 24000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 28000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 5000400
@@ -831,9 +831,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 12519900
+				size = 12514900
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 35000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 4000900
@@ -871,9 +871,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 17101408
+				size = 17077408
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 120000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 144000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han
 				size = 4000408
@@ -902,9 +902,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 7300000
+				size = 7298000
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han
 				size = 3002000
@@ -921,9 +921,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 7718000
+				size = 7696000
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 126000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 148000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han
 				size = 4006000
@@ -948,9 +948,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 8768096
+				size = 8750096
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 114000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 132000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han
 				size = 4000096
@@ -979,9 +979,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 7988400
+				size = 7986400
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han
 				size = 4513400
@@ -1045,9 +1045,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 10016000
+				size = 9996000
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 72000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 92000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 5088000
@@ -1059,9 +1059,9 @@ POPS = {
 		region_state:CHI = {
 			create_pop = {
 				culture = han # nanfaren
-				size = 10200004
+				size = 10197004
 			}
-			create_pop = { pop_type = shopkeepers culture = han size = 60000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = han size = 63000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = han # nanfaren
 				size = 6836004
@@ -1816,9 +1816,9 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 3115725
+				size = 3114725
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 13000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1838,9 +1838,9 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 4132700
+				size = 4130700
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 8000 }   # craft rung workforce (emit_craft_start)
 		}		
 	}
 	s:STATE_KYOTO = {
@@ -1848,9 +1848,9 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 1305948
+				size = 1302948
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 21000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 7000 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1870,9 +1870,9 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 4886465
+				size = 4884465
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 30000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 32000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 6000 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1916,17 +1916,17 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 4128918
+				size = 4131918
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 12000 }   # craft rung workforce (emit_craft_start)
-			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 7000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 13000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 1400 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 7000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 1800 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1938,17 +1938,17 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 3886882
+				size = 3874882
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 30000 }   # craft rung workforce (emit_craft_start)
-			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 38000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 1200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 2800 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 8400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 4200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 9800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 4800 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = laborers culture = japanese religion = mahayana size = 11200 }   # seeded craft workforce (emit_craft_start, F197)
 			create_pop = { pop_type = shopkeepers culture = japanese religion = mahayana size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
@@ -1988,9 +1988,9 @@ POPS = {
 		region_state:JAP = {
 			create_pop = {
 				culture = japanese
-				size = 4059516
+				size = 4057516
 			}
-			create_pop = { pop_type = shopkeepers culture = japanese size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = japanese size = 20000 }   # craft rung workforce (emit_craft_start)
 		}
 	}
 	s:STATE_SHIKOKU = {
@@ -2093,25 +2093,25 @@ POPS = {
 		region_state:KOR = {
 			create_pop = {
 				culture = korean
-				size = 1782336
+				size = 1777336
 			}
-			create_pop = { pop_type = shopkeepers culture = korean size = 18000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = korean size = 21000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = korean
 				religion = mahayana
 				size = 986642
 			}
-			create_pop = { pop_type = shopkeepers culture = korean religion = confucian size = 9600 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = korean religion = confucian size = 22400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = korean religion = confucian size = 10200 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = korean religion = confucian size = 23800 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_BUSAN = {
 		region_state:KOR = {
 			create_pop = {
 				culture = korean
-				size = 2387741
+				size = 2386741
 			}
-			create_pop = { pop_type = shopkeepers culture = korean size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = korean size = 7000 }   # craft rung workforce (emit_craft_start)
 			create_pop = { # Japanese traders and merchants in Busan Waegwans, etc.
 				culture = japanese
 				pop_type = shopkeepers
@@ -2130,9 +2130,9 @@ POPS = {
 		region_state:KOR = {
 			create_pop = {
 				culture = korean
-				size = 2665968
+				size = 2664968
 			}
-			create_pop = { pop_type = shopkeepers culture = korean size = 6000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = korean size = 7000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = korean
 				religion = mahayana
@@ -2146,24 +2146,24 @@ POPS = {
 		region_state:KOR = {
 			create_pop = {
 				culture = korean
-				size = 1043067
+				size = 1045067
 			}
 			create_pop = {
 				culture = korean
 				religion = mahayana
 				size = 567035
 			}
-			create_pop = { pop_type = shopkeepers culture = korean religion = confucian size = 3000 }   # seeded craft workforce (emit_craft_start, F197)
-			create_pop = { pop_type = laborers culture = korean religion = confucian size = 7000 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = shopkeepers culture = korean religion = confucian size = 2400 }   # seeded craft workforce (emit_craft_start, F197)
+			create_pop = { pop_type = laborers culture = korean religion = confucian size = 5600 }   # seeded craft workforce (emit_craft_start, F197)
 		}
 	}
 	s:STATE_PYONGYANG = {
 		region_state:KOR = {
 			create_pop = {
 				culture = korean
-				size = 2494980
+				size = 2492980
 			}
-			create_pop = { pop_type = shopkeepers culture = korean size = 12000 }   # craft rung workforce (emit_craft_start)
+			create_pop = { pop_type = shopkeepers culture = korean size = 14000 }   # craft rung workforce (emit_craft_start)
 			create_pop = {
 				culture = korean
 				religion = mahayana

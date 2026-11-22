@@ -3497,7 +3497,7 @@ ai_strategy_default = {
 						is_in_geographic_region = geographic_region_africa
 						any_scope_building = {
 							OR = {
-								is_building_type = building_gold_mine
+								pmr_is_gold_mine = yes
 								is_building_type = building_gold_field
 							}
 						}

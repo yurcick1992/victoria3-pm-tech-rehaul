@@ -106,6 +106,7 @@ company_egyptian_rail = {
 
 	extension_building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}

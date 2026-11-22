@@ -15,6 +15,9 @@ company_ludwig_moser_and_sons = {
 
 	extension_building_types = {
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	potential = {
@@ -214,6 +217,9 @@ company_konigliche_porzellan_manufaktur_meissen = {
 
 	extension_building_types = {
 		building_lead_mine
+		building_lead_mine_atmospheric_engine_pump
+		building_lead_mine_condensing_engine_pump
+		building_lead_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -437,12 +443,19 @@ company_russian_american_company = {
 	building_types = {
 		building_logging_camp
 		building_whaling_station
+		building_whaling_station_wooden_whaling_ships
+		building_whaling_station_steam_whaling_ships
 		building_port
 	}
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_fishing_wharf
+		building_fishing_wharf_fishing_trawlers
+		building_fishing_wharf_steam_trawlers
 	}
 
 	possible_prestige_goods = {
@@ -474,7 +487,11 @@ company_russian_american_company = {
 					any_scope_building = {
 						OR = {
 							is_building_type = building_port
-							is_building_type = building_whaling_station
+							OR = {
+								is_building_type = building_whaling_station
+								is_building_type = building_whaling_station_wooden_whaling_ships
+								is_building_type = building_whaling_station_steam_whaling_ships
+							}
 							is_building_type = building_logging_camp
 						}
 						level >= 5
@@ -487,7 +504,11 @@ company_russian_american_company = {
 				any_scope_building = {
 					OR = {
 						is_building_type = building_port
-						is_building_type = building_whaling_station
+						OR = {
+							is_building_type = building_whaling_station
+							is_building_type = building_whaling_station_wooden_whaling_ships
+							is_building_type = building_whaling_station_steam_whaling_ships
+						}
 						is_building_type = building_logging_camp
 					}
 					level >= 5
@@ -533,6 +554,20 @@ company_russian_american_company = {
 			}
 		}
 		building_whaling_station = {
+			level = 5
+			state_trigger = {
+				region = sr:region_pacific_coast
+				is_incorporated = yes
+			}
+		}
+		building_whaling_station_wooden_whaling_ships = {
+			level = 5
+			state_trigger = {
+				region = sr:region_pacific_coast
+				is_incorporated = yes
+			}
+		}
+		building_whaling_station_steam_whaling_ships = {
 			level = 5
 			state_trigger = {
 				region = sr:region_pacific_coast
@@ -1227,6 +1262,9 @@ company_anglo_sicilian_sulphur_company = {
 
 	building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 	}
 
 	extension_building_types = {
@@ -1257,11 +1295,31 @@ company_anglo_sicilian_sulphur_company = {
 			state_region = s:STATE_SICILY
 			is_incorporated = yes
 		}
-		has_building_levels_in_state_region = {
-			region = STATE_SICILY
-			building = building_sulfur_mine
-			levels >= 5
-			is_incorporated = yes
+		OR = {
+			has_building_levels_in_state_region = {
+				region = STATE_SICILY
+				building = building_sulfur_mine
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_SICILY
+				building = building_sulfur_mine_atmospheric_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_SICILY
+				building = building_sulfur_mine_condensing_engine_pump
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_SICILY
+				building = building_sulfur_mine_diesel_pump
+				levels >= 5
+				is_incorporated = yes
+			}
 		}
 		NOT = {
 			c:GBR ?= {
@@ -1286,6 +1344,24 @@ company_anglo_sicilian_sulphur_company = {
 
 	ai_construction_targets = {
 		building_sulfur_mine = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SICILY
+			}
+		}
+		building_sulfur_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SICILY
+			}
+		}
+		building_sulfur_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_SICILY
+			}
+		}
+		building_sulfur_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_SICILY
@@ -1409,7 +1485,13 @@ company_norsk_hydro = {
 
 	extension_building_types = {
 		building_sulfur_mine
+		building_sulfur_mine_atmospheric_engine_pump
+		building_sulfur_mine_condensing_engine_pump
+		building_sulfur_mine_diesel_pump
 		building_copper_mine
+		building_copper_mine_atmospheric_engine_pump
+		building_copper_mine_condensing_engine_pump
+		building_copper_mine_diesel_pump
 	}
 
 	potential = {
@@ -1501,6 +1583,7 @@ company_massey_harris = {
 
 	building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 		building_tooling_workshop_pig_iron
@@ -1510,6 +1593,9 @@ company_massey_harris = {
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	possible_prestige_goods = {
@@ -1552,6 +1638,12 @@ company_massey_harris = {
 			}
 			has_building_levels_in_state_region = {
 				region = STATE_ONTARIO
+				building = building_motor_industry_compound_engines
+				levels >= 5
+				is_incorporated = yes
+			}
+			has_building_levels_in_state_region = {
+				region = STATE_ONTARIO
 				building = building_motor_industry_electric_engines
 				levels >= 5
 				is_incorporated = yes
@@ -1579,6 +1671,12 @@ company_massey_harris = {
 
 	ai_construction_targets = {
 		building_motor_industry = {
+			level = 5
+			state_trigger = {
+				state_region = s:STATE_ONTARIO
+			}
+		}
+		building_motor_industry_compound_engines = {
 			level = 5
 			state_trigger = {
 				state_region = s:STATE_ONTARIO
@@ -1614,10 +1712,16 @@ company_de_beers = {
 
 	building_types = {
 		building_gold_mine
+		building_gold_mine_atmospheric_engine_pump
+		building_gold_mine_condensing_engine_pump
+		building_gold_mine_diesel_pump
 	}
 
 	extension_building_types = {
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	potential = {
@@ -1632,7 +1736,12 @@ company_de_beers = {
 		any_scope_state = {
 			region = sr:region_southern_africa
 			any_scope_building = {
-				is_building_type = building_gold_mine
+				OR = {
+					is_building_type = building_gold_mine
+					is_building_type = building_gold_mine_atmospheric_engine_pump
+					is_building_type = building_gold_mine_condensing_engine_pump
+					is_building_type = building_gold_mine_diesel_pump
+				}
 				level >= 5
 			}
 		}
@@ -1653,6 +1762,24 @@ company_de_beers = {
 
 	ai_construction_targets = {
 		building_gold_mine = {
+			level = 5
+			state_trigger = {
+				region = sr:region_southern_africa
+			}
+		}
+		building_gold_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				region = sr:region_southern_africa
+			}
+		}
+		building_gold_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				region = sr:region_southern_africa
+			}
+		}
+		building_gold_mine_diesel_pump = {
 			level = 5
 			state_trigger = {
 				region = sr:region_southern_africa
@@ -1739,6 +1866,7 @@ company_imperial_ethiopian_railways = {
 
 	extension_building_types = {
 		building_motor_industry
+		building_motor_industry_compound_engines
 		building_motor_industry_electric_engines
 		building_motor_industry_diesel_engines
 	}
@@ -1816,12 +1944,18 @@ company_lanfang_kongsi = {
 
 	building_types = {
 		building_gold_mine
+		building_gold_mine_atmospheric_engine_pump
+		building_gold_mine_condensing_engine_pump
+		building_gold_mine_diesel_pump
 		building_port
 	}
 
 	extension_building_types = {
 		building_rice_farm
 		building_iron_mine
+		building_iron_mine_atmospheric_engine_pump
+		building_iron_mine_condensing_engine_pump
+		building_iron_mine_diesel_pump
 	}
 
 	potential = {
@@ -1853,7 +1987,12 @@ company_lanfang_kongsi = {
 				state_region = s:STATE_NORTH_BORNEO
 			}
 			any_scope_building = {
-				is_building_type = building_gold_mine
+				OR = {
+					is_building_type = building_gold_mine
+					is_building_type = building_gold_mine_atmospheric_engine_pump
+					is_building_type = building_gold_mine_condensing_engine_pump
+					is_building_type = building_gold_mine_diesel_pump
+				}
 				level >= 5
 			}
 		}
@@ -1890,6 +2029,36 @@ company_lanfang_kongsi = {
 				}
 			}
 		}
+		building_gold_mine_atmospheric_engine_pump = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_WEST_BORNEO
+					state_region = s:STATE_EAST_BORNEO
+					state_region = s:STATE_NORTH_BORNEO
+				}
+			}
+		}
+		building_gold_mine_condensing_engine_pump = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_WEST_BORNEO
+					state_region = s:STATE_EAST_BORNEO
+					state_region = s:STATE_NORTH_BORNEO
+				}
+			}
+		}
+		building_gold_mine_diesel_pump = {
+			level = 5
+			state_trigger = {
+				OR = {
+					state_region = s:STATE_WEST_BORNEO
+					state_region = s:STATE_EAST_BORNEO
+					state_region = s:STATE_NORTH_BORNEO
+				}
+			}
+		}
 	}
 
 	ai_weight = {
@@ -1917,6 +2086,9 @@ company_paradox = {
 
 	extension_building_types = {
 		building_coal_mine
+		building_coal_mine_atmospheric_engine_pump
+		building_coal_mine_condensing_engine_pump
+		building_coal_mine_diesel_pump
 		building_paper_mill_sulfite_pulping
 		building_paper_mill_continuous_web
 	}
