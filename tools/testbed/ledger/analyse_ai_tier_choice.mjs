@@ -30,6 +30,7 @@ import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
@@ -51,7 +52,10 @@ const ANNEX_JUMP = 1.25;       // level growth in one year that means conquest, 
 // ---------------------------------------------------------------- the ladder ----
 const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};                // industry -> [{key, tier, era, tech, good, out}] ordered
-for (const ind of cfg.industries || []) {
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): building a lower DEPOSIT rung while holding a higher one is the design (each rung
+//   has slots of its own, §10.115), so the nine tiered deposits counted as "below the best" read 46.0% where manufacturing alone reads 26–28.5%
+const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('analyse_ai_tier_choice', MFG_SKIPPED);
+for (const ind of MFG_IND) {
   // ⚠⚠ SKIP A DISABLED INDUSTRY. Its rung 0 KEY IS THE VANILLA BUILDING KEY, so leaving it in the map
   //   makes every VANILLA building of that type count as one of our tiers — with the canonical book's
   //   `workforce_mult` (0.1 for graded ports) attached. On the four-rung arm, which hands ports,

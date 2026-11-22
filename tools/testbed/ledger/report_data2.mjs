@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { eraCols } from './lib_era_cols.mjs';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 import { workforceModel, DEFAULT_GAME } from './lib_workforce_groups.mjs';
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
 const SES = join(REPO, 'tools/testbed/sessions');
@@ -24,7 +25,10 @@ const MODBUILD = (() => { const i = process.argv.indexOf('--mod-build'); return 
 const WG = workforceModel({ game: DEFAULT_GAME, mod: MODBUILD, tierKeys: ERA_COLS.tier });
 console.log('workforce groups: game ' + DEFAULT_GAME + ' · mod build ' + MODBUILD);
 const tierEra = {}, tierEmp = {}, vanEmp = {};
-for (const ind of cfg.industries) {
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): a tiered deposit's first key is vanilla's mine, so it would also pull vanilla's
+//   mines into vanilla's sector here; the deposits are in the workforce groups' "mines & extraction" instead (lib_workforce_groups.mjs)
+const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('report_data2', MFG_SKIPPED);
+for (const ind of MFG_IND) {
   if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   const tiers = (ind.tiers || []).filter(t => t.key);
   for (const t of tiers) {

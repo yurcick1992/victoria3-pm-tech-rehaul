@@ -430,6 +430,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F282 | The crafts are not a capital sink: about 8,400 craft levels, 50,000 points (£20–27M) a century, 0.09% of all construction (0.5% before 1855); expected return 29% a year against 10–19% on the factory rungs, 6% misplaced against 30–44% on t0–t2; about as many craft levels downsized as built (0.55% of the capital downsized), staffing 93% → 51%; the crafts' 800 kept | the book of mod 1.1.1 / 1.1.2 (`697d4869`) | 15 centuries (1.15.1) + 2 × 1836→1855 (1.15.2), no game time | here |
 | F283 | The first century of the mod 1.2 book (`m12b-first`, n = 1): world GDP 0.71× vanilla 1.15.2, level to 1866, behind from 1876, 0.64–0.65 in 1916–26; the leaders do not depeasant (U* USA 47%, Britain 42% at the end against aims of 15% and 5%) while the world sits on its aims; the gap is output per worker before 1900 and workers per head after 1920; raw materials dearer than vanilla throughout; Britain stalls from 1880 on an empty treasury; the USA hoards with labour; not past the barrier, loss 29.51 | `m12b-first`, vanilla 1.15.2 | 1 (against 8), directional | here |
 | F284 | Five centuries of the mod 1.2 book (`m12b-first`, F283's run + four): none past the barrier; world GDP 0.82× vanilla 1.15.2 (0.71–1.02), every run level to 1866–1880, dipping in 1886–1916 and recovering from about 1920; the world's U* on its aims while the leaders scatter by seed (the USA's end U* 3.7–47%, Britain's 2.8–42%, Germany's 2.5–68%); PI 1.00× the largest loss term; loss 14.51; run 2 continued from a paused save and lacks 1904–1931 summaries (L44) | `m12b-first`, vanilla 1.15.2 | 5 (against 8), directional | here |
+| F285 | The register's PI and PP terms are half pegged to vanilla (the level part on 0.8 × vanilla's 1935 index), and vanilla's own input prices now fall (1935 ÷ 1900 0.91 on 1.13.11, 0.85 on 1.15.2); m12b's fall 19% yet score 6.15 + 1.46 of its 14.51 loss on the pegged part; own-path forms read; the ledger's tier lines count the nine tiered deposits as manufacturing (below-best 46.0% published, 26–28.5% on manufacturing alone; tier-1 workers 29.0M against 6.1M in 1935); the deposit ladders add rather than replace, and world raw output runs at about half vanilla's from 1900; §5 prices by goods class, market and decade: industry output 1900→1935 −11% in the 1.2 book, −9% / −10% in vanilla 1.15.2 / 1.15.1, −20% in mod 1.1.1; staples flat; the 1.2 book's coal and oil at 1.2–1.3 of base to 1920; §6 the prices at which old rungs stop covering inputs and wages when the rung two tiers up takes a quarter of output (0.85–1.0 of base for most goods in the decade t3 takes over); §7 the register under §10.128's industry-price term (1935 ÷ 1900 ≤ 0.75): the 1.2 book 0.89, loss 12.34; mod 1.1.1 0.81 | `m12b-first`, mod 1.1.1, vanilla 1.13.11 / 1.15.1 / 1.15.2 | 5 + 15 + 80 runs re-read, no game time | here |
 
 ---
 
@@ -23879,3 +23880,179 @@ run, all cluster 1; vanilla's runs on other days: directional).
 every 1904–1931 reading and from the 1913 aims (n = 4 there). Which 1.2 change makes the world colder than vanilla between 1886 and 1916 (C 2.0,
 the deposits' labour and costs, the engine rebalance, the research weights) is not separable from one book. The deposit rungs' own readings
 (slot fill by rung, mining employment, the 1837 output by good) are still unread; their readers are still to be written (BACKLOG).
+
+⚠ **Correction, 2026-11-22 (F285 §3):** the ledger lines in §4 that split workers or new levels by tier also counted the nine tiered
+deposits, so they mix mines, wharves and rigs into the manufacturing ladders. On manufacturing alone, new levels built below the best tier
+read 28.5% (run 1) and 26.2% (runs 2–5), not 46.0% (unit-weighted); tier-1 workers 4.5M → 6.1M over 1900–1935, not 12.5M → 29.0M; a tier-0
+factory repays in 26 years, not 20. The register's own lines (§1: T0, T3, the old plants) were already manufacturing only and stand.
+
+## F285 — THE REGISTER'S PRICE TERMS ARE HALF PEGGED TO VANILLA, AND VANILLA'S OWN INPUT PRICES NOW FALL (1935 ÷ 1900: 0.91 ON 1.13.11, 0.85 ON 1.15.2); THE 1.2 BOOK'S INPUT PRICES FALL 19% OVER 1900–1935 YET SCORE 6.15 OF ITS 14.51 LOSS ON THE PEGGED PART; THE LEDGER'S TIER LINES COUNT THE NINE TIERED DEPOSITS AS MANUFACTURING; THE DEPOSIT LADDERS ADD RATHER THAN REPLACE, AND WORLD RAW OUTPUT RUNS AT ABOUT HALF VANILLA'S FROM 1900 (2026-11-22; no game time: `m12b-first` n = 5, F284's sessions; mod 1.1.1 on 1.15.1 n = 15, F271 + F272; vanilla 1.15.2 n = 8, 1.15.1 n = 16, 1.13.11 n = 56)
+
+**What was read.** `criteria.mjs --json` on each arm against its own game version's vanilla (the per-run PI and PP paths, £ ÷ base and wage
+units, 1900 · 1910 · 1920 · 1930 · 1935, on the run's markets ∩ vanilla's); the price forms recomputed from those paths (scratch script, not
+in the repo); `analyse_ai_tier_choice.mjs`, `fill_emp.mjs` and `fill_payback.mjs` on the m12b runs with the book and with a copy of it
+without the nine deposit industries; the deposit buildings' levels and staffing, `top_producers.<good>.world` and the world price (52-week
+mean) from the m12b and vanilla 1.15.2 save summaries at 1850 · 1880 · 1900 · 1920 · 1936.
+
+**1. The price paths and the loss's level part** (median run; PI £ ÷ base; the 1935 ÷ 1900 ratio, the least-squares trend of the log a decade):
+
+| arm | PI 1900 → 1935 | PI 1935 ÷ 1900 (runs) | PI trend | PP 1935 ÷ 1900 (runs) | PP trend |
+|---|---|---|---|---|---|
+| vanilla 1.13.11 (56) | 1.106 → 1.011 | 0.910 (0.825–0.992) | −0.027 | 0.918 (0.689–1.361) | −0.029 |
+| vanilla 1.15.1 (16) | 1.062 → 0.942 | 0.879 (0.818–0.956) | −0.033 | 0.872 (0.526–1.306) | −0.042 |
+| vanilla 1.15.2 (8) | 1.124 → 0.951 | 0.850 (0.831–0.888) | −0.043 | 0.867 (0.548–1.085) | −0.044 |
+| mod 1.1.1 on 1.15.1 (15) | 1.076 → 0.844 | 0.773 (0.731–0.834) | −0.076 | 0.716 (0.564–1.083) | −0.084 |
+| `m12b-first` on 1.15.2 (5) | 1.180 → 0.955 | 0.812 (0.772–0.904) | −0.058 | 0.924 (0.671–1.587) | +0.008 |
+
+The level part of each term is max(0, index₁₉₃₅ − 0.8 × vanilla's 1935 median) ÷ the 1935 level's spread (PI 0.03156, PP 0.007677). For m12b
+(PI 0.955, PP 0.0580) it reads PI 6.15 and PP 1.46 against vanilla 1.15.2, 6.38 and 1.36 against 1.15.1, 4.63 and 1.97 against 1.13.11. The slope
+part is 0 for both (the plain mean of interval rates: PI −0.061, PP −0.084), so the whole of m12b's PI and PP terms is the pegged level. The
+plain mean and the least-squares trend agree for PI and disagree for PP, where the 1930→1935 step (0.065 → 0.058 in five years) carries the
+mean: m12b's PP is flat over the period (1935 ÷ 1900 = 0.92). PP falls in every decade in at most 2 runs of 15 in any arm.
+
+**2. The candidate forms** (the median run's distance, weight 1; spreads fitted on mod 1.1.1's 15 runs: the 1935 level PI 0.03156 / PP 0.007677,
+ln(1935 ÷ 1900) PI 0.03806 / PP 0.1815, the trend PI 0.009963 / PP 0.0665 a decade):
+
+| form | m12b PI · PP | mod 1.1.1 PI · PP | vanilla 1.15.2 PI · PP | vanilla 1.13.11 PI · PP |
+|---|---|---|---|---|
+| as built: 0.8 × vanilla's 1935 level + falling | 6.15 · 1.46 | 2.86 · 0 | — | — |
+| falling only (trend ≤ 0) | 0 · 0.12 | 0 · 0 | 0 · 0 | 0 · 0 |
+| own endpoint: 1935 ≤ 0.8 × own 1900, + falling | 0.39 · 0.92 | 0 · 0 | 1.59 · 0.44 | 3.39 · 0.76 |
+| own endpoint at 0.9, + falling | 0 · 0.27 | 0 · 0 | 0 · 0 | 0.30 · 0.11 |
+| own trend ≤ ln 0.8 ÷ 3.5 (−0.064 a decade) | 0.55 · 1.08 | 0 · 0 | 2.05 · 0.30 | 3.71 · 0.53 |
+| PI ≤ 0.8 of base in £, + falling (no PP form) | 4.90 · — | 1.40 · — | 4.77 · — | 6.67 · — |
+
+(The "as built" cells read the consensus against the arm's own vanilla: mod 1.1.1's PI 0.844 against 0.8 × 0.942.) An absolute £ level
+keeps most of the problem (4.90) and has no counterpart for PP, whose wage unit moves with the game's wage scale.
+
+**3. The ledger lines that count the deposit rungs.** `lib_era_cols.mjs` (`emp.json`: the scorecard's tier-1 workers and "tiers holding half the
+tiered workers", the views' tier tables), `analyse_ai_tier_choice.mjs` and `analyse_ai_tier_profit.mjs` (`tierchoice.json`), `fill_payback.mjs`
+and, by their code, `payback_by_decade.mjs`, `fill_old_plants.mjs`, `lib_obsolescence.mjs`, `old_rungs_by_industry.mjs`, `report_data.mjs`,
+`report_data2.mjs`, `fill_indecomp.mjs` and `misplaced_capital.mjs`'s sector split loop over every enabled industry of the book; only
+`criteria.mjs` and `lib_laggard.mjs` take `lib_industries.mjs`'s manufacturing list. Measured on m12b:
+
+| ledger line | with the deposits (as published, F284) | manufacturing only |
+|---|---|---|
+| new levels built below the best tier the owner holds, unit-weighted | 46.8% (run 1) · 45.8% (runs 2–5); 46.0% published | 28.5% · 26.2% |
+| the same, raw | 54.8% · 52.8% | 46.9% · 42.6% |
+| workers by tier, world, 1935, millions (t0 crafts · t0 other · t1 · t2 · t3) | 3.2 · 17.1 · 29.0 · 37.7 · 8.2 | 3.2 · 2.9 · 6.1 · 25.3 · 8.1 |
+| tier-1 workers, world, 1900 → 1935 | 12.5 → 29.0 | 4.5 → 6.1 |
+| years for a tier-0 factory to repay, 1935 · the frontier (t3) | 20.1 · 8.3 | 26.1 · 8.2 |
+
+Building a lower deposit rung while holding a higher one is the design (each rung has slots of its own, §10.115), so the deposits made the
+below-best line read "old designs still built" where manufacturing alone reads "mostly the best tier" (aim under 35%).
+
+**4. The deposits, a first reading** (m12b median of five, world; levels at 1936 with the staffed share; world output and world price ÷ base
+against vanilla 1.15.2's median of eight):
+
+| deposit | t0 · t1 · t2 · t3 levels, 1936 (staffed) | vanilla's levels | output ÷ vanilla 1880 · 1900 · 1920 · 1936 | price ÷ base 1936, mod / vanilla |
+|---|---|---|---|---|
+| coal | 1,045 (90%) · 1,597 (95%) · 1,078 (97%) · 36 (86%) | 3,726 | 0.62 · 0.51 · 0.52 · 0.52 | 1.18 / 1.06 |
+| iron | 970 (90%) · 1,210 (95%) · 747 (91%) · 34 (94%) | 2,874 | 0.89 · 0.59 · 0.54 · 0.53 | 1.21 / 1.02 |
+| lead | 202 (84%) · 290 (91%) · 208 (88%) · 30 (70%) | 888 | 0.77 · 0.53 · 0.50 · 0.51 | 1.23 / 1.05 |
+| sulfur | 225 (77%) · 374 (93%) · 305 (89%) · 7 (87%) | 1,154 | 0.66 · 0.46 · 0.37 · 0.45 | 1.01 / 0.86 |
+| copper | 91 (73%) · 114 (77%) · 95 (78%) · 14 (57%) | 254 | 1.36 · 0.99 · 0.78 · 0.92 | 1.31 / 1.03 |
+| gold | 193 (87%) · 130 (78%) · 100 (76%) · 11 (49%) | 395 | 0.63 · 0.35 · 0.33 · 0.47 | — |
+| fishing | 524 (81%) · 480 (86%) · 147 (76%) | 1,292 | 0.60 · 0.42 · 0.37 · 0.37 (fish) | 1.03 / 0.88 |
+| whaling | 89 (81%) · 127 (91%) · 64 (77%) | 201 | not read | — |
+| oil | — · 533 (92%) · 249 (94%) | 1,281 | 0.83 · 0.27 · 0.22 · 0.38 | 1.05 / 0.87 |
+
+Every rung's level count grows from decade to decade, the first rung included (coal's picks-and-shovels mines 106 → 247 → 415 → 640 → 1,045
+over 1850–1936), and the old rungs stay 73–97% staffed: the ladders add capacity beside the old pits rather than replace them, as designed.
+The t3 diesel rungs are barely built (7–40 levels a resource). The deposits hold about as many levels as vanilla's one building (coal 3,756
+against 3,726), at 5,000 workers each, so they employ about as many as vanilla's mines, yet world output is about half of vanilla's from
+1900 at prices only 0.1–0.3 of base above vanilla's.
+
+**What it does NOT say.** The forms of §2 are not ranked by these readings: which one the loss takes is the user's (§10.128). The spreads of
+§2 were fitted here with the method of §10.123 but are not the register's until that is ruled. Half the raw output is not by itself a
+shortage: the 1.2 world is 0.82× vanilla's, its manufacturing ladder needs less input per unit of output than vanilla's methods, and the mod's
+deposit rungs have flat output while vanilla's methods raise output per level; no reading here separates demand from supply. `top_producers`
+counts every producer of a good (subsistence fishing too). Slot fill is not read: the summaries carry each state's levels by building type
+(`res`) but not its slot caps, which gold's depleted fields and oil's second rung change during play (§10.124). The deposit-free book copy
+used in §3 is a scratch file, not a book; the corrected figures are re-readings, not a refilled report.
+
+**5. Prices by goods class, market and decade** (added the same day, at the user's request after §2: *"What we need is a decade-by-decade
+comparison, for the largest markets separately and an aggregate. Separately for 2-4 different types of goods"*). £ ÷ base from `markets.tsv`
+at every dump (1836, 1840, 1850 … 1930, 1935); a market-good reading counts only where both buy and sell orders exceed 0.5 (a price on its
+band edge with one side empty is not a price, CLAUDE.md §2.7); a class's index in one market is the geometric mean over its goods; the
+aggregate is the median over the eight instrumented markets (the German series joins PRU, NGF and GER; the Dutch NET and UNL); then the median
+over runs. The classes (Claude's grouping of the user's five expectations): **industry output** — groceries, clothes, furniture, glass, paper,
+tools, steel, engines, fertilizer, explosives, automobiles, telephones, radios (expected clearly down; the main reading); **staples and raw
+materials** — grain, fish, meat, fruit, wood, hardwood, fabric, iron, lead, sulfur, copper (about flat); **coal and oil** (swinging, no trend);
+**rubber** (up); **plantation goods and luxuries** — sugar, tea, coffee, tobacco, opium, silk, dye, wine, liquor, porcelain, luxury clothes,
+luxury furniture, fine art (slightly down). Military goods, ships and the local goods are left out. The aggregate (`m12b-first` its four
+complete runs, n1 run 1 and the stitched runs 2–4; the others as in §1):
+
+| class | arm | 1836 | 1870 | 1900 | 1920 | 1935 | 1900 → 1935 |
+|---|---|---|---|---|---|---|---|
+| industry output | m12b (4) | 1.02 | 1.27 | 1.16 | 1.11 | 1.03 | −11% |
+| | vanilla 1.15.2 (8) | 1.03 | 1.21 | 1.16 | 1.13 | 1.06 | −9% |
+| | mod 1.1.1 (15) | 1.04 | 1.19 | 1.11 | 1.02 | 0.89 | −20% |
+| | vanilla 1.15.1 (16) | 1.06 | 1.19 | 1.14 | 1.08 | 1.03 | −10% |
+| staples and raw materials | m12b · vanilla 1.15.2 | 1.02 · 1.04 | 1.01 · 0.95 | 0.98 · 0.91 | 0.96 · 0.90 | 0.98 · 0.91 | 0% · 0% |
+| | mod 1.1.1 · vanilla 1.15.1 | 1.05 · 1.07 | 0.97 · 0.95 | 0.93 · 0.94 | 0.93 · 0.92 | 0.92 · 0.92 | −1% · −2% |
+| coal and oil | m12b · vanilla 1.15.2 | 1.11 · 1.12 | 1.31 · 1.25 | 1.20 · 0.93 | 1.23 · 0.89 | 1.09 · 0.94 | −9% · +1% |
+| | mod 1.1.1 · vanilla 1.15.1 | 1.16 · 1.13 | 1.07 · 1.16 | 1.01 · 0.95 | 0.95 · 0.92 | 0.93 · 0.91 | −8% · −4% |
+| rubber | m12b · vanilla 1.15.2 | — | — · 0.32 | 0.74 · 1.20 | 1.02 · 1.23 | 1.18 · 1.23 | +59% · +3% |
+| | mod 1.1.1 · vanilla 1.15.1 | — | — · 0.66 | 1.08 · 1.09 | 1.24 · 1.29 | 1.41 · 1.32 | +31% · +21% |
+| plantation goods and luxuries | m12b · vanilla 1.15.2 | 0.94 · 1.01 | 0.84 · 0.91 | 0.81 · 0.90 | 0.82 · 0.91 | 0.89 · 0.91 | +10% · +1% |
+| | mod 1.1.1 · vanilla 1.15.1 | 0.91 · 0.98 | 0.80 · 0.87 | 0.87 · 0.84 | 0.92 · 0.90 | 0.94 · 0.92 | +8% · +10% |
+
+Every arm's industry prices first RISE from base to a peak of 1.2–1.3 around 1860–1870 and only then fall; the mod 1.1.1 canon fell twice
+as far over 1900–1935 as either vanilla, the 1.2 book about as far as vanilla. By market, the 1.2 book's industry output ends at 0.97
+(Britain, the USA), 1.04–1.05 (Germany, France), 1.09 (Russia), 1.18 (Japan); mod 1.1.1's at 0.82–0.87 in the four western markets. In the 1.2
+book coal and oil stay at 1.2–1.3 of base from 1850 to 1920, where both vanillas fall below 1.0 from 1900; iron and lead sit at 1.15–1.23 in
+1900–1935 against vanilla's 0.95–1.06. Per good, the 1.2 book's industry fall over 1900–1935 is carried by steel (1.33 → 1.03), engines
+(1.23 → 1.00), explosives (1.31 → 0.94), clothes (1.08 → 0.84), paper and tools; groceries (1.06 → 1.13) and fertilizer (1.33 → 1.17) do not
+fall. Within a class the markets' paths scatter by 0.1–0.2 of base, more for Japan and Russia. Three layouts were drawn for the user to
+choose from (one chart per class with a market picker; class × market small multiples; a decade table per class). The user chose the first; it
+is built (`fill_prices.mjs`) and published in the four-run 1.2 report (claude.ai/artifact/JDdqJ13XanbEZvwmtA4W6y).
+
+**6. Which prices kill the old rung when its successor two tiers up arrives** (the user's measure, §10.128: t0 should start shedding workers
+once t2 is significant in volume, t1 once t3 is). For each manufacturing rung of `m12b-first`, the price of its own good (÷ base) at which its
+full recipe covers its inputs and wages: the method as the build `mod_m12b` emits it, each secondary group's first ungated method (as
+`full_recipe_profit.mjs`), economy of scale at 10 levels where the group has it; inputs and other outputs at the four runs' realised prices
+that year (the median over the eight markets, both sides trading); wages the runs' own `base_wage` ÷ 10,000 × Σ employees × wage weight. "t2
+significant" = the first decade reading at which tiers 2 and up make a quarter of the industry's world output (staffing × the main good per
+level). Britain's wage (6.3p an employee-week in 1880, 7.4p in 1900, 9.0p in 1920, 10.8p in 1935; the USA 5.4 → 8.5p; Germany 5.7 → 10.8p,
+France flat at 5.9–6.4p); in brackets the same at two thirds of the wage, the engine's tolerance before workers leave (game 1.13.11's
+≈0.66; unmeasured on 1.15).
+
+| industry | t2 a quarter of output | t0 break-even (at ⅔ wage) · realised then | t3 a quarter | t1 break-even (at ⅔ wage) · realised then |
+|---|---|---|---|---|
+| food | 1880 | craft 1.23 (1.04) · 1.15 | not by 1935 (0%) | in 1935: 1.03 (0.93) · 1.13 |
+| textile | 1880 | craft 1.07 (0.88) · 1.10 | not by 1935 (16%) | in 1935: 0.86 (0.74) · 0.84 |
+| furniture | 1880 | craft 1.15 (0.96) · 1.18 | 1920 | 0.88 (0.78) · 1.02; 1935 0.91 · 0.95 |
+| glass | 1880 | craft 1.22 (1.00) · 1.16 | 1920 | 0.97 (0.86) · 1.23; 1935 1.01 · 1.12 |
+| tooling | 1880 | craft 1.22 (1.00) · 1.20 | 1920 | 0.99 (0.91) · 1.03; 1935 1.00 · 0.97 |
+| paper | 1880 | craft 1.22 (1.00) · 1.26 | not by 1935 (20%) | in 1935: 0.88 (0.78) · 0.90 |
+| fertilizer | 1935 | 1.01 (0.92) · 1.17 | not by 1935 (0%) | in 1935: 0.99 (0.93) · 1.17 |
+| explosives | 1910 | 1.11 (1.04) · 1.22 | 1910 | 1.06 (1.00) · 1.22; 1935 1.02 · 0.94 |
+| steel | 1890 | 1.23 (1.18) · 1.45 | 1935 | 1.20 (1.14) · 1.03 (below t1's line since about 1910) |
+| motor | 1930 | 0.96 (0.86) · 1.07 | not by 1935 (3%) | in 1935: 0.85 (0.78) · 1.00 |
+| arms | 1890 | 0.68 (0.61) · 0.73 | 1910 | 0.63 (0.57) · 0.63 |
+| artillery | 1890 | 0.87 (0.80) · 0.89 | 1935 | 0.84 (0.77) · 0.64 |
+| art academy | 1900 | 1.31 (1.04) · 1.37 | not by 1935 (18%) | in 1935: 1.18 (0.92) · 1.28 |
+
+Read against the user's measure: the crafts sit at their break-even when t2 arrives (1880) and fall below it as wages rise (a craft's line climbs
+with the wage: food's 1.23 in 1880, 1.62 in 1935, against prices of 1.06–1.15), so they shed workers on wages rather than on prices; arms,
+artillery and steel's t0 cross their lines within a decade or two of t2; explosives' t0 about 1920, ten years late; fertilizer's and the motor's
+t0 never. For t1 against t3, prices are well above the line in glass (1.23 against 0.97 in 1920) and furniture (1.02 against 0.88), at it in
+tooling, textile and paper by 1930–35, and above it in explosives until the late 1920s; steel's t1 is the reverse case, below its line from about
+1910, before t3 exists, because at the 1.2 book's dear iron and coal its recipe is barely better than t0's (break-even 1.20 against 1.23).
+The prices the measure asks for in the decade t3 takes over are 0.85–1.0 of base for most consumer and industrial goods (glass 0.97, tools 0.99,
+furniture and paper 0.88, textile 0.86), against the 1.0–1.25 realised then; on the industry index that is roughly 0.9 in the 1920s and a fall
+of about a quarter over 1900–1935, close to what the 1.1.1 canon reached (0.80 of its 1900 level) and well beyond the 1.2 book (0.89) or vanilla
+(0.91). It is a recipe reading at realised prices and wages: a rung below its line loses money, but the engine first cuts its wage, and the
+2/3-wage column is a guess at how far (game 1.13.11's rule; F97's "under ~0.2 of the frontier's value added per worker" is the older reading of
+the same death). The break-even uses ten levels' economy of scale and the base secondaries; a luxury line switched on (F249 §4d) lowers it.
+
+**7. The register under §10.128's price term** (ruled the same day: *"Aggregate fall, ~25%"*; `criteria.mjs` through `lib_prices.mjs`). The
+term: the run's own industry-output aggregate, 1935 ÷ 1900, aim 0.75 or under, weight 2 in place of PI (1) and PP (1), spread 0.04227 fitted
+on mod 1.1.1's 15 runs (`--fit-spreads`, which reproduced every older spread exactly). Per run the ratio is the run's own markets' median,
+so the consensus (the median of runs) can differ from §5's median of the runs' medians by a point. On `m12b-first`'s four complete runs against
+vanilla 1.15.2: 0.89 (vanilla's runs 0.89), distance 3.25, weighted 6.49, where PI and PP had weighed 6.44 + 1.36; the loss 12.34 (13.65
+under the older terms, 14.51 for F284's five runs). The term is now the largest of the loss, then T3 (2.11) and the capital count (1.13).
+Mod 1.1.1 on game 1.15.1, all fifteen runs (`--consensus all`, not the ruled form, which reads only the runs not past the barrier): 0.81
+(vanilla 1.15.1's 0.91), distance 1.39, weighted 2.78, loss 14.34. Neither book reaches 0.75: the 1.1.1 canon is about one and a half spreads
+short of it, the 1.2 book more than three.

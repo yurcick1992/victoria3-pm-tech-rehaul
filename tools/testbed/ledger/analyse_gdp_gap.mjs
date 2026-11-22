@@ -7,6 +7,7 @@ import { gunzipSync } from 'node:zlib';
 import { join, basename, dirname } from 'node:path';
 import { usableRuns } from './lib_runs.mjs';
 import { requiredConstruction } from 'file:///C:/claude-code/victoria%203%20PM%20and%20tech%20rehaul/tools/vanilla_construction.mjs';
+import { manufacturing, reportSkipped } from './lib_industries.mjs';
 
 // --session <dir-or-name>: the session whose run*/save_summaries to decompose (default: the
 // original vanilla-vs-mod batch). A bare name is resolved under tools/testbed/sessions.
@@ -24,8 +25,12 @@ const OUT = (() => { const a = process.argv.slice(2), i = a.indexOf('--out'); re
 const cfgPathG = (() => { const i = argsG.indexOf('--config'); return i >= 0 && argsG[i + 1] ? argsG[i + 1] : 'C:/claude-code/victoria 3 PM and tech rehaul/config/mod_config.json'; })();
 const cfg = JSON.parse(readFileSync(cfgPathG, 'utf8'));
 const tierEra = {}, tierCost = {}, tierInd = {};
+// ⭐ the tier maps read MANUFACTURING only (2026-11-22, F285 §3, landmine L55); every enabled industry, the tiered deposits included, keeps its
+//   own building cost for the construction points
+const { kept: MFG_KEPT, skipped: MFG_SKIPPED } = manufacturing(cfg); reportSkipped('analyse_gdp_gap', MFG_SKIPPED); const MFG_IDS = new Set(MFG_KEPT.map(([, i]) => i.id));
 for (const ind of cfg.industries) if (!ind.disabled) for (const t of ind.tiers || []) {
-  tierEra[t.key] = t.era; tierCost[t.key] = t.building_cost; tierInd[t.key] = ind.id;
+  tierCost[t.key] = t.building_cost; if (!MFG_IDS.has(ind.id)) continue;
+  tierEra[t.key] = t.era; tierInd[t.key] = ind.id;
 }
 const vanCost = requiredConstruction();
 

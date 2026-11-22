@@ -14,10 +14,13 @@
 //   E.parts(key, buildingRecord) → [[column, workers], …] ([] when the key is not a tier building);  E.e0 → the e0 column indices;
 //   E.countrySplit(country.buildings) → { all, b1, b2 } per column: every tier worker, and those one / two-or-more eras behind the
 //   best rung the SAME country staffs in the SAME industry (b2 = the old rung surviving beside its replacement).
+import { manufacturingList, reportSkipped } from "./lib_industries.mjs";
 export function eraCols(cfg) {
+  // ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits of the 1.2 book are not tier columns (lib_industries.mjs)
+  const { list: IND, skipped } = manufacturingList(cfg); reportSkipped("lib_era_cols", skipped);
   const tier = {};
   let hasCraft = false, maxEra = 0;
-  for (const I of cfg.industries || []) {
+  for (const I of IND) {
     if (I.disabled) continue;   // ⚠ a disabled industry's rung-0 KEY IS THE VANILLA BUILDING (landmine L27)
     for (const t of I.tiers || []) {
       if (!t.key) continue;
@@ -27,7 +30,7 @@ export function eraCols(cfg) {
       if ((t.era ?? 0) > maxEra) maxEra = t.era ?? 0;
     }
   }
-  for (const I of cfg.industries || []) {
+  for (const I of IND) {
     if (I.disabled) continue;
     for (const t of I.tiers || []) if (t.method_of && tier[t.method_of]) {
       const h = tier[t.method_of];
@@ -55,7 +58,7 @@ export function eraCols(cfg) {
   //   A merge host's workers are shared over its methods first (parts), so a merged method counts at its own era.
   const eraOfCol = labels.map(l => +l.replace(/^e(\d+).*$/, '$1'));
   const indOf = {};
-  for (const I of cfg.industries || []) { if (I.disabled) continue; for (const t of I.tiers || []) if (t.key) indOf[t.key] = I.id; }
+  for (const I of IND) { if (I.disabled) continue; for (const t of I.tiers || []) if (t.key) indOf[t.key] = I.id; }
   const countrySplit = buildings => {
     const per = {};
     for (const [k, b] of Object.entries(buildings || {})) {

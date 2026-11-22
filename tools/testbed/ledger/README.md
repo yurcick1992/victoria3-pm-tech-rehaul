@@ -58,12 +58,12 @@ writing prose, because `fill_assemble` stops on any missing output.
 |---|---|---|---|
 | 1 | `analyse_gdp_gap.mjs --session --setup --config --out` | `gdp_gap_series.tsv` | nothing on the page; the world trajectory per run and year, for the prose |
 | 2 | `report_data.mjs --mod --van --nb none --config --out` | `report_data.json` | the ladder and trajectory tables, the tiered-sector GDP (`VA`), the scorecard's construction line |
-| 3 | `report_data2.mjs --mod --van --config --out` | `report_data2.json` | the Shortlist page (`D2`) |
+| 3 | `report_data2.mjs --mod --van --config --out --mod-build` | `report_data2.json` | the Shortlist page (`D2`) |
 | 4 | `report_perf.mjs <mod runs> <wall-ref runs> --json perf_raw.json` | `perf_raw.json` | the play-time block |
 | 5 | `wall_clusters.mjs "<setup>=<group>:<setup>" "vanilla=<wall ref>:vanilla" --json` | `wall_clusters.json` | the play-time clusters |
 | 6 | `fill_build_perf.mjs <out>` | `perf_panel.json` | `PERF` (with the per-session ratios), the scorecard's play-time line |
 | 7 | `fill_consts.mjs <out> --mod --van --nb none` | `consts.json` | `GDP_*`, `PROD_*`, `TRAJ`, `WORLD_*`, GDP per productive worker |
-| 8 | `fill_emp.mjs <out> --mod --config` | `emp.json`, `emp_cols.json`, `emp_b2.json`, `emp_grp.json` | `EMP`, `EMP_COLS`, `EMP_B2`, `EMP_GRP` (the whole workforce outside the tiers, in groups), the tier-1 and anchors lines |
+| 8 | `fill_emp.mjs <out> --mod --config --mod-build` | `emp.json`, `emp_cols.json`, `emp_b2.json`, `emp_grp.json` | `EMP`, `EMP_COLS`, `EMP_B2`, `EMP_GRP` (the whole workforce outside the tiers, in groups), the tier-1 and anchors lines |
 | 9 | `fill_payback.mjs <out> --mod --config` | `payback.json` | `LADDER`, the payback lines |
 | 10 | `fill_research.mjs <out> --mod --van --config` | `research.json` | `D2.techsT`, `D2.jeT` |
 | 11 | `fill_tierchoice.mjs <out> --session --setup --config` | `tierchoice.json` | the "built below the best tier" line |
@@ -74,13 +74,22 @@ writing prose, because `fill_assemble` stops on any missing output.
 | 16 | `criteria.mjs --arm "<group>:<setup>" --van "<VANS>:vanilla" --json <out>/criteria.json --quiet` | `criteria.json` | the register's lines (the §10.123 loss: the barrier, the aims, their distances, the minor readings, vanilla's own readings), the two charts above the pages; with `CRITERIA_CONSENSUS=all` in the environment, `--consensus all` (every usable run, past the barrier included — not the ruled form; the scorecard says so) |
 | 17 | `laggard_pressure.mjs <book> "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --json <out>/laggards.json` | `laggards.json` | the trade-only backward-industry line (the in-market one is the register's term, in `criteria.json`) |
 | 18 | `tech_census.mjs "<setup>=<group>:<setup>" "vanilla=<VANS>:vanilla" --tree <twin> --json <out>/tech.json` | `tech.json` | the technology lines |
-| 19 | `misplaced_capital.mjs --batch "<setup>:<group>:<setup>" --json <out>/misplaced.json` | `misplaced.json` | the misplaced-capital line (mod only) |
+| 19 | `misplaced_capital.mjs --batch "<setup>:<group>:<setup>" --mod-map <build> --json <out>/misplaced.json` | `misplaced.json` | the misplaced-capital line (mod only); the tiered deposits are mines, valid where their own slots (the build's map) are free |
 | 20 | `fill_old_plants.mjs <out> --mod --config` | `old_plants.json` | `OLDP` (the old-plant table, both pages) |
 | 20a | `downsize_telemetry.mjs "<setup>=<mod runs>" "vanilla=<van runs>" --config <book> --types 0 --json <out>/downsize.json` | `downsize.json` | the two downsizing lines, and step 20b (§10.107.6, since 2026-11-08) |
 | 20b | `fill_downsizing.mjs <out>` | `downsize_world.html`, `downsize_pool.html` | `__DOWNSIZE_W__`, `__DOWNSIZE_S__` (levels by tier class, after the old-plant tables) |
+| 20c | `fill_deposits.mjs <out> --mod --van --config --map <build>` | `deposits.json`, `deposits_world.html`, `deposits_pool.html` | `__DEPOSITS_W__`, `__DEPOSITS_S__` (the tiered deposits' section, after the downsizing tables), the scorecard's three deposit lines (since 2026-11-22, F285) |
+| 20d | `fill_prices.mjs <out> --mod --van` | `prices.json` | `PRICES` (prices by goods class, decade by decade, the chart above the pages; since 2026-11-22, §10.128, F285 §5) |
 | 21 | `fill_scorecard.mjs <out> --config` | `scorecard.html`, `scorecard_loss.html`, `intro.json` | `__SCORECARD__`, `__LOSS__`, `INTRO` |
 
 **Traps.**
+- **`MOD_BUILD=<the build of the book the runs played>`** (since 2026-11-22; default `mod/`, the canon): `fill_emp`, `report_data2` read the
+  workforce groups' method employment through it, `fill_deposits` and `misplaced_capital` the deposits' slots in its map. On a 1.2 book pass
+  its alternate build (e.g. `MOD_BUILD=mod_m12b`): `mod/` lacks the deposit rungs, their methods and their slots.
+- **Manufacturing only in every tier reading** (landmine L55, F285 §3): every reader that splits by tier takes `lib_industries.mjs`'s
+  `manufacturingList()` and prints what it skipped on stderr; the tiered deposits have their own section (step 20c). A new reader of the
+  book's industries does the same or carries an `L55: ALL INDUSTRIES — <why>` marker; `tools/lint_ledger_industries.mjs` (preflight L55)
+  walks every step's script and imports.
 - Run the steps through `fill_ledger.sh`, not by hand. Since 2026-10-28 no step falls back to a retired session: `report_data`,
   `report_data2` and `fill_consts` refuse to run without `--mod` and `--van`, `analyse_gdp_gap` and the `analyse_ai_tier_*` tools without
   `--session`, and `fill_emp`, `fill_payback` and `fill_research` without `--mod` (they used to default to flatcost-n1, canon-n7 and the
@@ -239,8 +248,8 @@ Re-prove it the same way after changing the checker.
 
 **Layout (BALANCE_FRAMEWORK §10.104.1, 2026-10-29; written to be read from outside the project):** the heading (`__HEADLINE__`, `__SUBTITLE__`)
 → the fixed preface (observer runs, no player: the numbers show the economy's natural progression) → the batch's description (`lede.html`) →
-**the scorecard**, one table → the red-flag detail, collapsed → **play time** → two charts, building-input prices by decade and world GDP run
-by run → the view selector, **World** / **Shortlist**, with the scope toggle → the two pages → "What disturbed the runs" (incidents) → the
+**the scorecard**, one table → the red-flag detail, collapsed → **play time** → **prices by goods class, decade by decade** (since 2026-11-22)
+→ world GDP run by run → the view selector, **World** / **Shortlist**, with the scope toggle → the two pages → "What disturbed the runs" (incidents) → the
 footer: runs, sessions, arm, the change against the shipped canon, the baseline, the register's loss, the batch's provenance. Rungs show as
 `t0 … t3` (the data's column labels still say `e0 …`, `lib_era_cols`; the page relabels them); on a craft book t0 is two columns, artisans
 and the tier-0 factories. A table written into the prose is wrapped in a scrolling box by `fill_assemble`, and the gate checks the page in a
@@ -256,10 +265,11 @@ country (user, 2026-10-29):
 
 | group | lines | source |
 |---|---|---|
-| Are the runs sound? | runs past the barrier (vanilla's beside it; the highest ten-year mean and who) · play time against the same sessions' vanilla (with the per-session ratios) · market-years short of an industrial input against this batch's own vanilla (of 800 = 8 major markets × 100 years, the markets named) | `criteria.json` · `perf_panel.json` · `redflags_metrics.json` |
+| Are the runs sound? | runs past the barrier (vanilla's beside it; the highest ten-year mean and who) · play time against the same sessions' vanilla (with the per-session ratios) · market-years short of an industrial input against this batch's own vanilla (of 800 = 8 major markets × 100 years, the markets named) · on a book with tiered deposits, the 1836–1845 raw supply: deposit goods whose world output leaves vanilla's 90% range (±10%) in more than two of the ten years in at least half the runs | `criteria.json` · `perf_panel.json` · `redflags_metrics.json` · `deposits.json` |
 | Does the world economy stay near vanilla's size? | world GDP 1932–36 (with the per-run range) · world GDP in 1886, the expected dip · the 1836–1845 start (runs flagged) | `criteria.json` |
 | Does a technological edge win markets, and do efficient producers push out the rest? | backward industries (two tiers behind the best producer, without the technology to upgrade yet; manufacturing) with a far better producer in the same market (the register's old-plants term, vanilla's beside it) and with the better producers all abroad (a reading against vanilla's) · T0 · T3 · tier-1 workers 1900 → 1935 · tier-0 paybacks (crafts, factories) · new plants built below the best tier · PI · PP | `criteria.json` · `laggards.json` · `emp.json` · `payback.json` · `tierchoice.json` |
 | Does modernising cost capital, and is the capital spent? | construction 1880–1935 · the newest tier's payback · the shortlist countries of ≥ 2% of world GDP with a pool above half their GDP, 1935–36 · the shortlist's hoard above half its GDP · unspent pool ÷ GDP, world and shortlist (readings) · misplaced capital (MOD ONLY, by ruling) | `report_data.json` · `payback.json` · `criteria.json` · `misplaced.json` |
+| What do the tiered deposits hold? (a book with tiered deposits only, since 2026-11-22) | workers in the deposits ÷ the world's productive workers, 1932–36, against vanilla's same nine buildings · construction points held in them, the same (both readings, no aim) | `deposits.json` |
 | Do fewer people find productive work, each producing more? | U\* of the USA, Britain, Germany and the world, 1913 · the end (the eight aims, vanilla's beside them) · the shortlist's U\* · W world and shortlist · GDP per productive worker · the shortlist's GDP (readings) | `criteria.json` · `consts.json` |
 | Do the tiers arrive on time? | the leader's share of a tier's technologies at its anchor · Britain's technology count (military beside it) · the tiers holding half the tiered workers | `tech.json` · `emp.json` |
 
@@ -293,12 +303,16 @@ TESTBED_OPERATIONS §7 holds the wall-clock procedure; the page shows its result
 - The speed chart keeps its scale and normalisation buttons (÷ modelled cost is F72's tripwire); the by-decade and pop-matched tables sit in a
   collapsed details section.
 
-### The two charts above the pages (`INTRO`, from `intro.json`)
+### The charts above the pages (`PRICES` from `prices.json`; `INTRO` from `intro.json`)
 
-Their own script, so a failure blanks only them. **Building-input prices, decade by decade**: the arm's median PI path (£ ÷ base, the shortlist,
-1900 … 1935, each run's `PIpath` in `criteria.json`) with its runs' range, against vanilla's (`ref.PI.<year>`); the register grades only the
-end point, and falling prices are the mod's core mechanism (CLAUDE.md §2.1). ⚠ The consumer-goods path in wage units is not in `criteria.json`
-yet. **World GDP, run by run**: every run's end-state ratio as a dot, the aim band, vanilla's own runs' central 95% (back-derived from the
+Each in its own script, so a failure blanks only it. **Prices by goods class, decade by decade** (BALANCE_FRAMEWORK §10.128, F285 §5; the
+user's "Option A", 2026-11-22; `fill_prices.mjs`): five classes, each with the direction it is expected to take — scalable industry output
+(clearly down, the main reading, drawn full width), staple food and raw materials (about flat), coal and oil (swinging, no trend), rubber
+(up), plantation goods and luxuries (slightly down). Price ÷ base at every market dump 1836 … 1935, a reading only where the good is both
+bought and sold; a class in one market is the geometric mean of its goods, "All markets" the median of the eight instrumented markets, then the
+median over runs (the mod's runs' range as a band); a market switch shows one market alone. Vanilla's line is a reference: the decline is an aim
+of the mod's own. ⭐ The register's loss reads the main chart (§10.128, ruled the same day): the industry-output aggregate's 1935 ÷ 1900, aim 0.75 or under, weight 2, in place of PI and PP; `criteria.mjs` computes it through the same `lib_prices.mjs`.
+it replaced the single building-input chart, whose data (`INTRO.pi`) `fill_scorecard.mjs` still writes. **World GDP, run by run**: every run's end-state ratio as a dot, the aim band, vanilla's own runs' central 95% (back-derived from the
 hard band: `gdpHard.lo / 0.8`, `gdpHard.hi / 1.2`), the consensus line; a broken run is red.
 
 ### The two pages
@@ -311,6 +325,16 @@ trajectory ÷ vanilla (without its GDP column: the decomposition table carries t
 2026-10-29 (user): the build-choice panel (its headline is a scorecard line), the tech edge, the next lever. **What gets cut is a duplicate at
 the same grain**; finer detail may sit in a collapsed section (user, 2026-10-29).
 
+- **The tiered deposits** (`__DEPOSITS_W__`, `__DEPOSITS_S__`; `fill_deposits.mjs`, since 2026-11-22, the forms the user accepted with
+  F285), after the downsizing tables, on a book with tiered deposits (else one card saying the book has none). The nine deposits are read as
+  ADDITION, never through the manufacturing panels (landmine L55): **output by rung**, stacked, one small chart per deposit by decade, with
+  vanilla's one building of the same resource as a dashed line (output = `va_out` × the main good's share of the recipe's base-priced output
+  ÷ its base price, so throughput and the output-adding lines count; whaling's meat is left out); **slots filled and staffed by rung**, world,
+  1880 · 1900 · 1920 · 1936, against the build's map (`--map`; gold and oil at their full potential, marked, since their slots open in play),
+  vanilla's building beside each; **raw supply**, world output of each deposit good (`top_producers`, every producer) and its world price ÷
+  base, this batch / vanilla; **labour and capital by rung**, 1932–36 (levels, staffed, workers, construction points; all the deposits'
+  workers ÷ productive workers), with the **payback by rung** at realised prices collapsed under it (£720 a point; "loss" kept in the
+  median). The Shortlist view carries the output charts and the labour and capital table for the fixed shortlist (the chips do not change it).
 - **The Shortlist page reads every run of both arms** (user, 2026-11-15): per country, the mean over the arm's runs (`report_data2.json`'s
   `mod` and `van`, one rule for both). An additive quantity (GDP, population, productive workers, workers by tier, the workforce groups) counts a
   country ZERO in a run where it does not exist, so a selection's sum is the mean of its totals and a formation (PRU → NGF → GER; NET, BEL →

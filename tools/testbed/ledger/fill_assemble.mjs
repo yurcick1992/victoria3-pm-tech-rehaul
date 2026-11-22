@@ -66,6 +66,10 @@ rep(/^const LADDER=\{.*$/m,   'const LADDER=' + JSON.stringify(LADDER) + ';', 'L
 rep(/^const PERF=\{.*$/m,     'const PERF='     + JSON.stringify(PERF)       + ';', 'PERF');
 rep(/^const OLDP=\{.*$/m,     'const OLDP='     + JSON.stringify(OLDP)       + ';', 'OLDP');
 rep(/^const INTRO=\{.*$/m,    'const INTRO='    + JSON.stringify(INTRO)      + ';', 'INTRO');
+// ⭐ 2026-11-22 (§10.128): the prices-by-class panel (fill_prices.mjs → prices.json); an older fill without it keeps the template's empty
+//   PRICES, which the panel prints as "not read"
+if (existsSync(join(DIR, 'prices.json'))) rep(/^const PRICES=\{.*$/m, 'const PRICES=' + readFileSync(join(DIR, 'prices.json'), 'utf8').trim() + ';', 'PRICES');
+else console.error('fill_assemble: no prices.json — the price panel prints "not read" (run fill_prices.mjs)');
 rep(/^const INDECOMP=\{.*$/m, 'const INDECOMP=' + JSON.stringify(IDC)        + ';', 'INDECOMP');
 rep(/^const OBS=\{.*$/m,      'const OBS='      + JSON.stringify(OBS)        + ';', 'OBS');
 rep(/^const VA=\{flat:\{\},.*$/m, 'const VA=' + JSON.stringify(RD.VA) + ';', 'VA');
@@ -83,7 +87,8 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
   //   next-lever section is gone (user).
   for (const [name, file] of [['__LEDE__','lede.html'],['__SCORECARD__','scorecard.html'],['__LOSS__','scorecard_loss.html'],
                               ['__INCIDENTS__','incidents.html'],['__FOOTER__','footer.html'],['__REDFLAGS__','redflags.html'],
-                              ['__DOWNSIZE_W__','downsize_world.html'],['__DOWNSIZE_S__','downsize_pool.html']]) {
+                              ['__DOWNSIZE_W__','downsize_world.html'],['__DOWNSIZE_S__','downsize_pool.html'],
+                              ['__DEPOSITS_W__','deposits_world.html'],['__DEPOSITS_S__','deposits_pool.html']]) {
     const p = join(DIR, file);
     if (existsSync(p)) tok[name] = readFileSync(p, 'utf8');
   }
@@ -91,6 +96,11 @@ s = s.replace('  const l=LADDER[y];', '  const l=LADDER[y]; if(!l) continue;');
   for (const k of ['__DOWNSIZE_W__', '__DOWNSIZE_S__']) if (!tok[k]) {
     tok[k] = '<div class="card"><h3>Plants shrunk by auto-downsizing</h3><p class="dim">Not read for this report (no downsize_world.html / downsize_pool.html — run downsize_telemetry.mjs --json, then fill_downsizing.mjs).</p></div>';
     console.log('  ⚠ ' + k + ': no downsizing section in this out dir — the page says it was not read');
+  }
+  // ⭐ 2026-11-22 (F285): the tiered deposits' section, one per view (fill_deposits.mjs). An out dir from before it says so ON THE PAGE.
+  for (const k of ['__DEPOSITS_W__', '__DEPOSITS_S__']) if (!tok[k]) {
+    tok[k] = '<div class="card"><h3>Tiered deposits</h3><p class="dim">Not read for this report (no deposits_world.html / deposits_pool.html — run fill_deposits.mjs).</p></div>';
+    console.log('  ⚠ ' + k + ': no deposit section in this out dir — the page says it was not read');
   }
   // A TABLE WRITTEN INTO THE PROSE (lede, incidents, footer) is wrapped in a scrolling box here, so it can never run past the page's right
   //   edge — the laggard table of F249's lede did (2026-10-29).

@@ -16,6 +16,7 @@
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { manufacturingList, depositList, reportSkipped } from './lib_industries.mjs';
 
 const ARGV = process.argv.slice(2);
 const OUT = ARGV[0];
@@ -26,7 +27,11 @@ const TAGS = ['GBR', 'RUS', 'FRA', 'USA', 'PRU', 'TUR', 'AUS', 'SPA', 'BRZ', 'SI
 const cfg = JSON.parse(readFileSync(argOf('--config', 'config/mod_config.json'), 'utf8'));
 
 const MODIND = {}, VANIND = {};              // building key -> industry id, per arm's ladder
-for (const ind of cfg.industries || []) {
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits' rungs go to the broad sector 'extraction', where vanilla's
+//   mines are (a deposit's first key IS vanilla's mine), so the two arms' extraction stays like for like
+const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('fill_indecomp', MFG_SKIPPED);
+const DEPOSIT_KEYS = new Set(depositList(cfg).flatMap(i => (i.tiers || []).map(t => t.key)));
+for (const ind of MFG_IND) {
   if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   const tiers = (ind.tiers || []).filter(t => t.key);
   for (const t of tiers) MODIND[t.key] = ind.id;
@@ -49,6 +54,7 @@ const BROAD = [
 ];
 const broadOf = (k, INDOF) => {
   if (INDOF[k]) return 'tiered industries';
+  if (DEPOSIT_KEYS.has(k)) return 'extraction';
   for (const [name, re] of BROAD) if (re.test(k)) return name;
   return 'other';
 };

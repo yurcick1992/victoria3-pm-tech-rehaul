@@ -2347,6 +2347,28 @@ function Test-LmL54 {
     }
 }
 
+function Test-LmL55 {
+    <#
+      L55 - A LEDGER READER THAT COUNTS THE TIERED DEPOSITS AS MANUFACTURING (found 2026-11-22, FINDINGS F285 section 3).
+      The mod 1.2 book carries its nine tiered deposits in the same cfg.industries array as manufacturing; a ledger reader that walks every
+      entry for its tier map counts mines, wharves and rigs as tier rungs, and on a vanilla run counts vanilla's mines as tier-0 rungs (a
+      deposit's first key is vanilla's building). Nothing failed: the m12b report read 46.0% of new levels below the best tier (26-28.5% on
+      manufacturing alone) and 29.0M tier-1 workers in 1935 (6.1M).
+      DETECTOR: tools/lint_ledger_industries.mjs walks every script fill_ledger.sh runs, the tools they run by name and the local modules
+      they import: each reader of the book's industries takes lib_industries.mjs's manufacturing list or carries an "L55: ALL INDUSTRIES" /
+      "L55: REVIEWED" marker with its reason. Repo-side: it gates every batch and build.
+      Proven 2026-11-22: FAIL on HEAD 9ff63cef's ledger (14 readers), FAIL on today's ledger with fill_payback.mjs put back (1), PASS after
+      the fix (16 readers).
+    #>
+    $T = 'a ledger reader that counts the tiered deposits as manufacturing'
+    $lint = Join-Path $PSScriptRoot 'lint_ledger_industries.mjs'
+    if (-not (Test-Path $lint)) { Add-Result 'L55' $T 'FAIL' "missing: $lint"; return }
+    $out = & cmd /c "node ""$lint"" 2>&1" | Out-String
+    $code = $LASTEXITCODE
+    if ($code -eq 0) { Add-Result 'L55' $T 'PASS' (($out.Trim() -split "`r?`n")[-1]) }
+    else { Add-Result 'L55' $T 'FAIL' ($out.Trim() + [Environment]::NewLine + 'FIX: take manufacturingList() from tools/testbed/ledger/lib_industries.mjs (and print what it skips), or mark a reader that rightly needs every industry with "L55: ALL INDUSTRIES - <why>"') }
+}
+
 $CHECKS = @(
     @{ Id = 'L1'; Artifact = $true;  Fn = { Test-LmL1 } },
     @{ Id = 'L2'; Artifact = $true;  Fn = { Test-LmL2 } },
@@ -2423,7 +2445,9 @@ $CHECKS = @(
     @{ Id = 'L53'; Artifact = $true;  Fn = { Test-LmL53 } },
     # L54 runs the same-book gate (tools\testbed\lib_same_book.ps1) on its fixture schedules and checks its callers and readers
     # (repo-side: it gates every batch before anything is built). It walks no schedule under tools\testbed\schedules.
-    @{ Id = 'L54'; Artifact = $false; Fn = { Test-LmL54 } }
+    @{ Id = 'L54'; Artifact = $false; Fn = { Test-LmL54 } },
+    # L55 walks the ledger fill's readers: none counts the tiered deposits as manufacturing (repo-side).
+    @{ Id = 'L55'; Artifact = $false; Fn = { Test-LmL55 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

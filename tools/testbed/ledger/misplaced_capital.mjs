@@ -25,6 +25,7 @@
 import fs from 'node:fs'; import path from 'node:path'; import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { usableRuns } from './lib_runs.mjs';
+import { depositList } from './lib_industries.mjs';
 import { requiredConstruction, GAME } from '../../vanilla_construction.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const S = path.join(ROOT, 'tools/testbed/sessions');
@@ -54,10 +55,17 @@ const REFCFG = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/mod_config.jso
 const med = v => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? (s.length % 2 ? s[s.length >> 1] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) : NaN; };
 const toDay = d => { const [y, m, dd] = d.split('.').map(Number); return y * 365 + (m - 1) * 30.4 + dd; };
 const readGz = f => JSON.parse(zlib.gunzipSync(fs.readFileSync(f)));
-// ---- static state-region caps
+// ---- static state-region caps — vanilla's map, each file replaced by the BUILD's own where `--mod-map <build dir>` names one (2026-11-22):
+//   the mod 1.2 book splits every deposit's slots over its rungs (emit_deposit_slots.mjs), so a rung's free slots exist only in the build's
+//   map; without it every deposit rung reads as having no slots, i.e. never a valid option. Gold's and oil's later slots change in play
+//   (the depletion and discovery hooks) and are read as the static map has them.
+const MODMAP = argOf('--mod-map', null);
 const REG = {};
-for (const f of fs.readdirSync(path.join(GAME, 'map_data/state_regions'))) {
-  const txt = fs.readFileSync(path.join(GAME, 'map_data/state_regions', f), 'utf8').replace(/^\uFEFF/, '');
+const MAPDIR = d => path.join(d, 'map_data/state_regions');
+const mapFiles = new Map(fs.readdirSync(MAPDIR(GAME)).map(f => [f, path.join(MAPDIR(GAME), f)]));
+if (MODMAP) { if (!fs.existsSync(MAPDIR(MODMAP))) throw new Error('--mod-map ' + MODMAP + ': no map_data/state_regions there'); for (const f of fs.readdirSync(MAPDIR(MODMAP)).filter(x => x.endsWith('.txt'))) mapFiles.set(f, path.join(MAPDIR(MODMAP), f)); }
+for (const [f, fp] of mapFiles) {
+  const txt = fs.readFileSync(fp, 'utf8').replace(/^\uFEFF/, '');
   const re = /^(STATE_[A-Z0-9_]+)\s*=\s*\{/gm; let m;
   while ((m = re.exec(txt))) { let i = re.lastIndex, d = 1; while (d > 0 && i < txt.length) { const c = txt[i++]; if (c === '{') d++; else if (c === '}') d--; } const body = txt.slice(re.lastIndex, i - 1);
     const r = { arable: 0, crops: new Set(), cap: {} };
@@ -79,13 +87,17 @@ function bookOf(runDir) {
   let p = null;
   if (runDir) for (const f of [path.join(runDir, 'build_state.json'), path.join(path.dirname(runDir), 'build_state.json')]) if (fs.existsSync(f)) { try { const b = JSON.parse(fs.readFileSync(f, 'utf8')); p = b.deterministic?.mod_under_test?.built_from_config || b.deterministic?.built_from_config; if (p) break; } catch {} }
   const key = p || '(vanilla)'; if (bookCache.has(key)) return bookCache.get(key);
-  const cfg = p ? JSON.parse(fs.readFileSync(p, 'utf8')) : REFCFG; const mfg = new Set(), cost = new Map(), ind = new Map();
-  for (const I of cfg.industries) { if (I.disabled) continue; for (const t of I.tiers) { if (NEVER_IND.has(I.id) || EXCL_IND.has(I.id)) continue; mfg.add(t.key); ind.set(t.key, I.id); if (p && t.building_cost != null) cost.set(t.key, t.building_cost); } }
-  const r = { mfg, cost, ind }; bookCache.set(key, r); return r;
+  const cfg = p ? JSON.parse(fs.readFileSync(p, 'utf8')) : REFCFG; const mfg = new Set(), cost = new Map(), ind = new Map(), dep = new Set();
+  // L55: REVIEWED — every industry but the tiered deposits is the manufacturing sector as before (NEVER_IND out); the deposits are mines
+  // ⭐ THE TIERED DEPOSITS (§10.115) are MINES, not manufacturing (2026-11-22, F285 §3, landmine L55): each rung is valid where its own slots are
+  //   free (`--mod-map`); gold stays out by ruling (§10.92.1). Their costs are the book's.
+  for (const I of depositList(cfg)) for (const t of I.tiers || []) { dep.add(t.key); ind.set(t.key, I.id); if (p && t.building_cost != null) cost.set(t.key, t.building_cost); }
+  for (const I of cfg.industries) { if (I.disabled || I.deposit) continue; for (const t of I.tiers) { if (NEVER_IND.has(I.id) || EXCL_IND.has(I.id)) continue; mfg.add(t.key); ind.set(t.key, I.id); if (p && t.building_cost != null) cost.set(t.key, t.building_cost); } }
+  const r = { mfg, cost, ind, dep }; bookCache.set(key, r); return r;
 }
 const isAgri = k => /_farm$|_plantation$|_ranch$|orchards?$|vineyard$/.test(k) && !/subsistence|rubber/.test(k);
 const isMine = k => /_mine$|logging_camp|fishing_wharf|whaling_station|oil_rig|rubber_plantation/.test(k) && !/gold/.test(k);
-function sectorOf(k, B) { if (B.mfg.has(k)) return 'manufacturing'; if (/subsistence|gold_/.test(k)) return null; if (isMine(k)) return 'mines'; if (isAgri(k)) return 'agriculture'; return null; }
+function sectorOf(k, B) { if (B.mfg.has(k)) return 'manufacturing'; if (B.dep && B.dep.has(k)) return /gold/.test(k) ? null : 'mines'; if (/subsistence|gold_/.test(k)) return null; if (isMine(k)) return 'mines'; if (isAgri(k)) return 'agriculture'; return null; }
 const costOf = (k, B) => B.cost.get(k) ?? RC[k];
 // ---- validity from a v15 summary: country tag -> { mines: Set(types), agri: Set(types), mfgOK: bool }
 function validity(v15) {

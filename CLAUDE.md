@@ -484,6 +484,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.125 | the 1.2 book built (`config/mod_config.m12-first.json`, `tools/make_book12.mjs`): the deposit rungs' cost step 1.3 above the 1836-map rungs; deposit rungs named "Tier N." like factory rungs; a reference to a deposit's vanilla key reaches every rung; the deposit technologies take the standard rung entries; the build's own consequences recorded there | in force; built, linted, deployed for the user's check, loaded by the user 2026-11-21 (which led to §10.126) |
 | 10.126 | logging is not a deposit, for narrative reasons (a saw mill reaches no new forest): vanilla's one building again; the 1836 pair: a first-rung twin beside every second-rung deposit building, both at k = N × the second rung's share of the pair's output value (⅔, coal 0.615), so each country's 1836 supply stays vanilla's with no recipe moved (`tools/emit_deposit_start.mjs`); fishing and whaling stay tiered; the first rung keeps vanilla's half output; logging's electric saw mills on the world's technology; the book `m12b-first` | in force; built and deployed for the user's check; fishing and whaling stay tiered (ruled the same day after the narrative pass); the first rung keeps vanilla's half output; the electric saw mills on the world's technology |
 | 10.127 | a technology with a naval research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain had no first movers) | in force; built (`entry_weight_rule.naval_lowered`, `make_book12.mjs --naval-lowered 1`), in the book `m12c-first` (`e355eeb1`), not measured |
+| 10.128 | the price decline (PI, PP) is an aim of the mod's own class, never read against vanilla; the loss's level part on 0.8 × vanilla's 1935 index is wrong under it (F285); the reading to be built first: decade by decade, five goods classes with expected directions (industry output clearly down, the main one), by market and in aggregate; the user wants a significantly stronger decline, sized so t0 sheds workers once t2 is significant and t1 once t3 is (F285 §6) | in force; built: the ledger's price panel ("Option A", `fill_prices.mjs`) and the loss's price term, the industry-output aggregate's 1935 ÷ 1900 ≤ 0.75 ("Aggregate fall, ~25%"), weight 2, in place of PI and PP (`lib_prices.mjs`) |
 
 ---
 
@@ -502,8 +503,8 @@ state (the 1932–1936 mean) unless a date is given.
 | unemployment including peasants (U\*) | — | **levels of the mod's own (§10.120): the USA 25% in 1913 and 15% at the end; Britain 10% and 5%; Germany 20% and 20%; the world 60% and 50%** | goal 4: capital is scarce, so fewer people find productive work | register: the eight depeasantation aims |
 | the investment loop | — | **never broken: no shortlist member of at least 2% of world GDP with a pool ÷ GDP averaging 1 or more over ten years** | past that point every other reading is unreliable (§10.120) | register: the barrier |
 | the hoard (investment pool ÷ yearly GDP), each major | — | as few majors as possible above 0.5 in 1935–36, and the shortlist's hoard above half its GDP as low as possible, levels of the mod's own | capital is spent on dear modern plants, not piled up | register |
-| building-input prices in £ ÷ base (PI) | 1.0 | **falling decade over decade**; ≤ 0.8× (a provisional level) | the frontier floods the market (§2.1); the main obsolescence driver | register |
-| pop-goods prices in wage units (PP) | 1.0 | **falling decade over decade**; ≤ 0.8× (a provisional level) | obsolescence works through wages, not £ (F97) | register |
+| industry-output prices, £ ÷ base, the markets' aggregate | 0.89–0.91 of its 1900 level in 1935 (1.15.1, 1.15.2) | **a fall of a quarter over 1900–1935** (0.75 or under), an aim of the mod's own (§10.128) | the frontier floods the market (§2.1); the main obsolescence driver; sized so t0 sheds workers once t2 is significant and t1 once t3 is | register |
+| building-input prices (PI), pop-goods prices in wage units (PP) | fall 9–15% and 8–13% over 1900–1935 | falling | obsolescence works through wages, not £ (F97) | minor readings since §10.128 |
 | productive workers per capita (W), world and shortlist; GDP of the shortlist | 1.0 | fewer workers per capita than vanilla, more output each | goal 4 seen against vanilla | minor readings, no weight |
 | workers on tier-0 rungs (T0) | vanilla's first methods survive wherever the AI does not switch | zero by 1936, or falling decade over decade | goal 2: old plants lose their market | register |
 | workers on t3 rungs ÷ all other tiers | — | as high as possible | the frontier takes over | register |
@@ -556,16 +557,19 @@ batch 7 mod 1.1.1 runs of 10 and 6 vanilla runs of 10 are past it.
 | U\* of Britain, 1913 · the end | 10% · 5% | own | 0.25 each |
 | U\* of Germany (GER, else NGF, else PRU), 1913 · the end | 20% · 20% | own | 0.25 each |
 | U\* of the world, 1913 · the end | 60% · 50% | own | 0.25 each |
-| PI: building-input prices (steel, tools, engines, fertilizer, explosives, dye, paper), £ ÷ base | **falling decade over decade** (required); 0.8 of vanilla or under (a provisional level) | own; stated against vanilla for now | 1 |
-| PP: pop-goods prices (groceries, clothes, furniture, glass, fine art, automobiles, telephones, radios) in wage units | **falling decade over decade** (required); 0.8 of vanilla or under (a provisional level) | own; stated against vanilla for now | 1 |
+| industry-output prices: the run's own aggregate of scalable industry output (groceries, clothes, furniture, glass, paper, tools, steel, engines, fertilizer, explosives, automobiles, telephones, radios; price ÷ base, the median over the eight instrumented markets), 1935 ÷ 1900 | **0.75 or under** (a fall of a quarter; §10.128, user-ruled 2026-11-22) | own, never read against vanilla | 2 |
 | capital: shortlist members holding at least 2% of world GDP with a pool above 0.5 of their GDP in 1935–1936 (the mean of the two summaries) | as few as possible | own | 1 |
 | capital: the shortlist's hoard above half its GDP = Σ max(0, pool − 0.5 × GDP) over its countries ÷ its GDP, at the end | 0 | own | 0.5 |
 | T0: workers on tier-0 rungs, by the rung's tier; manufacturing only (never the deposit rungs, no agriculture) | 0 at 1936, or falling decade over decade | own | 0.5 |
 | T3 ÷ (T0 + T1 + T2), manufacturing only | the more the better | own | 0.5 |
 | old plants pushed out (§10.121): the in-market backward-industry test (`laggard_pressure.mjs`), the share of its workers an industry two tiers behind a far better producer in its own market keeps over a decade; beside T0 | **under 100% and shrinking** decade over decade; manufacturing only, the motor's new t0 rung included; the deposit rungs never, agriculture not for now | own | 0.5 |
 
-PI and PP are the main obsolescence driver (§2.1): the downward slope is the must, and where the level should end is not settled.
-They are not the outcome: on mod 1.1.1 T0, PI and PP read at or near their aims while a backward industry in its own market keeps
+Falling industry prices are the main obsolescence driver (§2.1), and the size of the fall is an aim of the mod's own (§10.128): the
+mechanism vanilla lacked up to game 1.13, never a calibration to fall faster than vanilla, whose own prices fall since 1.15 (industry
+output 1935 ÷ 1900: 0.91 on 1.15.2, F285). The quarter is sized on the recipes: prices low enough that t0 sheds workers once t2 is
+significant and t1 once t3 is (F285 §6: 0.85–1.0 of base for most goods when t3 takes over). The early rise of industry prices to about
+1870, in vanilla and the mod alike, is left for now. PI and PP (until 2026-11-22 two terms of the loss, their level pegged to 0.8 of
+vanilla's) are minor readings. Prices are not the outcome: on mod 1.1.1 T0, PI and PP read at or near their aims while a backward industry in its own market keeps
 117% of its workers over a decade, as in vanilla, which is why the old plants' fate is a term of its own (§10.121).
 For mod 1.2 the world's U\* still gives way to world GDP where the two conflict (§10.114).
 **Outside the loss by ruling** (§10.121): research pace, misplaced capital and the rubber shortage, read beside it (§3.3); and play
@@ -585,7 +589,8 @@ SHARES stand as evidence; per-country LEVELS move with territory and are weak.
 
 **The loss** (the iterator's objective; THE loss of the mod 1.2 calibration, §10.123): L = Σ w · d, where d is the distance from the
 aim in units of that line's own spread between runs, with the weights of the table. The spreads are fixed constants: the standard
-deviation over mod 1.1.1's 15 runs on game 1.15.1 (F271 + F272), re-fitted only by a recorded decision. A falling-decade aim's distance
+deviation over mod 1.1.1's 15 runs on game 1.15.1 (F271 + F272), re-fitted only by a recorded decision. The industry-price line's distance is how far its 1935 ÷ 1900 sits above 0.75, its spread 0.04227 fitted the same way
+(§10.128). A falling-decade aim's distance
 is the positive part of the mean decade-to-decade change of its logarithm in units of its spread, added to its level distance; T3's is
 −ln(T3 ÷ (T0 + T1 + T2)) in units of its spread. The barrier's value is printed for every run, so books that both end past it still
 compare on that line. At these weights world GDP still wins below its floor (§10.114): each −0.10 under 0.90 costs +1.44 against −0.90
@@ -739,6 +744,11 @@ What §1.2 and §1.3 leave out:
   check loaded. **Measured by five centuries** (F283, n = 1; F284, n = 4, read together, 2026-11-22): no run past the barrier, world GDP
   0.82× vanilla 1.15.2 (0.71–1.02), level to 1866–1880, then a dip to 0.64–0.83 in 1886–1916 and a recovery from about 1920; the world's U\*
   on its aims while the leaders scatter run to run; PI 1.00× (falling), the largest term of the loss; loss 14.51. The iterations start here.
+  F285 re-read it (2026-11-22): the PI term (6.15) and the PP term (1.46) are all the level part pegged to vanilla, which §10.128 rules out
+  (on its own path m12b's PI falls 19% over 1900–1935, vanilla 1.15.2's 15%); and the ledger's tier lines count the nine deposits as
+  manufacturing (new levels below the best tier 46% published, 26–28.5% on manufacturing alone). The ledger is refilled on its four complete
+  runs (claude.ai/artifact/JDdqJ13XanbEZvwmtA4W6y): the deposits in a section of their own, prices by goods class, and the loss under
+  §10.128's price term, 12.34 (industry prices 0.89 of their 1900 level against the 0.75 aim, 6.49 of it).
   **Its successor `m12c-first`** (2026-11-22, sha256 `e355eeb1823040bd`, `make_book12.mjs --prefix m12c --naval-lowered 1`) adds only
   §10.127 (naval technologies lowered only while their entry ticks); built as the alternate `mod_m12c`, not measured, not deployed. Next
   within 1.2, before the balance fine tuning: a deeper technology pass (the user, 2026-11-22; ROADMAP, BACKLOG).

@@ -18,13 +18,16 @@ import { gunzipSync } from 'node:zlib';
 import { usableRuns } from './lib_runs.mjs';
 import { POOL } from './lib_markets.mjs';
 import { SESSIONS } from './lib_sumidx.mjs';
+import { manufacturing, reportSkipped } from './lib_industries.mjs';
 const argv = process.argv.slice(2), DIR = argv[0];
 const opt = k => { const i = argv.indexOf(k); return i > 0 ? argv[i + 1] : null; };
 const MODS = opt('--mod'), BOOK = opt('--config');
 if (!DIR || !MODS || !BOOK) { console.error('usage: fill_old_plants.mjs <outDir> --mod <runs> --config <book>'); process.exit(2); }
 const cfg = JSON.parse(readFileSync(BOOK, 'utf8').replace(/^﻿/, ''));
 const MAP = {}, NAME = {};
-for (const [k, ind] of Object.entries(cfg.industries)) { if (ind.disabled) continue; const id = ind.id || k;
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits add rungs beside the old pits by design (lib_industries.mjs)
+const { kept: MFG_KEPT, skipped: MFG_SKIPPED } = manufacturing(cfg); reportSkipped('fill_old_plants', MFG_SKIPPED);
+for (const [k, ind] of MFG_KEPT) { const id = ind.id || k;
   NAME[id] = id.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
   for (const t of ind.tiers || []) { const base = Object.values(t.employment || {}).reduce((a, b) => a + b, 0) || 5000;
     if (t.pm_key) MAP[t.pm_key] = { ind: id, era: t.era, emp: base * (t.workforce_mult || 1) }; } }

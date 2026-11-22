@@ -5,6 +5,7 @@
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 // ⭐⭐ ERA-COUNT AGNOSTIC (2026-08-31). The ledger serves TWO semi-canonical books now — the six-rung
 //   canonical one and the four-rung vanilla-ladder arm — so nothing here may assume six eras or a
 //   particular config. The arm's OWN config comes in on `--config`; the era count is derived from it.
@@ -14,10 +15,12 @@ import { join } from 'node:path';
 const CFGP = (() => { const i = process.argv.indexOf('--config'); return i > 0 && process.argv[i+1] ? process.argv[i+1] : 'config/mod_config.canon_n7.json'; })();
 const cfg = JSON.parse(readFileSync(CFGP, 'utf8'));
 // the era count IS the config's, never a literal
-const NERA = Math.max(...cfg.industries.filter(i => !i.disabled).flatMap(i => (i.tiers||[]).map(t => t.era ?? 0))) + 1;
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits are not tier rungs here (lib_industries.mjs)
+const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('fill_payback', MFG_SKIPPED);
+const NERA = Math.max(...MFG_IND.flatMap(i => (i.tiers||[]).map(t => t.era ?? 0))) + 1;
 const ERAS = Array.from({length: NERA}, (_, i) => i);
 const tier = {};
-for (const ind of (cfg.industries || []).filter(i => !i.disabled))   // ⚠ a DISABLED industry keeps its
+for (const ind of MFG_IND)   // ⚠ a DISABLED industry keeps its
   //   canonical era (4, 5) in the config even though the arm never emits it; including it let a
   //   disabled port/railway rung set topEra above the book's own top rung.
   for (const t of ind.tiers || [])

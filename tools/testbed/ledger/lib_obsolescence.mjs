@@ -17,6 +17,7 @@
 // empty a profitable building; read the loss share and the margin with it.
 import fs from 'node:fs'; import zlib from 'node:zlib'; import path from 'node:path';
 import { usableRuns as libUsableRuns } from './lib_runs.mjs';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 export const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
 export const SES = path.join(REPO, 'tools/testbed/sessions');
 export const REGIMES = ['IN-MARKET', 'TRADE-ONLY', 'UNCONTESTED'];
@@ -44,7 +45,9 @@ const newCell = () => ({ lv: 0, st: 0, lossLv: 0, marg: [], stNow: 0, stNext: 0,
 const newSub = () => ({ lv: 0, lossLv: 0, marg: [], sg: [] });
 export function measure({ session, setup, config, years, thr = 0.10, overrideDir = null, industries = null }) {
   const cfg = JSON.parse(fs.readFileSync(path.isAbsolute(config) ? config : path.join(REPO, config), 'utf8'));
-  const rung = {}; for (const ind of cfg.industries) { if (ind.disabled) continue; if (industries && !industries.includes(ind.id)) continue;
+  // ⭐ `industries` null = the book's MANUFACTURING industries (2026-11-22, F285 §3, landmine L55), never the tiered deposits
+  const MFG = manufacturingList(cfg); if (!industries) reportSkipped('lib_obsolescence', MFG.skipped);
+  const rung = {}; for (const ind of MFG.list) { if (industries && !industries.includes(ind.id)) continue;
     for (const t of ind.tiers) rung[t.key] = { ind: ind.id, era: t.era, good: t.output_good || ind.output_good }; }
   const runs = usableRuns(session, setup);
   const acc = {}, tags = {}, link = {};

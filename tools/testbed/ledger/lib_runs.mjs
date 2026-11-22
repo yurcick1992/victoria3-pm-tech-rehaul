@@ -113,6 +113,7 @@ export function configFamilies(sesRoot, runs) {
       const raw = readFileSync(cfgPath, 'utf8');
       changed = cfgSha !== '?' && !cfgSha.startsWith(createHash('sha256').update(raw).digest('hex').slice(0, cfgSha.length));
       const cfg = JSON.parse(raw);
+      // L55: ALL INDUSTRIES — a family is the book's whole structure, the tiered deposits included
       struct = JSON.stringify((cfg.industries || []).filter(i => !i.disabled).map(i => [i.id, (i.tiers || []).map(t => [t.key, t.era, t.method_of || null, !!t.craft])])
         .sort((a, b) => (a[0] < b[0] ? -1 : 1)));
     } catch {}

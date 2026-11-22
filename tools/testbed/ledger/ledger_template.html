@@ -158,14 +158,21 @@ details.card[open]>summary{margin-bottom:10px}
 
 <!-- ============ TWO CHARTS BEFORE THE PAGES (user, 2026-10-29: "both building-input prices and world GDP run by run go up, before the view
      selector, and after the wall clock speed"); INTRO from fill_scorecard.mjs → intro.json; their own script, so a failure blanks only them -->
+<!-- ============ PRICES BY GOODS CLASS, DECADE BY DECADE (BALANCE_FRAMEWORK §10.128, F285 §5; user, 2026-11-22: "Option A goes" — one chart per
+     goods class, the markets' aggregate by default, one market on demand). PRICES from fill_prices.mjs → prices.json; its own script.
+     It replaces the single building-input chart (INTRO.pi, still written by fill_scorecard.mjs for the scorecard's PI line). -->
+<section class="sec">
+  <figure class="card">
+    <div><h3>Prices by goods class, decade by decade</h3><div class="figid" data-fig="pr"></div></div>
+    <div class="toggle" id="pr-mk" role="group" aria-label="Market" style="display:flex;flex-wrap:wrap;margin:8px 0"></div>
+    <div class="legend" id="pr-legend"></div>
+    <div id="pr-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px"></div>
+    <figcaption id="pr-cap"></figcaption>
+  </figure>
+</section>
+
 <section class="sec">
   <div class="charts2">
-    <figure class="card">
-      <div><h3>Building-input prices, decade by decade</h3><div class="figid" data-fig="pi"></div></div>
-      <div class="legend" id="pi-legend"></div>
-      <div id="chart-pi"></div>
-      <figcaption id="pi-cap"></figcaption>
-    </figure>
     <figure class="card">
       <div><h3>World GDP, run by run</h3><div class="figid" data-fig="runs"></div></div>
       <div class="legend" id="runs-legend"></div>
@@ -382,39 +389,68 @@ function renderPerf(mode){
 </script>
 
 <script>
+// ---------- prices by goods class, decade by decade (2026-11-22, §10.128): PRICES = fill_prices.mjs → prices.json, spliced by fill_assemble ----------
+// Its own script: a failure blanks this panel only. Price ÷ base; a class in one market = the geometric mean of its goods; the aggregate = the
+// median over the markets; then the median over runs (the mod's runs' range as a band). Vanilla is a reference line, not the aim (§10.128).
+const PRICES={"years":[],"classes":{},"markets":[],"mod":{"n":0,"classes":{}},"van":{"n":0,"classes":{}}};
+(function(){
+  const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const fin=v=>v!=null&&Number.isFinite(v), grid=document.getElementById('pr-grid');
+  const ys=PRICES.years||[], K=Object.keys(PRICES.classes||{});
+  if(!ys.length||!K.length||!PRICES.mod.n){ grid.innerHTML='<p class="small">Not read in this fill (no prices.json).</p>'; return; }
+  const sw=(c,t,band,dash)=>'<span><span class="sw" style="background:'+(dash?'repeating-linear-gradient(90deg,'+c+' 0 5px,transparent 5px 8px)':c)+(band?';opacity:.35':'')+'"></span>'+t+'</span>';
+  const pct=(a,b)=>{ if(!(fin(a)&&fin(b)&&a>0)) return '—'; const r=Math.round((b/a-1)*100); return (r>0?'+':r<0?'−':'±')+Math.abs(r)+'%'; };
+  const at=(v,y)=>v[ys.indexOf(y)];
+  let mk=-1;
+  function chart(k){
+    const C=PRICES.classes[k], M=PRICES.mod.classes[k], V=PRICES.van.classes[k], ser=mk<0?null:PRICES.markets[mk][0];
+    const m=ser?M.markets[ser]:M.agg, v=ser?V.markets[ser]:V.agg, lo=ser?null:M.lo, hi=ser?null:M.hi;
+    const wide=C.main&&grid.clientWidth>620;   // the main reading spans the row; on a phone it keeps the small chart's proportions, so its labels stay legible
+    const W=wide?760:360,H=wide?240:200,L=36,R=40,T=10,B=22; const all=[1,...m,...v,...(lo||[]),...(hi||[])].filter(fin);
+    const a=Math.floor(Math.min(...all)*10)/10, b=Math.ceil(Math.max(...all)*10)/10, top=b-a<0.3?b+0.1:b, bot=b-a<0.3?a-0.1:a;
+    const X=y=>L+(y-ys[0])/(ys[ys.length-1]-ys[0])*(W-L-R), Y=x=>T+(top-x)/(top-bot)*(H-T-B);
+    let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+C.label+': price as a share of base, by decade" style="width:100%;height:auto">';
+    for(let g=bot;g<=top+1e-9;g+=0.1){ const em=Math.abs(g-1)<1e-9;
+      s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="'+css('--line')+'"'+(em?' stroke-width="1.5" stroke-dasharray="5 4"':'')+'/>'+
+         '<text x="'+(L-5)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+g.toFixed(1)+'</text>'; }
+    for(const y of [1840,1860,1880,1900,1920,1935]) s+='<text x="'+X(y)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+y+'</text>';
+    if(lo){ const q=ys.map((y,i)=>[y,lo[i],hi[i]]).filter(p=>fin(p[1])&&fin(p[2]));
+      if(q.length>1) s+='<path d="'+q.map((p,i)=>(i?'L':'M')+X(p[0])+' '+Y(p[2])).join('')+q.slice().reverse().map(p=>'L'+X(p[0])+' '+Y(p[1])).join('')+'Z" fill="'+css('--accent')+'" opacity="0.13"/>'; }
+    const line=(vals,c,dash,who)=>{ const p=ys.map((y,i)=>[y,vals[i]]).filter(q=>fin(q[1])); if(p.length<2) return '';
+      return '<path d="'+p.map((q,i)=>(i?'L':'M')+X(q[0]).toFixed(1)+' '+Y(q[1]).toFixed(1)).join('')+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"'+(dash?' stroke-dasharray="5 4"':'')+'/>'+
+        p.map(q=>'<circle cx="'+X(q[0])+'" cy="'+Y(q[1])+'" r="'+(dash?2:3)+'" fill="'+c+'"><title>'+who+', '+q[0]+': '+q[1].toFixed(2)+' of base</title></circle>').join(''); };
+    s+=line(v,css('--ink3'),1,'vanilla')+line(m,css('--accent'),0,'mod');
+    const em=m.filter(fin), ev=v.filter(fin);
+    if(em.length&&ev.length){ const lm=em[em.length-1], lv=ev[ev.length-1];
+      s+='<text x="'+(W-R+5)+'" y="'+(Y(lm)+(lm>=lv?-2:11))+'" font-size="11" font-weight="600" fill="'+css('--accent')+'">'+lm.toFixed(2)+'</text>'+
+         '<text x="'+(W-R+5)+'" y="'+(Y(lv)+(lv>lm?-2:11))+'" font-size="11" fill="'+css('--ink3')+'">'+lv.toFixed(2)+'</text>'; }
+    s+='</svg>';
+    return '<div'+(C.main?' style="grid-column:1/-1"':'')+'><div style="font-weight:600">'+C.label+(C.main?' — the main reading':'')+'</div>'+
+      '<div class="small" style="color:var(--ink2)">expected: '+C.expect+' · 1900 → 1935: mod '+pct(at(m,1900),at(m,1935))+', vanilla '+pct(at(v,1900),at(v,1935))+'</div>'+
+      '<div>'+s+'</div></div>';
+  }
+  function draw(){ grid.innerHTML=K.map(chart).join(''); }
+  let lastWide=null; window.addEventListener('resize',()=>{ const w=grid.clientWidth>620; if(w!==lastWide){ lastWide=w; draw(); } });
+  const tg=document.getElementById('pr-mk');
+  tg.innerHTML=[['-1','All markets']].concat((PRICES.markets||[]).map((x,i)=>[String(i),x[1]])).map(([v,t])=>'<button data-v="'+v+'" aria-pressed="'+(v==='-1')+'">'+t+'</button>').join('');
+  tg.querySelectorAll('button').forEach(bt=>bt.onclick=()=>{ mk=+bt.dataset.v; tg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===bt)); draw(); });
+  document.getElementById('pr-legend').innerHTML=sw(css('--accent'),'mod, median of runs')+sw(css('--accent'),'its runs’ range (all markets)',1)+sw(css('--ink3'),'vanilla, median',0,1)+'<span>1.0 = base price (dashed)</span>';
+  document.getElementById('pr-cap').innerHTML='Each good’s price ÷ its base price at every market dump (1836, 1840, then each decade to 1930, and 1935), read only where the good is both bought and sold in that market. '+
+    'A class in one market is the geometric mean over its goods; “All markets” is the median of the eight instrumented markets (Britain, the USA, France, Germany with Prussia before it, Russia, Japan, the Netherlands, Belgium); then the median over runs. '+
+    'Industry output: '+PRICES.classes.industry.goods.join(', ').replace(/_/g,' ')+'. Military goods, ships and local goods are in no class. A falling price is an aim of the mod’s own, not a comparison with vanilla, whose line is drawn for reference. '+
+    'The register’s loss reads the main chart: the industry-output aggregate’s 1935 value ÷ its 1900 value, aiming at 0.75 or less (BALANCE_FRAMEWORK §10.128); the scorecard’s price line is that reading.';
+  draw();
+})();
+</script>
+
+<script>
 // ---------- the two charts above the pages (2026-10-29): INTRO = fill_scorecard.mjs → intro.json, spliced by fill_assemble ----------
 // Their own script, like the play-time panel: a failure here blanks these two charts only.
 const INTRO={"pi":{"years":[],"mod":[],"lo":[],"hi":[],"van":[]},"runs":{"gdp":[]}};
 (function(){
   const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const fin=Number.isFinite, sw=(c,t,band)=>'<span><span class="sw" style="background:'+c+(band?';opacity:.35':'')+'"></span>'+t+'</span>';
-  // building-input prices, £ ÷ base, the shortlist: the arm's median per decade with its runs' range, against vanilla's
-  const P=INTRO.pi||{}, ys=P.years||[], host=document.getElementById('chart-pi');
-  if(!ys.length||!(P.mod||[]).some(fin)){ host.innerHTML='<p class="small">No price path in this fill (criteria.json carries no PIpath).</p>'; }
-  else{
-    const W=640,H=250,L=46,R=60,T=14,B=28, all=[...P.mod,...P.lo,...P.hi,...P.van,1].filter(fin);
-    const lo=Math.floor(Math.min(...all)*20)/20, hi=Math.ceil(Math.max(...all)*20)/20;
-    const X=y=>L+(y-ys[0])/(ys[ys.length-1]-ys[0])*(W-L-R), Y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
-    let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Building-input prices as a share of base, by decade" style="width:100%;height:auto">';
-    for(let g=lo;g<=hi+1e-9;g+=0.05){ const em=Math.abs(g-1)<1e-9;
-      s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="'+css('--line')+'"'+(em?' stroke-width="1.5" stroke-dasharray="5 4"':'')+'/>'+
-         '<text x="'+(L-6)+'" y="'+(Y(g)+4)+'" text-anchor="end" font-size="11" fill="'+css('--ink3')+'">'+g.toFixed(2)+'</text>'; }
-    for(const y of ys) s+='<text x="'+X(y)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="'+css('--ink3')+'">'+y+'</text>';
-    const ok=ys.map((y,i)=>[y,P.lo[i],P.hi[i]]).filter(q=>fin(q[1])&&fin(q[2]));
-    if(ok.length>1) s+='<path d="'+ok.map((q,i)=>(i?'L':'M')+X(q[0])+' '+Y(q[2])).join('')+ok.slice().reverse().map(q=>'L'+X(q[0])+' '+Y(q[1])).join('')+'Z" fill="'+css('--accent')+'" opacity="0.13"/>';
-    const line=(vals,c,dy)=>{ const pts=ys.map((y,i)=>[y,vals[i]]).filter(q=>fin(q[1])); if(!pts.length) return '';
-      const e=pts[pts.length-1];
-      return '<path d="'+pts.map((q,i)=>(i?'L':'M')+X(q[0]).toFixed(1)+' '+Y(q[1]).toFixed(1)).join('')+'" fill="none" stroke="'+c+'" stroke-width="2.2" stroke-linejoin="round"/>'+
-        pts.map(q=>'<circle cx="'+X(q[0])+'" cy="'+Y(q[1])+'" r="3" fill="'+c+'"/>').join('')+
-        '<text x="'+(X(e[0])+7)+'" y="'+(Y(e[1])+dy)+'" font-size="12" font-weight="600" fill="'+c+'">'+e[1].toFixed(2)+'</text>'; };
-    const lastM=P.mod[P.mod.length-1], lastV=P.van[P.van.length-1];
-    s+=line(P.van,css('--ink3'),lastV>=lastM?-3:12)+line(P.mod,css('--accent'),lastM>lastV?-3:12)+'</svg>';
-    host.innerHTML=s;
-    document.getElementById('pi-legend').innerHTML=sw(css('--accent'),'mod, median')+sw(css('--accent'),'its runs’ range',1)+sw(css('--ink3'),'vanilla, median');
-    const i0=0,i1=ys.length-1, r0=P.mod[i0]/P.van[i0], r1=P.mod[i1]/P.van[i1];
-    document.getElementById('pi-cap').innerHTML='Steel, tools, engines, fertilizer, explosives, dye and paper, £ ÷ base price, the shortlist. Falling prices are how the mod retires old plants; the scorecard grades only the end point. '+
-      (fin(r0)&&fin(r1)?'This batch starts at ×'+r0.toFixed(2)+' of vanilla’s in '+ys[i0]+' and ends at ×'+r1.toFixed(2)+' in '+ys[i1]+'.':'');
-  }
+  // (the single building-input chart that stood here was replaced on 2026-11-22 by the prices-by-class panel, its own script above)
   // world GDP, run by run: each run's end state ÷ vanilla's median, against the aim, vanilla's own spread and the consensus
   const Rn=INTRO.runs||{}, g=(Rn.gdp||[]).filter(o=>fin(o.v)), h2=document.getElementById('chart-runs');
   if(!g.length){ h2.innerHTML='<p class="small">No per-run world GDP in this fill.</p>'; return; }
@@ -536,6 +572,10 @@ const INTRO={"pi":{"years":[],"mod":[],"lo":[],"hi":[],"van":[]},"runs":{"gdp":[
 
   <!-- ⭐ AUTO-DOWNSIZING BY TIER (BALANCE_FRAMEWORK §10.107.6, user-ruled 2026-11-07; fill_downsizing.mjs → downsize_world.html) -->
   __DOWNSIZE_W__
+
+  <!-- ⭐ THE TIERED DEPOSITS (2026-11-22, F285; fill_deposits.mjs → deposits_world.html): output by rung, slot fill, raw supply, labour and capital,
+       paybacks — read as addition, never through the manufacturing tier panels (landmine L55) -->
+  __DEPOSITS_W__
 
   <div class="card tablewrap">
   <div class="fighead">
@@ -660,6 +700,9 @@ const INTRO={"pi":{"years":[],"mod":[],"lo":[],"hi":[],"van":[]},"runs":{"gdp":[
 
   <!-- ⭐ AUTO-DOWNSIZING BY TIER, the fixed shortlist (§10.107.6; fill_downsizing.mjs → downsize_pool.html) -->
   __DOWNSIZE_S__
+
+  <!-- ⭐ THE TIERED DEPOSITS, the fixed shortlist (fill_deposits.mjs → deposits_pool.html) -->
+  __DEPOSITS_S__
 
 <div class="card tablewrap">
   <div class="fighead">
@@ -1430,7 +1473,7 @@ renderWatch();
     : who('Mod', REL.mod, REL.modDate) + ' vs ' + who('vanilla', REL.van, REL.vanDate) + ' · <span>' + runs(nMod, 'mod') + (modNote || '') + ' vs ' + runs(nVan, 'vanilla') + '</span>';
   const N = {};
   try { const r = window.LEDGER_PERF.runs.filter(x => x.cluster !== 3); N.perf = [r.filter(x => !x.van).length, r.filter(x => x.van).length]; } catch (e) {}
-  try { N.pi = [INTRO.pi.n, INTRO.pi.vanN]; } catch (e) {}
+  try { N.pr = [PRICES.mod.n, PRICES.van.n]; } catch (e) {}
   try { N.runs = [INTRO.runs.gdp.length, INTRO.runs.vanN]; } catch (e) {}
   N.c1 = [N_MOD, N_VAN];
   N.c2 = [N_MOD, null];

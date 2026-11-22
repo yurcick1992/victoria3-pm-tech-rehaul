@@ -36,6 +36,11 @@ L=tools/testbed/ledger; S=tools/testbed/sessions
 VANS=${VANS_OVERRIDE:-$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_REF))")} || exit 1
 VANW=${VANW_OVERRIDE:-$(node -e "import('./tools/testbed/ledger/lib_runs.mjs').then(m=>console.log(m.VANILLA_WALL_REF))")} || exit 1
 [ -f "$BOOK" ] || { echo "no such book: $BOOK"; exit 1; }
+# ⭐ MOD_BUILD (2026-11-22): the BUILD of the book the runs played, for the readers that read the game's files through it — the workforce groups'
+#   method employment (fill_emp, report_data2), the deposits' slots (fill_deposits, misplaced_capital). Default mod/ (the canon); a named book's
+#   alternate build otherwise (e.g. MOD_BUILD=mod_m12b): mod/ lacks the 1.2 book's deposit rungs and their methods.
+MOD_BUILD=${MOD_BUILD:-mod}
+[ -d "$MOD_BUILD" ] || { echo "no such build folder: $MOD_BUILD (MOD_BUILD)"; exit 1; }
 mkdir -p "$OUT"
 group_runs() {      # $1 group spec, $2 setup → comma-separated sess/run of the USABLE runs (lib_runs), the exclusions printed on stderr
   node -e "import('./$L/lib_runs.mjs').then(({usableRuns})=>{const r=usableRuns('$S','$1','$2');for(const d of r.dropped)console.error('  EXCLUDED '+d.run+': '+d.reason);console.log(r.runs.join(','))}).catch(e=>{console.error(e.message);process.exit(1)})"
@@ -50,13 +55,13 @@ echo "MOD runs: $MOD"; echo "VAN runs: $(echo "$VAN" | tr ',' '\n' | wc -l)"
 step() { echo; echo "=== $*"; "$@" || echo "!!! FAILED ($?): $*"; }
 step node $L/analyse_gdp_gap.mjs --session $SESSION --setup $SETUP --config $BOOK --out $OUT
 step node $L/report_data.mjs --mod $MOD --van $VAN --nb none --config $BOOK --out $OUT
-step node $L/report_data2.mjs --mod $MOD --van $VAN --config $BOOK --out $OUT
+step node $L/report_data2.mjs --mod $MOD --van $VAN --config $BOOK --out $OUT --mod-build "$MOD_BUILD"
 step node $L/report_perf.mjs $(echo $MOD | tr ',' '\n' | sed "s|^|$S/|") $(echo $VANWRUNS | tr ',' '\n' | sed "s|^|$S/|") --json $OUT/perf_raw.json
 # the three wall-clock clusters (user-ruled 2026-10-07) — fill_build_perf tags each run, the grade is the median over clusters 1 + 2
 step node $L/wall_clusters.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANW:vanilla" --json $OUT/wall_clusters.json
 step node $L/fill_build_perf.mjs $OUT
 step node $L/fill_consts.mjs $OUT --mod $MOD --van $VAN --nb none
-step node $L/fill_emp.mjs $OUT --mod $MOD --config $BOOK
+step node $L/fill_emp.mjs $OUT --mod $MOD --config $BOOK --mod-build "$MOD_BUILD"
 step node $L/fill_payback.mjs $OUT --mod $MOD --config $BOOK
 step node $L/fill_research.mjs $OUT --mod $MOD --van $VAN --config $BOOK
 step node $L/fill_tierchoice.mjs $OUT --session $SESSION --setup $SETUP --config $BOOK
@@ -84,7 +89,7 @@ TREE=$(echo "$BOOK" | sed 's/mod_config\./tech_tree_options./')
 step node $L/criteria.mjs --arm "$SESSION:$SETUP" --van "$VANS:vanilla" ${CRITERIA_CONSENSUS:+--consensus $CRITERIA_CONSENSUS} --json $OUT/criteria.json --quiet
 step node $L/laggard_pressure.mjs $BOOK "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --json $OUT/laggards.json
 step node $L/tech_census.mjs "$SETUP=$SESSION:$SETUP" "vanilla=$VANS:vanilla" --tree $TREE --json $OUT/tech.json
-step node $L/misplaced_capital.mjs --batch "$SETUP:$SESSION:$SETUP" --json $OUT/misplaced.json
+step node $L/misplaced_capital.mjs --batch "$SETUP:$SESSION:$SETUP" --mod-map "$MOD_BUILD" --json $OUT/misplaced.json
 step node $L/fill_old_plants.mjs $OUT --mod $MOD --config $BOOK
 # ⭐ AUTO-DOWNSIZING (BALANCE_FRAMEWORK §10.107.6, 2026-11-07): two scorecard lines and a section by tier in each view. The vanilla side is
 #   every VANS run that carried the downsizing poll (telemetry v15 on); a run without the poll is left out and printed, never read as zero.
@@ -94,6 +99,12 @@ step node $L/fill_old_plants.mjs $OUT --mod $MOD --config $BOOK
 #   version to read instead (its --mod-path), and the prose says so.
 step node $L/downsize_telemetry.mjs "$SETUP=$MOD" "vanilla=$VAN" --config $BOOK --types 0 ${DOWNSIZE_MOD_PATH:+--mod-path "$DOWNSIZE_MOD_PATH"} --json $OUT/downsize.json
 step node $L/fill_downsizing.mjs $OUT
+# ⭐ THE TIERED DEPOSITS (2026-11-22, F285; landmine L55): their own section in both views and three scorecard lines — read as addition, never
+#   through the manufacturing tier panels; slots from the BUILD's map (MOD_BUILD). A book without deposits writes a card saying so.
+step node $L/fill_deposits.mjs $OUT --mod $MOD --van $VAN --config $BOOK --map "$MOD_BUILD"
+# ⭐ PRICES BY GOODS CLASS, DECADE BY DECADE (2026-11-22, §10.128, F285 §5; the user's "Option A"): five classes by market and in aggregate,
+#   the chart above the pages that replaced the single building-input chart. Its main chart is the loss's price term (criteria.mjs reads it through the same lib_prices.mjs).
+step node $L/fill_prices.mjs $OUT --mod $MOD --van $VAN
 step node $L/fill_scorecard.mjs $OUT --config $BOOK
 echo; echo "data filled in $OUT — now write lede.html incidents.html footer.html tokens.json title.txt, and redflags_summary.html with the"
 echo "redflag-summary skill (.claude/skills/redflag-summary/SKILL.md, from redflags_digest.md); then fill_assemble + fill_verify, and copy redflags_full.html"

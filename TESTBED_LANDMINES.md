@@ -118,6 +118,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L52 | a save field a game update re-tokenised melts under rakaly's older token table as `slava_token_N` / `__unknown_0x…`, and the summary reader counts zero without a warning (1.15's formation travel paths, F270) | owed: a post-run check that a run's summaries see moving formations at all | session | OPEN — the reader fix and the detector wait for the 10 vs 10's end (`tools/testbed/**` frozen) |
 | L53 | a shipped script or localization file without its UTF-8 BOM: the engine reads it and logs `should be in utf8-bom encoding` on every load (mods 1.1.0–1.1.1: `01_industry.txt`, `06_urban_center.txt`, written back BOM-less by `emit_ai_value_adds.mjs`) | `Test-LmL53` (`tools/lint_bom.mjs`) | every build | AUTO, proven; fixed |
 | L54 | a short run measured on one book and the century then played on another: both build, play and report, and the short run's reading is quoted for the century's book (the same-book rule, §10.118) | the gate in `tools/testbed/lib_same_book.ps1`, called by `run_schedule.ps1` at plan time and around a continuation's build (throws); `Test-LmL54` proves the gate exists and trips, on `tools/testbed/fixtures/same_book/` | harness; repo, every build | AUTO, proven (the run loop with a stubbed build and observer); not yet run with a real build and game |
+| L55 | a ledger reader that walks every industry of the book counts the tiered deposits as manufacturing (and vanilla's mines as tier-0 rungs on a vanilla run): the report reads, nothing fails (F285 §3: below-best 46.0% for 26–28.5%) | `Test-LmL55` (`tools/lint_ledger_industries.mjs`): every reader the ledger fill runs takes `lib_industries.mjs`'s manufacturing list or an `L55:` marker | repo, every build | AUTO, proven; fixed |
 
 ---
 
@@ -1353,3 +1354,42 @@ does not show and which changes emitted sizes: continue a run from the checkout 
 before the gate that hold a short run on a book are refused as they are: `schedules/no_dlc_load_test.json` and
 `schedules/polish_final_smoke.json` (both to 1841) need `"probe": "syntax"` in their `defaults` before their next launch. They were
 left as the records they are.
+
+### L55 — a ledger reader that counts the tiered deposits as manufacturing
+
+**Defect.** The mod 1.2 book carries its nine tiered deposits (coal, iron, lead, sulfur, copper, gold, fishing, whaling, oil; §10.115) in
+the same `cfg.industries` array as the seventeen manufacturing industries. A ledger reader that walks every enabled entry to build its
+tier map counts mines, wharves and rigs as tier rungs. A deposit's first rung key IS vanilla's building key (`building_coal_mine` …), so
+on a VANILLA run the same reader also counts vanilla's mines as tier-0 rungs. Nothing fails: the report fills and reads well. Building a
+lower deposit rung while holding a higher one is the design (each rung has slots of its own), so the tier lines move a lot.
+
+**How it was found.** F285 §3 (2026-11-22), re-reading the first 1.2 batch (F284) with and without the deposits: new levels below the
+best tier 46.0% published against 26.2–28.5% on manufacturing alone; tier-1 workers 29.0M against 6.1M in 1935; a tier-0 factory's
+payback 20 against 26 years. Only `criteria.mjs` and `lib_laggard.mjs` took `lib_industries.mjs`'s list (§10.123 point 4).
+
+**The fix** (2026-11-22): every ledger reader that splits by tier takes `manufacturingList()` from `ledger/lib_industries.mjs` and prints
+what it left out on stderr (`reportSkipped`): `lib_era_cols` (the employment columns), `analyse_ai_tier_choice` / `analyse_ai_tier_profit`
+(below the best tier), `fill_payback`, `fill_old_plants`, `lib_obsolescence` (its default), `report_data` / `report_data2` /
+`analyse_gdp_gap` (tier maps manufacturing only; construction points still priced at every industry's own cost), `fill_indecomp` (the
+deposit rungs into the broad sector `extraction`, where vanilla's mines are), `downsize_telemetry` (deposit levels "outside the ladder"
+in both arms), and outside the fill `payback_by_decade` and `old_rungs_by_industry`. `misplaced_capital` classes the deposit rungs as
+MINES (gold out by §10.92.1) and reads each rung's slots from the build's map (`--mod-map`). Readers that rightly need every industry
+carry a marker: `input_price_flags` (every producer and consumer of a good), `lib_runs` (a family is the whole structure). The tiered
+deposits have a section of their own (`fill_deposits.mjs`).
+
+**Detector.** `Test-LmL55` → `tools/lint_ledger_industries.mjs` (repo-side: every build and the pre-batch gate). It walks every script
+`fill_ledger.sh` runs (`node $L/<x>.mjs`), the tools a step runs by name (`run('<x>.mjs')`) and every local module they import, followed
+through; each that reads the book's industries (`cfg.industries`, or already `manufacturing(` / `manufacturingList(` / `depositList(`)
+must take the manufacturing list or carry `L55: ALL INDUSTRIES — <why>` / `L55: REVIEWED — <why>`. Fewer than five such readers fails
+(an empty walk proves nothing).
+
+**Proven 2026-11-22:** on HEAD `9ff63cef`'s ledger (a `git archive` copy, `--root`): `L55 FAIL: 14 ledger reader(s) …` (analyse_gdp_gap,
+report_data, report_data2, fill_payback, fill_indecomp, input_price_flags, misplaced_capital, fill_old_plants, downsize_telemetry,
+lib_runs, lib_era_cols, analyse_ai_tier_choice, analyse_ai_tier_profit, lib_obsolescence); today's ledger with `fill_payback.mjs` put
+back to HEAD, through `preflight.ps1 -RepoOnly -Only L55`: `PREFLIGHT FAILED: 1 landmine(s) live - L55` naming `fill_payback.mjs`;
+restored: `L55 PASS: 16 ledger readers of the book's industries, every one on the manufacturing list or reviewed (36 files walked)`; with
+`fill_deposits.mjs` in the fill, 17 readers of 37 files (it first tripped the detector itself, unmarked, and carries `L55: REVIEWED`).
+
+**Limits.** The walk sees the ledger fill only: the forty-odd diagnostic readers outside it (`craft_*`, `rung0_*`, `tiered_panel` …)
+still walk every industry and need the same care before they are read on a 1.2 book. A reader that names the book's industries under
+another variable than `cfg` / `CFG` is not seen.

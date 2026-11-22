@@ -23,6 +23,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '../../..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
@@ -40,7 +41,9 @@ const AB = cfg._ab || {};
 const ANCHORED = AB.anchor_for || {};
 const C = AB.cost_ratio != null ? +AB.cost_ratio : (+AB.A || 2.2);
 const RUNG = {};
-for (const ind of cfg.industries || []) {
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits are not tier rungs here (lib_industries.mjs)
+const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('payback_by_decade', MFG_SKIPPED);
+for (const ind of MFG_IND) {
   if (ind.disabled) continue;
   for (const t of ind.tiers || []) {
     const era = t.era, cost = t.building_cost || 0;

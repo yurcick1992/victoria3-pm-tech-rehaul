@@ -85,5 +85,7 @@ export function workforceModel({ game = DEFAULT_GAME, mod = 'mod', tierKeys = {}
     out[IDX.unemployed] = +p.population_unemployed_workforce || 0;
     return out;
   }
-  return { groups, missing };
+  // the modelled workers of ONE building record (2026-11-22, for fill_deposits.mjs): staffing × one level's employment under its active methods
+  const workersOf = b => { if (!b || !b.levels) return 0; let pe = 0; for (const [pm, n] of Object.entries(b.pms || {})) { if (emp[pm] == null) missing.add(pm); else pe += n * emp[pm]; } return (b.staffing || 0) * pe / b.levels; };
+  return { groups, missing, workersOf };
 }

@@ -46,6 +46,7 @@ import { fileURLToPath } from 'node:url';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { SESSIONS } from './lib_sumidx.mjs';
 import { POOL } from './lib_markets.mjs';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
@@ -79,8 +80,10 @@ function ladderOf(cfgPath) {
     const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8').replace(/^\uFEFF/, ''));
     const L = { types: {}, pm: {}, vanPm: {}, vanTypes: new Set() };
     const cls = t => t.era === 0 ? (t.craft ? 't0 craft' : 't0 non-craft') : `t${t.era}`;
-    for (const I of cfg.industries || []) {
-      if (I.disabled) continue;
+    // ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits' levels are 'outside the ladder' here, in both arms — a
+    //   deposit's first key and methods ARE vanilla's mine's, so unfiltered they also classed vanilla's mines as tier-0 rungs
+    const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('downsize_telemetry', MFG_SKIPPED);
+    for (const I of MFG_IND) {
       if (I.tiers?.[0]) L.vanTypes.add(I.tiers[0].key);
       for (const k of I.building?.aliases || []) L.vanTypes.add(k);
       for (const t of I.tiers || []) {

@@ -95,6 +95,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.125 | the 1.2 book built (`m12-first`, `tools/make_book12.mjs`): the deposits' cost step 1.3 above the 1836-map rungs; deposit rungs named "Tier N." like factory rungs; a reference to a deposit's vanilla key reaches every rung; the deposit technologies take the standard rung entries; the build's own consequences recorded (extra entries merged, gold spread by the slot rule, the oil link's guard, pumpjacks' weight restored, Precision Tools on t1, no canning on the Bakeries craft) | in force; built and deployed for the user's check (loaded by the user 2026-11-21, which led to §10.126); its book `m12-first` is the record of that check | here |
 | 10.126 | logging is not a deposit, for narrative reasons (a saw mill reaches no new forest): vanilla's one building again; the 1836 pair: a first-rung twin beside every second-rung deposit building, both at k = N × the second rung's share of the pair's output value (⅔; coal 0.615), so each country's 1836 supply stays vanilla's with no recipe moved; fishing and whaling stay tiered; the first rung keeps vanilla's half output; logging's electric saw mills on the world's technology — the book `m12b-first` | in force; built and deployed for the user's check 2026-11-21; fishing and whaling stay tiered (ruled the same day after the narrative pass); the first rung keeps vanilla's half output; the electric saw mills on the world's technology | here |
 | 10.127 | a technology with a NAVAL research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain without first movers, sea-lane strategies 2.2 holders against vanilla's 54) | in force; built as `entry_weight_rule.naval_lowered` (`make_book12.mjs --naval-lowered 1`); in the book `m12c-first` (`e355eeb1`), not measured | here |
+| 10.128 | the price decline is an aim of the mod's own class, never read against vanilla (the loss's PI and PP level part on 0.8 × vanilla's 1935 index was wrong under it, F285); the reading is prices by goods class, decade by decade, by market and aggregate ("Option A"); the loss's price term is the industry-output aggregate's 1935 ÷ 1900, aim 0.75 ("Aggregate fall, ~25%"), sized so t0 sheds workers once t2 is significant and t1 once t3 is (F285 §6) | in force; built (`lib_prices.mjs`, `fill_prices.mjs`, `criteria.mjs`): weight 2 in place of PI and PP, spread 0.04227 (Claude's defaults, stated); PI and PP minor readings | here |
 
 ---
 
@@ -6524,3 +6525,63 @@ a copy with `naval_lowered: 1` differs in exactly the ten naval technologies' st
 --naval-lowered 1`, built 2026-11-22: its field diff against `m12b-first` is `research_events.entry_weight_rule.naval_lowered` = 1 and
 the records (prefixes, dates, hashes) alone, the tree twin its timestamp alone; built as the alternate `mod_m12c`, every linter and preflight
 passing. Not measured, not deployed.
+
+## §10.128 — THE PRICE DECLINE IS AN AIM OF THE MOD'S OWN, NEVER READ AGAINST VANILLA (user-ruled 2026-11-22); ITS FORM AWAITS A WORD
+
+**The ruling.** The user, 2026-11-22: *"the price-decline-with-time goal is of the 'total' class, not in 'ref to vanilla' class. Vanilla
+started to have a declining line which made our assessments of mod situation worse. This isn't how this should work. … there are two classes
+of balance goals to optimize for: 'absolute' (mostly hoard, secondary U\*) and 'referential' to vanilla (mostly GDP). Price falling is the
+mechanics we need to exist and that was absent in vanilla up to 1.13, not something we calibrate to be 'stronger than vanilla'."* PI and PP
+(§3.2 of CLAUDE.md) are aims of the mod's own class (§10.120 point 1): what is graded is the decline of the run's own price index over time.
+Vanilla's path is printed beside it as a reference and never enters the distance. Amends §10.120's PI and PP lines ("own; stated against
+vanilla for now") and §10.123's level term on them.
+
+**The loss as built 2026-11-21 does this half wrongly** (F285 §1). Each of the PI and PP terms is two parts. The slope part, the positive part of
+the mean decade-to-decade change of the run's own log index, has no vanilla in it: right under this ruling. The level part, the 1935 index above
+**0.8 × vanilla's 1935 median** in units of the 1935 level's spread, is pegged to vanilla: wrong under this ruling. It is also most of the loss
+of the 1.2 book: on `m12b-first` the PI term is 6.15 of 14.51 and the PP term 1.46, all of it the level part, while m12b's input prices fall 19%
+over 1900–1935, more than vanilla 1.15.2's 15%. Vanilla's own fall moved it: the same m12b reading against vanilla 1.13.11's median gives a PI
+term of 4.63, against 1.15.1's 6.38. Two smaller defects of the same terms: (1) the slope is the plain mean of the interval rates, so the
+five-year 1930→1935 step weighs as much as a decade with its rate doubled (m12b's PP reads −0.084 a decade by this mean and +0.008 by a
+least-squares trend; its 1935 index is 0.92 of its 1900 one); (2) the run's index is read only on the markets vanilla's runs also carry.
+
+**Proposed form** (Claude, 2026-11-22, awaiting a word; F285 §2): one distance per index, d = max(0, s − ln 0.8 ÷ 3.5) ÷ spread, where s is the
+least-squares slope of the run's own log index on the year over its five readings 1900 · 1910 · 1920 · 1930 · 1935, per decade, and the aim is
+a fall at least as fast as 20% over 1900–1935 (−0.064 a decade): the ruled provisional 0.8 kept, re-anchored from vanilla's 1935 level to the
+run's own path. The "falling" requirement and the size of the fall become one line. The index read on the run's own markets; the spreads
+re-fitted on mod 1.1.1's 15 runs as §10.123 fixed them (PI 0.00996, PP 0.0665 a decade). Readings under it (the median run's distance, weight 1
+each): `m12b-first` PI 0.55, PP 1.08 (the loss would go from 14.51 to about 8.5); mod 1.1.1 on 1.15.1 0 and 0; vanilla's own paths, as a
+reference only, 1.15.2 2.05 and 0.30, 1.13.11 3.71 and 0.53. The alternatives offered: falling only (the trend ≤ 0, no size; every book read
+so far scores 0 on PI), and the run's own 1935 ÷ 1900 endpoint ≤ 0.8 with the trend beside it (m12b 0.39 and 0.92; two readings instead of five).
+
+**Status:** the class is ruled; the form is proposed; nothing is built, so `criteria.mjs` and the ledger still peg the level to 0.8 × vanilla
+until it is.
+
+**The same day, later: the proposed form is withdrawn, and the reading comes first.** The user did not find the proposal readable (*"the
+'one distance per index' has three unknowns"*) and set what the price reading must be: *"a decade-by-decade comparison, for the largest
+markets separately and an aggregate. Separately for 2-4 different types of goods (staple food or most raw resources are expected to be more or
+less stable with time, oil and coal is expected to fluctuate by a lot, but generally not have a trend, rubber is expected to go up in price,
+other plantation goods and luxuries -- maybe slightly down, regular scalable industry output -- noticeably down, and the latter is the main
+reading)"*. Five classes with their expected direction, each read by market and in aggregate, decade by decade, with industry output the main
+reading (F285 §5 reads them; three layouts were drawn for the user to choose). The loss term follows from the chosen reading; until then the
+built terms stand.
+
+**The same day, the layout and the intent.** The user: *"Option A goes"* — one chart per goods class, the markets' aggregate by default, one
+market on demand; built (`fill_prices.mjs`, the chart above the ledger's pages, in the four-run 1.2 report). On the early rise of industry prices
+before 1870, seen in vanilla and the mod alike: *"I'm unsure what to do about the scalable industry early-game dip, before the proper downward
+trend kicks in … Let's just leave for now."* On the size of the fall: *"vanilla numbers are now not bad at all. I'd like a significantly
+stronger decline on a scalable industry though"*, and its measure is the recipes: *"We want the prices to fall high enough that when t2 is
+significant in volume, t0 starts to die, shed workers (as prices are low enough). When t3 is significant in volume, t1 starts to die."* F285 §6
+reads which prices that takes on the 1.2 book. The aim's form is still open.
+
+**The term, ruled the same day.** Offered a per-industry test (each industry's price against its old rung's break-even once the rung two tiers
+up holds a quarter of the output) or an aggregate fall, the user chose: *"Aggregate fall, ~25%"*. The register's price term is now **one
+line: the run's own industry-output aggregate in 1935 ÷ its aggregate in 1900, aim 0.75 or under** (the main chart of the ledger's price panel,
+read through `lib_prices.mjs`: the thirteen goods of F285 §5, price ÷ base, a reading only where both sides trade, the geometric mean over a
+class's goods in a market, the median over the eight instrumented markets — the run's own markets, no intersection with vanilla's). Its
+distance is how far above 0.75 the run sits, in units of its spread between runs. **It replaces the PI and PP terms**, which stay in
+`criteria.mjs` as minor readings. Two numbers are Claude's defaults, stated here: **the weight 2**, PI's and PP's together, so the prices keep
+their share of the loss; and **the spread 0.04227**, fitted on mod 1.1.1's 15 runs as §10.123 fixed the others (`--fit-spreads`, which
+reproduces every older spread exactly). The early rise of industry prices to about 1870 is outside the window by construction (1900 on).
+Readings (F285 §7): `m12b-first`'s four complete runs 0.89 (vanilla 1.15.2 0.89), distance 3.25, weighted 6.49 against the old PI + PP 7.80;
+the four-run loss 12.34 (13.65 under the old terms).

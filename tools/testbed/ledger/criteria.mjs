@@ -12,8 +12,11 @@
 // THE AIMS (all soft) AND THE LOSS: L = Σ w · d, d = the distance from the aim in units of the line's own spread between runs (SPREAD, fixed):
 //   world GDP, displayed, at the end ÷ vanilla's per-run median (same game version)  band 0.90–1.00          w 2
 //   U* of the USA / Britain / Germany / the world, 1913 and the end                  25·15 / 10·5 / 20·20 / 60·50 %   w 0.25 each (2 together)
-//   PI: building-input prices in £ ÷ base ÷ vanilla's, 1935                         falling decade over decade (required) + 0.8 or under   w 1
-//   PP: pop-goods prices in wage units ÷ vanilla's, 1935                            the same                   w 1
+//   industry-output prices: the run's own aggregate (lib_prices.mjs), 1935 ÷ 1900    0.75 or under (a fall of a quarter)   w 2
+//     ⭐ Since 2026-11-22 (BALANCE_FRAMEWORK §10.128, the user: "Aggregate fall, ~25%"): it REPLACES the PI and PP terms, whose level part was
+//       pegged to 0.8 × vanilla's 1935 index (wrong under §10.128: a price fall is an aim of the mod's own) and whose slope part scored any
+//       fall at all as zero. The weight 2 is PI's and PP's together, so the prices keep their share of the loss (Claude's default, stated
+//       with the ruling). PI and PP are still computed and printed as minor readings.
 //   capital, the count: shortlist members of >= 2% of world GDP with a pool above 0.5 of their GDP, the mean of the 1935 and 1936 summaries   aim 0   w 1
 //   capital, the hoard above half GDP: Σ max(0, pool − 0.5 GDP) over the shortlist's countries ÷ their GDP, at the end                       aim 0   w 0.5
 //   T0: shortlist workers on tier-0 MANUFACTURING rungs, by decade                  0 at 1936, or falling      w 0.5
@@ -28,7 +31,8 @@
 //   none and owes a third run). `--consensus all` reads every usable run instead, past the barrier included — NOT the ruled form, labelled so.
 // MINOR READINGS (no weight, §10.120 point 6): W of the world and the shortlist, the shortlist's GDP, H of the world and the shortlist, each ÷
 //   vanilla's; the 1836–1845 start (years outside vanilla's 90% range ± 10%; flagged past two); the decade path of world GDP and its 1886 line
-//   (0.79–1.01); war-goods prices (PM); GDP at base prices; the shortlist's pooled U*. Play time is not read during the 1.2 iterations (§10.123).
+//   (0.79–1.01); war-goods prices (PM); GDP at base prices; the shortlist's pooled U*; PI and PP (÷ vanilla, and their slopes) since they left
+//   the loss (§10.128). Play time is not read during the 1.2 iterations (§10.123).
 //   node tools/testbed/ledger/criteria.mjs --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>[:setup]]
 //        [--end 1932-1936] [--weights k=v,…] [--consensus intact|all] [--json <out.json>] [--quiet] [--fit-spreads]
 //   --fit-spreads: print the spreads of the runs read (every usable run of every arm, the barrier ignored) as the SPREAD literal, and exit.
@@ -40,6 +44,7 @@ import { usableRuns, reportDropped, VANILLA_REF } from './lib_runs.mjs';
 import { POOL, MEMBER, MEMBER_FAMILY, MARKET_FAMILY, MARKET_NAMES, PRICE_TAGS, TAG_OF_MARKET, seriesOf, groupBySeries, marketCollisions } from './lib_markets.mjs';
 import { manufacturing } from './lib_industries.mjs';
 import { laggardMaps, laggardCountries, lagYearOf, inMarketByDecade } from './lib_laggard.mjs';
+import { readMarketRun, industryFall, IND_FROM, IND_TO } from './lib_prices.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SES = join(HERE, '..', 'sessions');
 const REPO = resolve(HERE, '..', '..', '..');
@@ -53,7 +58,8 @@ const CONS_MODE = argOf('--consensus', 'intact'); if (!['intact', 'all'].include
 if (!ARMS.length) { console.error('usage: --arm <session[,session]>[:<setup>] [--arm …] [--config <path>] [--van <session>] [--end 1932-1936] [--weights k=v,…] [--consensus intact|all] [--json out] [--fit-spreads]'); process.exit(2); }
 
 // ---- THE LOSS (§10.123): weights, aims, spreads
-const W = { gdp: 2, uUSA13: 0.25, uUSAE: 0.25, uGBR13: 0.25, uGBRE: 0.25, uGER13: 0.25, uGERE: 0.25, uW13: 0.25, uWE: 0.25, PI: 1, PP: 1, cap: 1, hoard: 0.5, T0: 0.5, T3: 0.5, old: 0.5 };
+const W = { gdp: 2, uUSA13: 0.25, uUSAE: 0.25, uGBR13: 0.25, uGBRE: 0.25, uGER13: 0.25, uGERE: 0.25, uW13: 0.25, uWE: 0.25, ind: 2, cap: 1, hoard: 0.5, T0: 0.5, T3: 0.5, old: 0.5 };
+const IND_AIM = 0.75;                                    // industry-output prices, 1935 ÷ 1900: 0.75 or under (§10.128, "Aggregate fall, ~25%")
 for (const kv of (argOf('--weights', '') || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); if (k in W) W[k] = +v; else throw new Error('unknown weight ' + k + ' (known: ' + Object.keys(W).join(' ') + ')'); }
 const GDPAIM = [0.90, 1.00];
 const UAIM = { uUSA13: ['USA', 1913, 0.25], uUSAE: ['USA', 'end', 0.15], uGBR13: ['GBR', 1913, 0.10], uGBRE: ['GBR', 'end', 0.05],
@@ -71,7 +77,8 @@ const BAR_H = 1, BAR_SHARE = 0.02, BAR_YEARS = 10;       // the barrier (§10.12
 //   (£ ÷ base; wage units) · PIslope / PPslope / T0slope / oldSlope: the mean per-decade change of the logarithm · cap: the count · excess: the
 //   hoard above half GDP · lnr3: ln(T3 ÷ (T0 + T1 + T2)) · oldKept: the in-market test's workers kept (2–44 cases a run: the noisiest line).
 const SPREAD = { gdpAbs: 652500000, u: { uUSA13: 0.1718, uUSAE: 0.08932, uGBR13: 0.07706, uGBRE: 0.007828, uGER13: 0.2098, uGERE: 0.1754, uW13: 0.03846, uWE: 0.04329 },
-  PIabs: 0.03156, PIslope: 0.01525, PPabs: 0.007677, PPslope: 0.05533, cap: 0.8837, excess: 0.3686, T0slope: 0.2159, lnr3: 0.2247, oldKept: 0.5039, oldSlope: 0.6832 };
+  PIabs: 0.03156, PIslope: 0.01525, PPabs: 0.007677, PPslope: 0.05533, cap: 0.8837, excess: 0.3686, T0slope: 0.2159, lnr3: 0.2247, oldKept: 0.5039, oldSlope: 0.6832,
+  indRatio: 0.04227 };   // ⭐ indRatio (§10.128): the industry-output aggregate's 1935 ÷ 1900, fitted on the same 15 runs by --fit-spreads, 2026-11-22
 const sd = a => { const s = a.filter(Number.isFinite); if (s.length < 3) return NaN; const m = mean(s); return Math.sqrt(s.reduce((x, y) => x + (y - m) ** 2, 0) / (s.length - 1)); };
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); if (!s.length) return NaN; const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const mean = a => { const s = a.filter(Number.isFinite); return s.length ? s.reduce((x, y) => x + y, 0) / s.length : NaN; };
@@ -196,6 +203,8 @@ function scoreRun(rel, info, pre = null) {
   r.PIslope = slopeOf(PYEARS.map((y, i) => [y, r.PIpath[i]])); r.PPslope = slopeOf(PYEARS.map((y, i) => [y, r.PPpath[i]]));
   const every = a => a.every((v, i) => i === 0 || !(Number.isFinite(v) && Number.isFinite(a[i - 1])) || v <= a[i - 1]);
   r.PIfallsEvery = every(r.PIpath); r.PPfallsEvery = every(r.PPpath);
+  // the industry-price term (§10.128): the run's own aggregate of scalable industry output, 1935 ÷ 1900, on its own markets (lib_prices.mjs)
+  { const M = readMarketRun(join(SES, rel)); const f = M ? industryFall(M.P) : { path: [], ratio: NaN }; r.indPath = f.path; r.indRatio = f.ratio; }
   // capital: the count (1935–36) and the hoard above half GDP (the end)
   { const who = [];
     for (const m of MEMBER) { const v = [1935, 1936].map(y => years.has(y) ? years.get(y).members[m] : null).filter(Boolean); if (!v.length) continue;
@@ -235,8 +244,7 @@ function lossOf(o) {
   const sG = SPREAD.gdpAbs / ref['world.gdp'], x = o.gdpW;
   t.gdp = (x < GDPAIM[0] ? GDPAIM[0] - x : x > GDPAIM[1] ? x - GDPAIM[1] : 0) / sG;
   for (const [k, [, , aim]] of Object.entries(UAIM)) t[k] = Math.abs(o.u[k] - aim) / SPREAD.u[k];
-  for (const q of ['PI', 'PP']) { const lvl = pos(o[q] - PRICE_LEVEL) / (SPREAD[q + 'abs'] / ref[q]); if (!Number.isFinite(o[q + 'slope'])) missing.push(q + ' slope');
-    t[q] = Number.isFinite(o[q]) ? lvl + pos(o[q + 'slope']) / SPREAD[q + 'slope'] : NaN; }
+  t.ind = Number.isFinite(o.indRatio) ? pos(o.indRatio - IND_AIM) / SPREAD.indRatio : NaN;   // §10.128: how far above 0.75, in spreads
   t.cap = o.cap.count / SPREAD.cap; t.hoard = o.excess / SPREAD.excess;
   if (o.T) { if (o.T.t36 === 0) t.T0 = 0; else { if (!Number.isFinite(o.T.slope0)) missing.push('T0 slope'); t.T0 = pos(o.T.slope0) / SPREAD.T0slope; }
     t.T3 = Number.isFinite(o.T.r3) && o.T.r3 > 0 ? pos(-Math.log(o.T.r3)) / SPREAD.lnr3 : NaN; }
@@ -265,7 +273,8 @@ const consensusOf = runs => {
   C.anchor = { flagged: runs.filter(r => r.anchor.flagged).length, viol: runs.map(r => r.anchor.viol) };
   if (!cons.length) return C;
   for (const k of ['gdpW', 'gdpW_abs', 'gdp35', 'gdpP', 'poolW', 'poolU', 'poolH', 'poolY', 'worldW', 'worldU', 'worldH', 'worldY', 'poolW_abs', 'worldW_abs', 'poolU_abs', 'worldU_abs', 'poolH_abs', 'worldH_abs', 'poolU13_abs',
-    'PI', 'PI_abs', 'PIslope', 'PP', 'PP_abs', 'PPslope', 'PM', 'realW', 'realP', 'plW', 'plP', 'excess']) C[k] = med(cons.map(r => r[k]));
+    'PI', 'PI_abs', 'PIslope', 'PP', 'PP_abs', 'PPslope', 'PM', 'realW', 'realP', 'plW', 'plP', 'excess', 'indRatio']) C[k] = med(cons.map(r => r[k]));
+  C.indPath = (cons[0].indPath || []).map((_, i) => med(cons.map(r => (r.indPath || [])[i])));
   C.u = Object.fromEntries(Object.keys(UAIM).map(k => [k, med(cons.map(r => r.u[k]))]));
   C.uRange = Object.fromEntries(Object.keys(UAIM).map(k => { const v = cons.map(r => r.u[k]).filter(Number.isFinite); return [k, v.length ? [Math.min(...v), Math.max(...v)] : null]; }));
   C.cap = { count: med(cons.map(r => r.cap.count)), who: cons.flatMap(r => r.cap.who.map(w => w.m)).reduce((o, m) => (o[m] = (o[m] || 0) + 1, o), {}) };
@@ -285,7 +294,7 @@ const arms = ARMS.map(spec => { const rels = RELS[spec]; const info = rels.lengt
 if (FIT) {   // ---- --fit-spreads: the SPREAD literal from every run read
   const all = arms.flatMap(a => a.runs), S = v => +sd(v).toPrecision(4);
   const fit = { gdpAbs: S(all.map(r => r.gdpW_abs)), u: Object.fromEntries(Object.keys(UAIM).map(k => [k, S(all.map(r => r.u[k]))])),
-    PIabs: S(all.map(r => r.PI_abs)), PIslope: S(all.map(r => r.PIslope)), PPabs: S(all.map(r => r.PP_abs)), PPslope: S(all.map(r => r.PPslope)),
+    PIabs: S(all.map(r => r.PI_abs)), PIslope: S(all.map(r => r.PIslope)), PPabs: S(all.map(r => r.PP_abs)), PPslope: S(all.map(r => r.PPslope)), indRatio: S(all.map(r => r.indRatio)),
     cap: S(all.map(r => r.cap.count)), excess: S(all.map(r => r.excess)), T0slope: S(all.map(r => r.T && r.T.slope0)), lnr3: S(all.map(r => r.T && r.T.r3 > 0 ? Math.log(r.T.r3) : NaN)),
     oldKept: S(all.map(r => r.old && r.old.kept)), oldSlope: S(all.map(r => r.old && r.old.slope)) };
   console.log('fitted on ' + all.length + ' run(s): ' + arms.map(a => a.spec + ' (' + a.runs.length + ')').join(', '));
@@ -301,16 +310,17 @@ for (const a of arms) { a.C = consensusOf(a.runs); for (const r of a.runs) r.los
 const vanRuns = vanRaw.map(v => scoreRun(v.rel, vanInfo, v));
 const vanReading = { n: vanRuns.length, barrierPast: vanRuns.filter(r => r.barrier.past).length, u: Object.fromEntries(Object.keys(UAIM).map(k => [k, med(vanRuns.map(r => r.u[k]))])),
   cap: med(vanRuns.map(r => r.cap.count)), excess: med(vanRuns.map(r => r.excess)), PIslope: med(vanRuns.map(r => r.PIslope)), PPslope: med(vanRuns.map(r => r.PPslope)),
+  indRatio: med(vanRuns.map(r => r.indRatio)),
   poolU13_abs: med(vanRuns.map(r => r.poolU13_abs)), poolU_abs: med(vanRuns.map(r => r.poolU_abs)),
   old: vanInfo ? { kept: med(vanRuns.map(r => r.old && r.old.kept)), slope: med(vanRuns.map(r => r.old && r.old.slope)), n: vanRuns.reduce((a, r) => a + (r.old ? r.old.n : 0), 0) } : null };
 
 // ---- print
 if (!QUIET) {
-  const vOf = { gdp: C => f2(C.gdpW) + '×', PI: C => f2(C.PI) + '×, slope ' + f2(C.PIslope, 3), PP: C => f2(C.PP) + '×, slope ' + f2(C.PPslope, 3), cap: C => String(C.cap.count), hoard: C => f2(C.excess, 3),
+  const vOf = { gdp: C => f2(C.gdpW) + '×', ind: C => f2(C.indRatio) + ' (vanilla ' + f2(vanReading.indRatio) + ')', cap: C => String(C.cap.count), hoard: C => f2(C.excess, 3),
     T0: C => C.T ? 'slope ' + f2(C.T.slope0, 3) + (C.T.t36 === 0 ? ' (0 in 1936)' : '') : '—', T3: C => C.T ? f2(C.T.r3, 3) + ' (' + pc(C.T.share3) + ' of tiered)' : '—', old: C => C.old ? pc(C.old.kept) + ', slope ' + f2(C.old.slope, 3) : '—' };
-  const aimOf = { gdp: '0.90–1.00', PI: '≤ 0.8, falling', PP: '≤ 0.8, falling', cap: '0', hoard: '0', T0: '0 in 1936 or falling', T3: 'the more the better', old: '< 100%, shrinking' };
+  const aimOf = { gdp: '0.90–1.00', ind: '≤ ' + IND_AIM, cap: '0', hoard: '0', T0: '0 in 1936 or falling', T3: 'the more the better', old: '< 100%, shrinking' };
   for (const [k, [who, when, aim]] of Object.entries(UAIM)) { vOf[k] = C => pc(C.u[k]); aimOf[k] = pc(aim); }
-  const LBL = { gdp: 'world GDP ÷ vanilla', PI: 'PI (input goods, £)', PP: 'PP (pop goods, wages)', cap: 'members above 0.5 GDP', hoard: 'hoard above half GDP', T0: 'T0 (manufacturing)', T3: 'T3 ÷ (T0+T1+T2)', old: 'old plants kept' };
+  const LBL = { gdp: 'world GDP ÷ vanilla', ind: 'industry prices ' + IND_TO + ' ÷ ' + IND_FROM, cap: 'members above 0.5 GDP', hoard: 'hoard above half GDP', T0: 'T0 (manufacturing)', T3: 'T3 ÷ (T0+T1+T2)', old: 'old plants kept' };
   for (const [k, [who, when]] of Object.entries(UAIM)) LBL[k] = 'U* ' + ULABEL[who] + ', ' + (when === 'end' ? 'the end' : when);
   console.log('THE CRITERIA REGISTER — the loss of the mod 1.2 calibration (BALANCE_FRAMEWORK §10.120, §10.121, §10.123) · the end = the ' + E0 + '–' + E1 + ' mean · vanilla ' + VAN + ' (n=' + vanRaw.length + ')');
   console.log('vanilla end state: world GDP £' + f2(ref['world.gdp'] / 1e6, 0) + 'M (its runs ' + f2(gdpVan?.lo) + '–' + f2(gdpVan?.hi) + '× of the median) · PI ' + f2(ref.PI) + ' of base · PP ' + f2(ref.PP, 1) + ' wage units · its runs past the barrier ' + vanReading.barrierPast + ' of ' + vanReading.n);
@@ -326,13 +336,14 @@ if (!QUIET) {
     for (const k of Object.keys(W)) { const d = C.loss ? C.loss.terms[k] : NaN; console.log('  ' + LBL[k].padEnd(30) + vOf[k](C).padEnd(30) + aimOf[k].padEnd(22) + f2(d).padStart(6) + '   ' + (C.loss && C.loss.parts[k] != null ? f2(C.loss.parts[k]) : '—')); }
     if (C.loss) console.log('  LOSS ' + f2(C.loss.L) + (C.loss.missing.length ? '   (not read, counted 0: ' + C.loss.missing.join(', ') + ')' : ''));
     else if (C.divergent) console.log('  LOSS — (divergent pair, no consensus)');
-    console.log('  minor readings (no weight): W world ' + f2(C.worldW) + '× · shortlist ' + f2(C.poolW) + '× · shortlist GDP ' + f2(C.gdpP) + '× · H world ' + f2(C.worldH_abs) + ' (' + f2(C.worldH) + '×) · shortlist ' + f2(C.poolH_abs) + ' (' + f2(C.poolH) + '×) · the shortlist’s U* ' + pc(C.poolU13_abs) + ' in 1913, ' + pc(C.poolU_abs) + ' at the end · PM ' + f2(C.PM) + '× · GDP at base prices ' + f2(C.realW) + '×');
+    console.log('  minor readings (no weight): W world ' + f2(C.worldW) + '× · shortlist ' + f2(C.poolW) + '× · shortlist GDP ' + f2(C.gdpP) + '× · H world ' + f2(C.worldH_abs) + ' (' + f2(C.worldH) + '×) · shortlist ' + f2(C.poolH_abs) + ' (' + f2(C.poolH) + '×) · the shortlist’s U* ' + pc(C.poolU13_abs) + ' in 1913, ' + pc(C.poolU_abs) + ' at the end · PM ' + f2(C.PM) + '× · GDP at base prices ' + f2(C.realW) + '×' + ' · PI ' + f2(C.PI) + '× (slope ' + f2(C.PIslope, 3) + ') · PP ' + f2(C.PP) + '× (slope ' + f2(C.PPslope, 3) + '), out of the loss since §10.128');
     console.log('  world GDP by decade ÷ vanilla: ' + DECADES.map(y => String(y).slice(2) + ' ' + f2(C.path[y].med)).join(' · ') + '   the 1886 line ' + f2(LINE1886[0]) + '–' + f2(LINE1886[1]) + ': ' + (C.line1886.beyond ? 'BEYOND' : 'inside') + ' · the 1836–45 start flagged in ' + C.anchor.flagged + ' run(s)');
   }
   console.log('\n' + '='.repeat(150) + '\nRANKING by the consensus loss (lower is better; directional at n=2–3, CLAUDE.md §2.9); a book with every run past the barrier ranks by the barrier line');
   for (const a of [...arms].sort((x, y) => (x.C.loss ? x.C.loss.L : 1e9 + med(x.runs.map(r => r.barrier.value))) - (y.C.loss ? y.C.loss.L : 1e9 + med(y.runs.map(r => r.barrier.value))))) {
     const C = a.C; console.log('  ' + a.spec.slice(0, 77).padEnd(78) + ('past ' + C.past + '/' + a.runs.length).padEnd(12) + (C.loss ? 'loss ' + f2(C.loss.L) : C.divergent ? 'DIVERGENT' : 'barrier line ' + f2(med(a.runs.map(r => r.barrier.value)))) + (C.runs.length ? '  world GDP ' + f2(C.gdpW) + '×' : '')); }
 }
-if (JSON_OUT) { writeFileSync(JSON_OUT, JSON.stringify({ register: '§10.123', van: VAN, vanN: vanRaw.length, end: [E0, E1], ref, spread: SPREAD, weights: W, gdpAim: GDPAIM, uAim: UAIM, priceLevel: PRICE_LEVEL,
+if (JSON_OUT) { writeFileSync(JSON_OUT, JSON.stringify({ register: '§10.123', amended: '§10.128', van: VAN, vanN: vanRaw.length, end: [E0, E1], ref, spread: SPREAD, weights: W, gdpAim: GDPAIM, uAim: UAIM, priceLevel: PRICE_LEVEL,
+  indAim: IND_AIM, indWindow: [IND_FROM, IND_TO],
   barrierRule: { h: BAR_H, share: BAR_SHARE, years: BAR_YEARS }, capRule: { h: CAP_H, share: CAP_SHARE }, gdpVan, ci, vanDec, line1886: LINE1886, vanReading,
   arms: arms.map(a => ({ spec: a.spec, config: a.info && a.info.path, skipped: a.info ? a.info.skipped : null, runs: a.runs, consensus: a.C })) }, null, 1)); if (!QUIET) console.log('wrote ' + JSON_OUT); }

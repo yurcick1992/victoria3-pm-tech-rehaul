@@ -1125,6 +1125,11 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   `.txt` under `common/` and `events/` and every `.yml` under `localization/` of the built mod must start with the UTF-8 BOM, unless vanilla's
   file at the same path (`VIC3_GAME`) has none either; exit 1 naming the files otherwise. Status: current (preflight). Refs: BUGS_AND_FIXES
   2026-11-19, TESTBED_LANDMINES L53, MODDING_NOTES (encoding).
+- **`tools/lint_ledger_industries.mjs`** — `[--root <ledger dir>]`: landmine L55 (2026-11-22). Walks every script `fill_ledger.sh` runs, the
+  tools a step runs by name (`run('<x>.mjs')`) and their local imports; each reader of the book's industries must take `lib_industries.mjs`'s
+  manufacturing list or carry an `L55: ALL INDUSTRIES` / `L55: REVIEWED` marker with its reason, so no tier reading counts the tiered
+  deposits as manufacturing; fewer than five such readers fails. Exit 1 naming the readers otherwise. `--root` reads another copy (the proof
+  ran it on a `git archive` of HEAD `9ff63cef`: 14 readers failed). Status: current (preflight, repo-side). Refs: F285 §3, TESTBED_LANDMINES L55.
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
   staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded
@@ -1589,6 +1594,13 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
 - **`ledger/lib_industries.mjs`** — `MANUFACTURING` (the seventeen tiered manufacturing industries by `cfg.industries[].id`) and
   `manufacturing(cfg)` → the kept industries and the skipped ids (printed by every caller): ONE definition for T0–T3 and the old plants,
   so tiered deposit rungs in the same array are never counted (§10.123 point 4). A new manufacturing industry must be added to the list.
+  Since 2026-11-22 (F285 §3, landmine L55) every ledger reader that splits by tier goes through it: `manufacturingList(cfg)` (the industries
+  as an array), `depositList(cfg)` (the tiered deposits, `deposit: true`) and `reportSkipped(tool, ids)` (stderr, once). Filtered on that day:
+  `lib_era_cols`, `analyse_ai_tier_choice`, `analyse_ai_tier_profit`, `fill_payback`, `payback_by_decade`, `fill_old_plants`,
+  `lib_obsolescence` (its default), `old_rungs_by_industry`, `report_data`, `report_data2` and `analyse_gdp_gap` (tier maps only; construction
+  points keep every industry's own cost), `fill_indecomp` (deposit rungs to the broad sector `extraction`, where vanilla's mines are),
+  `downsize_telemetry` (deposit levels "outside the ladder"), `misplaced_capital` (deposit rungs are MINES, valid on their own free slots of
+  the build's map, `--mod-map`; gold out by §10.92.1). Marked as needing every industry: `input_price_flags`, `lib_runs`.
 - **`ledger/lib_laggard.mjs`** — the in-market backward-industry test as a library (2026-11-21, section A of `laggard_pressure.mjs` moved
   unchanged in substance; proven by `laggard_pressure`'s output and JSON reproduced byte for byte on F271's session): `laggardMaps(cfg)`,
   `laggardCountries`, `readLaggardRun`, `marketFrontiers`, `stuckCases`, and `inMarketByDecade` (a run's in-market cases summed by decade,
@@ -1665,6 +1677,24 @@ The shipped rule is `needSplit()` in `ui/econ.js`; these measured it (F24–F44,
   `downsize_world.html` / `downsize_pool.html` (`__DOWNSIZE_W__` / `__DOWNSIZE_S__`, after the old-plant tables): levels per decade by tier
   class, mod / vanilla, mean a run, and the century's levels, jobs and construction points. A missing json or an arm without the poll writes
   a "not read" card. The two scorecard lines are `fill_scorecard.mjs`'s, from the same json.
+- **`ledger/fill_prices.mjs`** `<outDir> --mod <runs> --van <runs>` (2026-11-22, BALANCE_FRAMEWORK §10.128, F285 §5) — the ledger's price panel:
+  price ÷ base by goods class (industry output, staples and raw materials, coal and oil, rubber, plantation goods and luxuries; the classes are
+  defined in the file), market and decade from each run's `markets.tsv`, a reading only where a good is both bought and sold; writes
+  `prices.json` (the template's `PRICES`) and prints each class's 1900 → 1935 change for both arms. The arithmetic is `ledger/lib_prices.mjs`, shared with `criteria.mjs`'s industry-price term.
+- **`ledger/lib_prices.mjs`** (2026-11-22, §10.128) — ONE definition of prices by goods class: the classes, the eight markets as series, the both-sides rule, a class's index in one market (geometric mean of price ÷ base) and a run's aggregate (the median over markets); `industryFall(P)` = the industry-output aggregate's 1935 ÷ 1900, the register's price term.
+- **`ledger/fill_deposits.mjs`** `<outDir> --mod <runs> --van <runs> --config <book> [--map <build dir>] [--game <dir>]` (2026-11-22, the forms
+  the user accepted with F285) — the TIERED DEPOSITS' section, read as addition: writes `deposits.json` and `deposits_world.html` /
+  `deposits_pool.html` (`__DEPOSITS_W__` / `__DEPOSITS_S__`, after the downsizing tables). (1) Output by rung, stacked, one small inline-SVG
+  chart per deposit by decade, vanilla's one building as a dashed line — output = `va_out` × the main good's share of the recipe's base-priced
+  output ÷ its base price; (2) slots filled and staffed by rung, world, at 1880 · 1900 · 1920 · 1936, the slots summed per region from the
+  BUILD's `map_data/state_regions` (vanilla's files replaced by the build's by name), gold and oil at their full potential (every field
+  depleted, every oil block found — the hooks of `emit_deposit_slots.mjs`), vanilla's building on vanilla's map beside each; (3) world output
+  (`top_producers.<good>.world`) and world price ÷ base of each deposit good, this batch / vanilla; (4) labour (`lib_workforce_groups`'s
+  `workersOf`) and construction points by rung, the 1932–36 mean, world and the fixed shortlist, with the deposits' share of productive workers;
+  (5) the payback by rung at realised prices (£720 a point; a loss kept in the median); (6) the 1836–1845 supply per good against vanilla's
+  90% range ±10%. Medians over each arm's runs. `fill_scorecard.mjs` reads the 1836–45 line and two readings (workers' share, points) from
+  `deposits.json`. A book without deposits writes one card saying so. `fill_ledger.sh` passes `--map "$MOD_BUILD"`. Refs: F285, §10.115,
+  §10.124, §10.126, TESTBED_LANDMINES L55.
 - **`ledger/downsize_vs_saves.mjs`** `<dir of downsize_series extracts> <run>/harness.log` — the poll checked against the run's own kept
   saves: every save-side drop on a qualifying building matched with the DZ lines by building id and month; prints matched, the same
   size, the same private split, and the unmatched on each side. Needs `-KeepSaves` (monthly autosaves for a fine check) and the saves

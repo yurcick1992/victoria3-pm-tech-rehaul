@@ -10,6 +10,7 @@
 //   node tools/testbed/ledger/old_rungs_by_industry.mjs <year> <label>=<session>[:<setup>] [...]
 import fs from 'node:fs'; import path from 'node:path';
 import { eraCols } from './lib_era_cols.mjs';
+import { manufacturingList } from './lib_industries.mjs';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { indexRun, firstOf, readSum, SESSIONS, med } from './lib_sumidx.mjs';
 const [year, ...args] = process.argv.slice(2);
@@ -24,7 +25,7 @@ for (const arg of args) {
     const bs = JSON.parse(fs.readFileSync(path.join(dir, 'build_state.json'), 'utf8').replace(/^﻿/, ''));
     const cfgPath = bs.deterministic?.mod_under_test?.built_from_config || s.provenance?.built_from_config;
     const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8').replace(/^﻿/, ''));
-    const E = eraCols(cfg); const indOf = {}; for (const I of cfg.industries) { if (I.disabled) continue; for (const t of I.tiers) indOf[t.key] = I.id; }
+    const E = eraCols(cfg); const indOf = {}; for (const I of manufacturingList(cfg).list) { for (const t of I.tiers) indOf[t.key] = I.id; }   // manufacturing only (L55; eraCols prints the skips)
     const r = { b2: { world: {}, pool: {} }, tot: { world: {}, pool: {} }, low: { world: {}, pool: {} } };
     for (const [key, c] of Object.entries(s.countries)) {
       const tag = key.split('@')[0]; const scopes = ['world', ...(POOL.has(tag) && !key.includes('@') ? ['pool'] : [])];

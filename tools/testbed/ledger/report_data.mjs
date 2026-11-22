@@ -2,6 +2,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 import { requiredConstruction } from 'file:///C:/claude-code/victoria%203%20PM%20and%20tech%20rehaul/tools/vanilla_construction.mjs';
 
 const REPO = 'C:/claude-code/victoria 3 PM and tech rehaul';
@@ -16,8 +17,13 @@ const cfg = JSON.parse(readFileSync(cfgPath0, 'utf8'));
 const vanCost = requiredConstruction();
 const A = { power: 260, port: 260, art_academy: 260, food: 390, textile: 390, furniture: 390, glass: 390, paper: 390, shipyard_steam: 390, tooling: 390, shipyard: 390, arms: 390, artillery: 390, railway: 520, fertilizer: 520, explosives: 520, steel: 520, motor: 520, automotive: 520, munition: 520, synthetics: 520, electrics: 520 };
 const tierEra = {}, tierCost = {}, indTiers = {};
+// ⭐ MANUFACTURING ONLY for the tier readings (2026-11-22, F285 §3, landmine L55); every enabled industry keeps its OWN building cost for the
+//   construction points (`ptsByYear`), so the tiered deposits' levels are priced at their rung's cost, not at vanilla's 400.
+const { list: MFG, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('report_data', MFG_SKIPPED);
+const MFG_IDS = new Set(MFG.map(i => i.id));
 for (const ind of cfg.industries) {
-  if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
+  if (ind.disabled) continue;
+  if (!MFG_IDS.has(ind.id)) { if (CFG_GIVEN) for (const t of ind.tiers || []) if (t.key && t.building_cost != null) tierCost[t.key] = t.building_cost; continue; }   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   indTiers[ind.id] = { good: ind.output_good, tiers: [] };
   for (const t of ind.tiers || []) {
     tierEra[t.key] = t.era; tierCost[t.key] = CFG_GIVEN ? t.building_cost : A[ind.id];

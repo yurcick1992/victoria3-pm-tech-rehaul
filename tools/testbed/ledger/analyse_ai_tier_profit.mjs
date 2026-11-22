@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { usableRuns, reportDropped } from './lib_runs.mjs';
 import { gunzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { manufacturingList, reportSkipped } from './lib_industries.mjs';
 
 const ARGV = process.argv.slice(2);
 const argOf = (n, d) => { const i = ARGV.indexOf(n); return i >= 0 && ARGV[i + 1] ? ARGV[i + 1] : d; };
@@ -37,7 +38,9 @@ const ANNEX_JUMP = 1.25;
 
 const cfg = JSON.parse(readFileSync(CFGPATH, 'utf8'));
 const IND = {};
-for (const ind of cfg.industries || []) {
+// ⭐ MANUFACTURING ONLY (2026-11-22, F285 §3, landmine L55): the tiered deposits are not tier rungs here (lib_industries.mjs)
+const { list: MFG_IND, skipped: MFG_SKIPPED } = manufacturingList(cfg); reportSkipped('analyse_ai_tier_profit', MFG_SKIPPED);
+for (const ind of MFG_IND) {
   if (ind.disabled) continue;   // ⚠ a DISABLED industry (port/shipyard/railway/power on the four-rung books) keeps its tiers in the config and its rung-0 KEY IS THE VANILLA BUILDING — counting it put Britain's shipyards and ports into "e0" (BUGS_AND_FIXES 2026-09-03)
   // ⚠ a MERGED rung (`method_of`) is a method of its host, never a building: dropped BEFORE indexing, so the host is the rung (see
   //   analyse_ai_tier_choice.mjs; left in, every host level was below-best once the merged method was held — F262)

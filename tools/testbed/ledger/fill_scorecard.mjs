@@ -5,7 +5,8 @@
 // the technology census. Rows are grouped under the question they answer, in the order of the mod's goals (CLAUDE.md §1.1). The register's loss
 // leaves the table for the footer (user, 2026-10-29: the one cut of the proposal that was accepted).
 // ⭐ ON THE REGISTER OF §10.120 / §10.123 SINCE 2026-11-21 (THE loss of the mod 1.2 calibration): the barrier heads the table; the aims are levels
-//   of the mod's own (the eight depeasantation aims, the two capital terms, T0, T3, the old plants pushed out, PI and PP falling) and world GDP
+//   of the mod's own (the eight depeasantation aims, the two capital terms, T0, T3, the old plants pushed out, the fall of industry-output
+//   prices since §10.128 in place of PI and PP) and world GDP
 //   the one aim against vanilla; the ratios to vanilla that were aims (W, H, the shortlist's U* and GDP) are minor readings, graded no more.
 //   Vanilla's figure stands beside a level of the mod's own as a reference, never as its yardstick (§10.120 point 4).
 //   A register line's verdict is its DISTANCE in the line's own spreads, as the loss reads it (criteria.json `terms`): 0 at the aim · up to 1
@@ -32,6 +33,9 @@ if (!CR.arms || CR.arms.length !== 1) { console.error('fill_scorecard: expected 
 const A = CR.arms[0], C = A.consensus, R = CR.ref, RUNS = A.runs, VR = CR.vanReading || {}, TERMS = (C.loss && C.loss.terms) || {};
 const CON = J('consts.json'), PB = J('payback.json'), EMP = J('emp.json'), TC = J('tierchoice.json'), RD = J('report_data.json');
 const PERF = JO('perf_panel.json'), RF = JO('redflags_metrics.json'), LAG = JO('laggards.json'), TECH = JO('tech.json'), MIS = JO('misplaced.json'), DZ = JO('downsize.json');
+// ⭐ THE TIERED DEPOSITS (2026-11-22, F285; fill_deposits.mjs → deposits.json): the 1836–45 raw supply under "Are the runs sound?" and two
+//   readings in a group of their own. A book without deposits (`none`) prints none of them.
+const DEPO = (() => { const d = JO('deposits.json'); return d && !d.none ? d : null; })();
 
 // ---- formatting
 const r2 = x => Math.round(x * 100) / 100;
@@ -96,6 +100,11 @@ if (RF?.arms) {
       (q <= 1.1 ? pill('ok', 'about vanilla’s') : pill('warn', '×' + q.toFixed(2) + ' of vanilla’s')) + note(per && q > 1.1 ? 'most of the excess ' + per[0].period.join('–') : ''));
   } else notRead('Years a major market spends short of an industrial input', 'no more than vanilla’s', 'no order-book reading on both arms');
 } else notRead('Years a major market spends short of an industrial input', 'no more than vanilla’s', 'no redflags_metrics.json');
+if (DEPO) { const G = DEPO.goods, fl = DEPO.startFlagged || [];
+  row(`The 1836–1845 raw supply: deposit goods (of ${G.length}) whose world output leaves vanilla’s range (its 90%, ±10%) in more than two of the ten years, in at least half the runs`
+    + `<br><span class="v">The goods: ${G.join(', ')}. The 1836 map pairs each tiered deposit’s first two rungs so that each country starts with vanilla’s supply (BALANCE_FRAMEWORK §10.126).</span>`,
+    `<b>${fl.length} of ${G.length}</b>`, 'none', (fl.length ? pill('warn', fl.length + ' outside') : pill('ok', 'none outside'))
+      + note(fl.map(g => g + ' in ' + DEPO.start[g].flaggedRuns + ' of ' + DEPO.start[g].runs + ' runs (1840: ' + Math.round(DEPO.start[g].y1840[0]).toLocaleString('en-GB') + ' a week vs ' + Math.round(DEPO.start[g].y1840[1]).toLocaleString('en-GB') + ')').join('; '))); }
 
 // ================================================================ THE WORLD ECONOMY'S SIZE
 grp('Does the world economy stay near vanilla’s size?', 'Government income and prestige scale with world GDP, so it must stay close; a dip in mid-century is expected.');
@@ -141,13 +150,15 @@ else if (NOAIMS) notRead('Workers on the oldest and the newest plants', 'tier 0 
   const cls = !fin(u) ? 'warn' : band3(u, 0, 35, 0, 45);
   row('New plants built below the best tier their owner already runs (a craft counts a tenth)', `<b>${fin(u) ? u.toFixed(1) + '%' : '—'}</b>`, 'under 35%',
     pill(cls, !fin(u) ? 'no reading' : u < 35 ? 'mostly the best tier' : u <= 45 ? 'many below the best' : 'old designs still built')); }
-// PI and PP (§10.120 point 5): falling decade over decade is required, the 0.8 level provisional; the verdict is the loss's distance
-for (const [q, line, goods] of [['PI', 'Prices of building inputs in £, shortlist, 1935', 'steel, tools, engines, fertilizer, explosives, dye, paper'],
-  ['PP', 'Prices of consumer goods in wages, shortlist, 1935', 'groceries, clothes, furniture, glass, art, cars, telephones, radios']]) {
-  const sl = C[q + 'slope'], every = C[q + 'fallsEvery'];
-  row(line + `<br><span class="v">${goods[0].toUpperCase() + goods.slice(1)}.</span>`, `<b>${x2(C[q])}</b>`, 'falling every decade; 0.8× or less',
-    distV(TERMS[q], sl > 0 ? 'rising' : C[q] > (CR.priceLevel ?? 0.8) ? 'above' : '') + note(fin(sl) ? (sl <= 0 ? 'falling' : 'rising') + ' on average (' + f2(sl) + ' a decade, log)' + (every ? ', every decade' : ', not every decade') + (VR[q + 'slope'] != null ? '; vanilla ' + f2(VR[q + 'slope']) : '') : ''));
-}
+// ⭐ THE INDUSTRY-PRICE TERM (§10.128, user-ruled 2026-11-22: "Aggregate fall, ~25%"): the run's own aggregate of scalable industry output
+//   (lib_prices.mjs, the main chart above the pages), 1935 ÷ 1900, aim 0.75 or under; vanilla's beside it as a reference only. It replaced the
+//   PI and PP rows, whose level was pegged to vanilla; both stay in criteria.json as minor readings.
+{ const aim = CR.indAim ?? 0.75, w = CR.indWindow || [1900, 1935], P = C.indPath || [], ys = [1836, 1840, 1850, 1860, 1870, 1880, 1890, 1900, 1910, 1920, 1930, 1935];
+  const a = P[ys.indexOf(w[0])], b = P[ys.indexOf(w[1])];
+  row(`Prices of scalable industry output, ${w[1]} ÷ ${w[0]}, the markets’ aggregate`
+    + '<br><span class="v">Groceries, clothes, furniture, glass, paper, tools, steel, engines, fertilizer, explosives, cars, telephones, radios; price ÷ base, the run’s own markets. The chart above the pages draws the path.</span>',
+    `<b>${f2(C.indRatio)}</b>` + dim('vanilla ' + f2(VR.indRatio)), `${aim.toFixed(2)} or less (a fall of a quarter)`,
+    distV(TERMS.ind, C.indRatio > aim ? 'above' : '') + note(fin(a) && fin(b) ? f2(a) + ' of base in ' + w[0] + ', ' + f2(b) + ' in ' + w[1] : '')); }
 
 // ================================================================ GOAL 3
 grp('Does modernising cost capital, and is the capital spent?');
@@ -172,6 +183,14 @@ if (MIS) { const arm = MIS[Object.keys(MIS)[0]], decs = Object.entries(arm.decad
   row(`New capital placed far from its best use (payback over 3× the best open option, or a loss), ${last ? last[0] + '–' + String(+last[0] + 10).slice(2) : ''}`,
     `<b>${last ? pc(last[1].gross, 0) : '—'}</b>`, 'as low as possible', pill('dim', 'a reading') + note(g.length > 1 ? (100 * Math.min(...g)).toFixed(0) + '–' + pc(Math.max(...g), 0) + ' by decade' : ''));
 } else notRead('New capital placed far from its best use', 'as low as possible', 'no misplaced.json');
+
+// ⭐ THE TIERED DEPOSITS (2026-11-22, F285, the user: the forms proposed accepted): readings, no aim ruled. Vanilla = its same nine buildings.
+if (DEPO) { const Lw = DEPO.labour.world, k = x => fin(x) ? Math.round(x / 1e3).toLocaleString('en-GB') + 'k' : '—', e = DEPO.end;
+  grp('What do the tiered deposits hold?', 'Mines, wharves and oil rigs are tiered too, each method a building on slots of its own, so a newer rung adds capacity beside the old pits. Their own section is in each view.');
+  row(`Workers in the tiered deposits (mines, fishing wharves, whaling stations, oil rigs), share of the world’s productive workers, ${e[0]}–${String(e[e.length - 1]).slice(2)}`,
+    `<b>${pc(Lw.mod.share)} vs ${pc(Lw.van.share)}</b>`, '—', reading() + note(k(Lw.mod.workers) + ' workers against vanilla’s ' + k(Lw.van.workers) + ' in its same buildings; productive workers ' + k(Lw.mod.prod) + ' against ' + k(Lw.van.prod)));
+  row(`Construction points held in the tiered deposits, world, ${e[0]}–${String(e[e.length - 1]).slice(2)}`, `<b>${k(Lw.mod.points)} vs ${k(Lw.van.points)}</b>`, '—',
+    reading() + note(x2(Lw.mod.points / Lw.van.points) + ' of vanilla’s same buildings; a newer rung costs more for the same output (§10.125)')); }
 
 // ⭐ AUTO-DOWNSIZING (BALANCE_FRAMEWORK §10.107.6, user-ruled 2026-11-07: two scorecard lines in a group of their own, and one section by
 //   tier in each view, fill_downsizing.mjs). No aim is ruled. Vanilla = its runs that carried the downsizing poll (telemetry v15 on).
@@ -237,11 +256,11 @@ writeFileSync(join(DIR, 'scorecard.html'), `<p class="small">Each figure reads t
 
 // ---- the footer's loss line (the config search's objective; out of the table by ruling, 2026-10-29)
 { const NAME = { gdp: 'world GDP', uUSA13: 'U* USA 1913', uUSAE: 'U* USA end', uGBR13: 'U* Britain 1913', uGBRE: 'U* Britain end', uGER13: 'U* Germany 1913', uGERE: 'U* Germany end',
-    uW13: 'U* world 1913', uWE: 'U* world end', PI: 'PI', PP: 'PP', cap: 'countries above half GDP', hoard: 'hoard above half GDP', T0: 'T0', T3: 'T3', old: 'old plants' };
+    uW13: 'U* world 1913', uWE: 'U* world end', ind: 'industry prices', PI: 'PI', PP: 'PP', cap: 'countries above half GDP', hoard: 'hoard above half GDP', T0: 'T0', T3: 'T3', old: 'old plants' };
   let s;
   if (C.loss) { const parts = Object.entries(C.loss.parts).filter(([, v]) => Math.abs(v) > 0.005).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
     const per = RUNS.filter(r => r.loss).map(r => r.loss.L).sort((a, b) => a - b);
-    s = `<p class="dim"><b>The criteria register’s loss</b>${C.mode === 'all' ? ' over all ' + C.runs.length + ' runs, those past the barrier included (not the ruled form)' : ''} (the config search’s objective: the weighted distance from every aim in the line’s own spreads; lower is better; directional only, BALANCE_FRAMEWORK §10.83.7; the weights and spreads of §10.123): <b>${f2(C.loss.L)}</b> = ${parts.map(([k, v]) => (NAME[k] || k) + ' ' + f2(v)).join(' + ')}${per.length > 1 ? '; per run ' + f1(per[0]) + '–' + f1(per[per.length - 1]) : ''}.`
+    s = `<p class="dim"><b>The criteria register’s loss</b>${C.mode === 'all' ? ' over all ' + C.runs.length + ' runs, those past the barrier included (not the ruled form)' : ''} (the config search’s objective: the weighted distance from every aim in the line’s own spreads; lower is better; directional only, BALANCE_FRAMEWORK §10.83.7; the weights and spreads of §10.123, the price term of §10.128): <b>${f2(C.loss.L)}</b> = ${parts.map(([k, v]) => (NAME[k] || k) + ' ' + f2(v)).join(' + ')}${per.length > 1 ? '; per run ' + f1(per[0]) + '–' + f1(per[per.length - 1]) : ''}.`
       + (C.loss.missing.length ? ` Not read, counted 0: ${C.loss.missing.join(', ')}.` : '') + ` Vanilla reference n=${CR.vanN ?? '?'}, the end the ${CR.end[0]}–${CR.end[1]} mean.</p>`;
   } else s = `<p class="dim">No consensus loss: ${C.divergent ? 'the pair diverges' : 'every run is past the barrier (its highest ten-year mean ' + f2(C.barrier?.worst?.value) + ')'}.</p>`;
   writeFileSync(join(DIR, 'scorecard_loss.html'), s); }

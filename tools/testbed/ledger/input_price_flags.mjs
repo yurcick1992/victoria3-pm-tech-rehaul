@@ -104,6 +104,7 @@ const NOT_INDUSTRY = /^(00_dummy|05_military|07_government|08_monuments|10_canal
 const PM_INPUTS = new Map(), INDUSTRY_GOODS = new Set();       // vanilla pm → [goods it consumes]; the goods any industry pm consumes
 for (const [pm, gs] of PM_IN) if (gs.length) { PM_INPUTS.set(pm, gs); if (!NOT_INDUSTRY.test(PM_FILE.get(pm))) gs.forEach(g => INDUSTRY_GOODS.add(g)); }
 if (INDUSTRY_GOODS.size < 15) throw new Error('read fewer than 15 industrially consumed goods from the game — the production_methods layout moved');
+// L55: ALL INDUSTRIES — the red flags need every producer and consumer of a good, the tiered deposits included (lib_industries.mjs)
 function industrialGoods(cfg) {
   const s = new Set([...INDUSTRY_GOODS, ...RAW_IN, ...TIER_GOODS]);
   for (const ind of cfg?.industries || []) { if (ind.disabled) continue;
