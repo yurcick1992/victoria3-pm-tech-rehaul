@@ -1064,7 +1064,11 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   the six mines, 150,000 / 250,000), the nine financial entries and macroeconomics held, `threshold_mult` 0.25 for arms, artillery and
   munition, `tech_ai_weight_bespoke` (`emit_tech_finish.mjs` appends the `multiply` to that technology's `ai_weight`),
   `research_events.require_live_sources` (L56) and the record `_tech_pass`. Every step throws when the chain no longer has what it edits.
-  Off by default, so `m12b-first` and `m12c-first` regenerate unchanged.
+  Off by default, so `m12b-first` and `m12c-first` regenerate unchanged. **`--tech-pass 2`** (§10.131; the canon `g1152-canon12` =
+  `--prefix c12 --name g1152-canon12 --naval-lowered 1 --tech-pass 2`): level 1 plus identification documents, mass surveillance,
+  macroeconomics, elevator and paved roads held (90 / 220 / 200 administration levels, 130 / 310 levels of the largest urban centre),
+  each follower mark a quarter; level 1 still regenerates `m12d-first`. `emit_research_events.mjs` words an entry's description "falls
+  to a quarter" where its condition entry's follower mark is one.
 - **`tools/make_book12.mjs`** (2026-11-21, BALANCE_FRAMEWORK §10.125, §10.126) — `node tools/make_book12.mjs [--prefix m12b] [--name <prefix>-first] [--naval-lowered 0.8]` (the current book is `--prefix m12b` → `m12b-first`; `m12-first` was made before §10.126 and no longer regenerates; `--naval-lowered` sets `entry_weight_rule.naval_lowered`, default 0.8 = what `m12b-first` was built with, so its recorded command still reproduces it, and a book after it passes `--naval-lowered 1`, §10.127): THE
   MOD 1.2 BOOK. The canon's chain (as `replay_canon_chain.mjs`, then the 1.15 steps of the 1.1.1 canon) with `make_tier4_config --insert
   motor` in place of `--derive motor`, `make_ab_config --cost-ratio 2.0 --ai-ladder 455,1000,2200,4840 --mix-scale

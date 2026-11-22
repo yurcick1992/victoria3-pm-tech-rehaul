@@ -97,7 +97,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.127 | a technology with a NAVAL research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain without first movers, sea-lane strategies 2.2 holders against vanilla's 54) | in force; built as `entry_weight_rule.naval_lowered` (`make_book12.mjs --naval-lowered 1`); in the book `m12c-first` (`e355eeb1`), not measured | here |
 | 10.128 | the price decline is an aim of the mod's own class, never read against vanilla (the loss's PI and PP level part on 0.8 × vanilla's 1935 index was wrong under it, F285); the reading is prices by goods class, decade by decade, by market and aggregate ("Option A"); the loss's price term is the industry-output aggregate's 1935 ÷ 1900, aim 0.75 ("Aggregate fall, ~25%"), sized so t0 sheds workers once t2 is significant and t1 once t3 is (F285 §6) | in force; built (`lib_prices.mjs`, `fill_prices.mjs`, `criteria.mjs`): weight 2 in place of PI and PP, spread 0.04227 (Claude's defaults, stated); PI and PP minor readings | here |
 | 10.129 | the mod 1.2 technology pass, first rulings: every research-entry reference the 1.2 book broke or misplaced is fixed, after a thorough check (combustion engine's sources among them); mining workers become a source for nitroglycerin (150,000) and dynamite (250,000); the financial, university and administration entries that run ahead are held (marks raised) and a follower's mark goes from ½ to ¼; refused: army size as a source (too easy to farm), any other new condition type for now, dropping the standing −20% AI weight where an entry cannot tick; parked as a hypothesis: a lower literacy line for a follower; open: military-industry marks (agreed in general, not elsewhere), the dynamite prerequisite of pumpjacks pending the production-tree pass, faster tech spread | in force; the open parts ruled in §10.130; built into `m12d-first` | here |
-| 10.130 | the technology pass, second rulings, and the book `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped, the first prerequisite removed from a vanilla technology); the research marks of arms, artillery and munition × 0.25 (explosives and synthetics stay × 0.5); no entry for navigation; shift work: no entry, its AI research weight × 1.2; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels, a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build from this book on (landmine L56) | in force; built (`m12d-first`, `2e25dfe4`, `make_book12.mjs --tech-pass 1`), the alternate `mod_m12d`, not measured, not deployed; combustion engine on three separate sources, never a sum; macroeconomics' 200 levels is the builder's number, to be confirmed | here |
+| 10.130 | the technology pass, second rulings, and the book `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped, the first prerequisite removed from a vanilla technology); the research marks of arms, artillery and munition × 0.25 (explosives and synthetics stay × 0.5); no entry for navigation; shift work: no entry, its AI research weight × 1.2; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels, a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build from this book on (landmine L56) | in force; built (`m12d-first`, `2e25dfe4`, `make_book12.mjs --tech-pass 1`), the alternate `mod_m12d`, not measured, not deployed; combustion engine on three separate sources, never a sum; macroeconomics' 200 levels is the builder's number, confirmed by §10.131, which also corrects item 5 (the administration and autoscaling entries' followers are a quarter too) | here |
+| 10.131 | the mod 1.2 canon: every ruling of 2026-11-21/22 in one book, canonised before its n=3 (`g1152-canon12`, `3978ad19`); macroeconomics 200 with a follower ¼, correcting §10.130 item 5; identification documents 18 → 90 and mass surveillance 30 → 220 administration levels, elevator 80 → 130 and paved roads 160 → 310 levels of the largest urban centre, every follower ¼ (the builder's marks); the autoscaling buildings are urban centres, financial districts, manor houses and subsistence buildings; the university entries not built, open | in force; the canon since 2026-11-22 (commit `a04216fe`); measured by `20261122_142920_g1152-canon12-n3` | here |
 
 ---
 
@@ -6696,3 +6697,48 @@ then; combustion engine's and electric railway's first holder back near the cano
 production at 1905 above `m12b-first`'s 31%; the financial technologies later (the direction only); world GDP's direction not argued:
 earlier engines push it up, later financial technologies down. Tick cost: the two mining sources add 48 building loops to two entries
 while they are open; play time is read at polish (§10.123).
+
+## §10.131 — THE MOD 1.2 CANON (user-ruled 2026-11-22): EVERY RULING OF THE LAST DAYS IN ONE BOOK, CANONISED BEFORE ITS RUNS; THE ADMINISTRATION AND URBAN-CENTRE ENTRIES HELD, EVERY HELD FOLLOWER A QUARTER
+
+**The rulings** (the user, 2026-11-22, asked whether to launch the n=3 on `m12d-first` with macroeconomics at 200):
+1. *"macroeconomics, as well as other gov admins and autoscaling-based JEs, do need a huge increase compared to what we shipped in
+   1.1.2 and before. 200 sounds OK. Note that for these techs, the ruled followers discount to the threshold is -75%, not -50%."*
+   Macroeconomics' 200 administration levels stands; its follower mark goes from ½ to ¼. **This corrects §10.130 item 5**, which kept
+   the quarter for the nine financial entries only and gave macroeconomics the usual half. §10.129 item 3 (the financial, university and
+   administration entries that run ahead held, a follower's mark ¼) is the ruling the user meant.
+2. **The autoscaling buildings** (the user): urban centres, financial districts, manor houses and, technically, subsistence buildings,
+   Cossack Hosts included. Of them only the urban centres and the financial districts carry research entries; no entry counts manor
+   houses or subsistence buildings.
+3. *"What now goes into the build for the n=3 is incorporating ALL the rulings in the last day or so, and immediately canonised before
+   the runs."* The 1.2 book is the main line from here (§4.4: canonisation declares the approach main, it is not a quality stamp).
+
+**The marks** (the builder's numbers, proposed to the user and built on the word above; to be confirmed or moved after the runs). Set
+so the second- to third-largest administration of the five `m12b-first` runs reaches the mark near the technology's tier anchor (the
+medians: about 95 levels at 1875, 130 at 1905, 220 in 1920–30; the largest, about 220 levels already in 1840 and 440–530 later, holds
+any of them early, and its literacy is the line that holds it back). The urban marks are estimates from the half-majors path (80 levels
+reached by half the majors in 1887, 160 in 1914): the save summaries do not record the largest urban centre.
+
+| entry | tech era (anchor) | mark before → now | follower | first holder in `m12b-first` (vanilla 1.15.2) |
+|---|---|---|---|---|
+| identification documents | 3 (1875) | 18 → 90 administration levels | 23 | 1848 (1875) |
+| mass surveillance | 5 (1940) | 30 → 220 | 55 | 1927 (1928) |
+| macroeconomics | 5 (1940) | 200 (30 in `m12b-first`) | 100 → 50 | 1894 at 30 (1916) |
+| elevator | 4 (1905) | 80 → 130 levels of the largest urban centre | 33 | 1880 (1893) |
+| paved roads | 5 (1940) | 160 → 310 | 78 | 1897 (1917) |
+
+Central archives, modern sewerage and organized sports (tech era 2, held at or soon after the start by design) stay as they are.
+**Not in this book:** the university entries, ruled held by §10.129 item 3 and not built by §10.130 (philosophical pragmatism, tech era
+3, first held 1852; psychoanalysis, 4, 1869; analytical philosophy, 5, 1890; vanilla 1870 / 1903 / 1926). University levels stay flat
+at about 50–70 for the leaders all century in `m12b-first`, so a mark cannot time them to an anchor as it times administration; open.
+
+**The book and the canon.** `config/mod_config.g1152-canon12.json` (sha256 `3978ad1917b0f9ea`; tree twin `0376680b3fae3f19`),
+`node tools/make_book12.mjs --prefix c12 --name g1152-canon12 --naval-lowered 1 --tech-pass 2` on game 1.15.2; `--tech-pass 2` is the
+technology pass of §10.129–§10.130 with the holds above (level 1 still regenerates `m12d-first`). By field diff against `m12d-first`
+only the five entries' triggers, follower triggers and labels move, beside the chain's names and stamps; the tree twin is identical.
+Copied verbatim over `config/mod_config.json` + `config/tech_tree_options.json`, built, linted, deployed (commit `a04216fe`). The
+research entries' description now says a mark "falls to a quarter" where the follower mark is one (it said "halved" on every entry,
+the financial ones of `m12d-first` included; their bar lines were right). It replaces mod 1.1.1's book `697d4869` as the canon; mod
+1.1.2 on the Workshop stays that book until mod 1.2 is released.
+
+**Measured by:** the n=3 `20261122_142920_g1152-canon12-n3` (three centuries, fixed n, every run played; the schedule's predictions
+are §10.130's and, for the holds, the first holders near their anchors).

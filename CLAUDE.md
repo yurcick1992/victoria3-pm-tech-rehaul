@@ -487,7 +487,8 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.127 | a technology with a naval research entry loses §10.119 item 3's standing −20% AI weight and keeps only the −50% while its entry ticks (F284: the naval chain had no first movers) | in force; built (`entry_weight_rule.naval_lowered`, `make_book12.mjs --naval-lowered 1`), in the book `m12c-first` (`e355eeb1`), not measured |
 | 10.128 | the price decline (PI, PP) is an aim of the mod's own class, never read against vanilla; the loss's level part on 0.8 × vanilla's 1935 index is wrong under it (F285); the reading to be built first: decade by decade, five goods classes with expected directions (industry output clearly down, the main one), by market and in aggregate; the user wants a significantly stronger decline, sized so t0 sheds workers once t2 is significant and t1 once t3 is (F285 §6) | in force; built: the ledger's price panel ("Option A", `fill_prices.mjs`) and the loss's price term, the industry-output aggregate's 1935 ÷ 1900 ≤ 0.75 ("Aggregate fall, ~25%"), weight 2, in place of PI and PP (`lib_prices.mjs`) |
 | 10.129 | the mod 1.2 technology pass, first rulings: every research-entry reference the 1.2 book broke or misplaced is fixed first (F287 §1; combustion engine's sources among them); mining workers a source for nitroglycerin (150,000) and dynamite (250,000); the financial and administration entries that run ahead are held and a follower's mark goes from ½ to ¼; refused: army size as a source (farmable), other new condition types for now, dropping the standing −20% AI weight; parked: a lower literacy line for a follower; open: military-industry marks, pumpjacks' dynamite prerequisite, faster tech spread | in force; the open parts ruled in §10.130 |
-| 10.130 | the technology pass, second rulings, built as `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped); the research marks of arms, artillery and munition × 0.25; no entry for navigation; shift work's AI research weight × 1.2 and no entry; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels; a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build (L56) | in force; built, not measured |
+| 10.130 | the technology pass, second rulings, built as `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped); the research marks of arms, artillery and munition × 0.25; no entry for navigation; shift work's AI research weight × 1.2 and no entry; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels; a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build (L56) | in force; built, not measured; item 5 corrected by §10.131 |
+| 10.131 | the mod 1.2 canon: every ruling of the last days in one book, canonised before its n=3 (`g1152-canon12`); the administration and urban-centre entries held (identification documents 90, mass surveillance 220, macroeconomics 200 administration levels; elevator 130, paved roads 310 levels of the largest urban centre), every held follower a quarter; the autoscaling buildings: urban centres, financial districts, manor houses, subsistence buildings; the university entries open | in force; the canon since 2026-11-22; its n=3 playing |
 
 ---
 
@@ -680,7 +681,20 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 ## 4.1 What it is
 
-**`config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the named book
+**Since 2026-11-22 `config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the mod 1.2 book
+`config/mod_config.g1152-canon12.json` + twin** — sha256 prefix **`3978ad1917b0f9ea`** (the tree twin `0376680b3fae3f19`), canonised on
+game 1.15.2 before its first runs (§10.131; commit `a04216fe`), `node tools/make_book12.mjs --prefix c12 --name g1152-canon12
+--naval-lowered 1 --tech-pass 2`: every ruling of 2026-11-21/22 in one book — the 1.1.1 canon's chain with the motor ladder (Compound
+Engines), C 2.0, the desire ladder 455 / 1000 / 2200 / 4840, the quarter, nine tiered deposits at cost step 1.3 with the 1836 pair
+(logging untiered), the research mark and weight rules, tier-scaled and craft lines, engines on the power lines, the craft seeding fixes,
+the world gate and irrigation's drives (§10.115–§10.126); naval technologies lowered only while their entry ticks (§10.127); the
+technology pass (§10.129, §10.130); the administration and urban-centre entries held, every held follower a quarter (§10.131). `mod/`
+and the deployed copy are its debug build. **Mod 1.1.2 on the Workshop stays mod 1.1.1's book** until mod 1.2 is released. Being
+measured by `20261122_142920_g1152-canon12-n3` (n=3, fixed). Its predecessors, unmeasured or measured as non-canon books, are
+`m12b-first` (F283, F284), `m12c-first` and `m12d-first`. Parts 1–3 still describe mod 1.1.x where the 1.2 rulings have not been
+folded in; the rulings in BALANCE_FRAMEWORK win (see the header).
+
+**The 1.15.1 canon (mod 1.1.1 and 1.1.2; kept as the record) is the named book
 `config/mod_config.g1151-canon-bz-dcu-ra-il-aw.json` + `config/tech_tree_options.g1151-canon-bz-dcu-ra-il-aw.json`** — sha256 prefix
 **`697d4869aefc3225`** (the tree twin `2928a5bf79758281`), canonised 2026-11-12 on game 1.15.1 as **mod 1.1.1** (§10.111.1, §10.111.3;
 GAME_UPDATE_1_15_1.md Q1, Q8): the 1.15 canon's chain replayed on 1.15.1 (`tools/replay_canon_chain.mjs --prefix g1151`, then the four recorded 1.15
@@ -758,7 +772,10 @@ What §1.2 and §1.3 leave out:
   `make_book12.mjs --prefix m12d --naval-lowered 1 --tech-pass 1`, the alternate `mod_m12d`): the research-entry references the 1.2
   book broke (railways, flash freezing, navigation, combustion engine's sources), pumpjacks on rotary valve engine in place of dynamite,
   mining workers as a source for nitroglycerin and dynamite, the military industries' marks × 0.25, the financial entries and
-  macroeconomics held, shift work's AI weight × 1.2. Not measured, not deployed. Next: its first centuries, on the user's go-ahead.
+  macroeconomics held, shift work's AI weight × 1.2. Not measured, not deployed.
+  **The canon since 2026-11-22: `g1152-canon12`** (`3978ad19`, §10.131) = `m12d-first` + identification documents 18 → 90 and mass
+  surveillance 30 → 220 administration levels, elevator 80 → 130 and paved roads 160 → 310 levels of the largest urban centre, every
+  held follower a quarter (macroeconomics' 100 → 50). Its n=3 (`20261122_142920_g1152-canon12-n3`, launched 14:29 local) is playing.
 
 - **Game 1.15.2** (installed 2026-11-19; mod 1.1.2, the same canon, released the same day): the mod is measured only by the smoke test
   (F273: it loads and runs; two error classes were ours, the BOM fixed as landmine L53). **Vanilla 1.15.2's eight centuries** (F274,
@@ -876,7 +893,8 @@ One line per canon; the reasons are in the § named. The files of every former c
 | 10-16 → 10-21 | `jex-dam4s-rs-x25-m10ac-dpriv` | engines unlifted, conditional merge-host desire | 10.101, 10.91.2 |
 | 10-21 → 11-08 | `jex-dam4s-rs-x25-m10ac-dpriv-wm99` | world-market monopoly threshold 0.99; the polish rulings — **mod 1.0** (game 1.13) | 10.102 |
 | 11-08 → 11-12 | `g115c-canon-bz-dcu-ra-il` | the 1.0 chain replayed on game 1.15 (copper in five rungs, as vanilla) + bronze artillery + dam copper + copper trade class C + 1.15's research adds ×1/3 + the idea entries' 1.15 laws — **mod 1.1** (game 1.15.0) | 10.108, 10.109 |
-| 11-12 → | `g1151-canon-bz-dcu-ra-il-aw` | the same chain replayed on game 1.15.1: the telephone rung follows vanilla's new recipe (value-neutral); the AI research weights of six technologies with research entries back to 1.13.11's — **mod 1.1.1** (game 1.15.1) | 10.111 |
+| 11-12 → 11-22 | `g1151-canon-bz-dcu-ra-il-aw` | the same chain replayed on game 1.15.1: the telephone rung follows vanilla's new recipe (value-neutral); the AI research weights of six technologies with research entries back to 1.13.11's — **mod 1.1.1** (game 1.15.1), **mod 1.1.2** (game 1.15.2) | 10.111, 10.122 |
+| 11-22 → | `g1152-canon12` | the mod 1.2 book: tiered deposits, the motor ladder, C 2.0, the 1.2 rulings, the technology pass, the administration and urban-centre holds — canonised before its first runs (game 1.15.2) | 10.115–10.131 |
 
 ⚠ **Returning to the pre-artmerge family would need the performance changes reimplemented** — those books carry neither tick-cost fix (resource-slot
 dams, `dams.layout = resource4`; trigger-placed research entries, `research_events.placement = script`; F220/F221).
