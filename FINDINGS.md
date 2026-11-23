@@ -434,6 +434,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F286 | Why the 1.2 book's technologies are late: the world-first holder, not diffusion (first → 10th country 3–10 years, as vanilla's); the majors hold vanilla's production count, +1 society, −8 military; of the majors' unheld years on the industry entries the workforce mark blocks 36–68%, a prerequisite 5–25%, literacy about 1%; 20 of 62 industry entries complete under 5 stages a run; two entries are dead in the 1.2 book (railways, flash freezing: their methods moved to deposit rungs) and combustion engine's sources sit behind its own successors; pumping engines wait on dynamite (904 major-years); 32 technologies of tech era 2+ have no entry and arrive 5–23 years late; the same marks blocked in the canon | `m12b-first` n = 5, the 1.1.1 canon n = 10, vanilla 1.15.2 n = 8 | re-read, no game time | here |
 | F287 | The 1.2 build has four research entries with a source that cannot exist (railways, flash freezing, navigation; combustion engine's diesel source, in the canon too); against the tier anchors production is ahead in tech eras 3 and 5 (64%, 63% held by the leader) and behind only in tech era 4 (31% at 1905; the canon 56%), the military tree behind everywhere (31 / 15 / 0%); the majors spend 44–52% of directed research on the military tree and 24–37% on technologies three or more countries hold; the motor ladder's gates do not chain; combustion engine is open without pumpjacks in 79% of the majors' years | the builds `mod_m12c`, `mod/`; F286's arms | re-read, no game time | here |
 | F288 | The AI's own research choices lose about 1% of directed research to the ahead-of-time penalty, in vanilla and the mod alike (the majors 1.0–1.3%, the world 0.5–0.7%); camera (no entry of ours; vanilla's realism event option only) accounts for 0.1–0.2%; in the mod directed research is 12–14% of what the majors acquire, so under 0.2% of research; the penalty on entry-delivered technologies (14–20% of the majors' acquisitions) is no loss, the grants being free; acceptable, no intervention (user) | vanilla 1.15.1 n=10, 1.1.1 canon n=10, vanilla 1.15.2 n=8, `m12b` n=5, `g1152-canon12` 1 + partial | re-read, no game time | here |
+| F289 | The mod 1.2 canon `g1152-canon12`, five centuries on game 1.15.2: none past the barrier and nobody hoards, but world GDP 0.61× vanilla 1.15.2's median (0.55–0.79, every run under vanilla's lowest 0.89; `m12b-first` 0.82×), the slide from the 1870s on; every depeasantation aim missed by far (Britain 27.5% at the end, Germany 64.9%, the world 60.0%); loss 25.23 against `m12b-first`'s 13.35. Production technologies much earlier than in `m12b-first` (the leader holds 79% of tech era 3 production at 1875, 56% of era 4 at 1905), new plants on the best tier (27% below it, `m12b` 46%), construction delivered 0.59× vanilla's (`m12b` 0.77×), productive workers per head 0.65× at vanilla's GDP per worker; no tech-era-5 military technology in any run; play 150 min, cluster 1 | `g1152-canon12` n=5 against vanilla 1.15.2 n=8 and `m12b-first` n=5 | 5 × 1836→1936 | here |
 
 ---
 
@@ -24284,3 +24285,68 @@ stage costs nothing the AI could have spent elsewhere. Not a measure of research
 `innovation` is the AI's own last snapshot, not a weekly mean. The penalty is read at the snapshot: a missing technology acquired later
 (by spread or an entry) lowers the cost of a pick already under way, so the loss is an upper bound for each pick. Directed ÷ acquired
 uses unpenalised base costs and the snapshot innovation, an approximation. `g1152-canon12` is one century and a partial second.
+
+---
+
+## F289 — THE MOD 1.2 CANON `g1152-canon12`, FIVE CENTURIES: NO RUN PAST THE BARRIER AND NOBODY HOARDS, BUT WORLD GDP 0.61× VANILLA 1.15.2'S (EVERY RUN BELOW VANILLA'S LOWEST) AND EVERY DEPEASANTATION AIM MISSED BY FAR; LOSS 25.23 AGAINST `m12b-first`'S 13.35. THE PRODUCTION TECHNOLOGIES COME MUCH EARLIER THAN IN `m12b-first`, THE AI BUILDS ON THE BEST TIER, AND CONSTRUCTION AND JOBS SHRINK (2026-11-23; `g1152-canon12` n = 5, sessions `20261122_142920_g1152-canon12-n3` run 1, `20261122_222927_g1152-canon12-run2-stitched`, `20261122_222927_g1152-canon12-n3-resume` run 2, `20261123_021618_g1152-canon12-plus2`; against vanilla 1.15.2 n = 8, `20261119_210048_g1152-vanilla8`, and `m12b-first` n = 5, F284)
+
+**Arms.** `{kind: config, config: config/mod_config.g1152-canon12.json}` (sha256 `3978ad1917b0f9ea`, the canon since 2026-11-22,
+§10.131), its debug build with telemetry, no build input changed since `662a2039`; fixed n, every run 1836 → 1936. Run 2 was paused by the
+user at 1898.1.1 and continued from that save (same-book gate passed), read as one campaign through the stitched session. Run 4 crashed
+once at 1852.8.26 and resumed from its autosave. The comparison book `m12b-first` differs by §10.127 (naval weights), the technology pass
+(§10.129, §10.130) and the administration and urban-centre holds (§10.131). The ledger: claude.ai/artifact/7ZxBWECZEEV9wRAtzh1S7o (`REPORT.html` in the
+plus2 and run2-stitched sessions).
+
+**The register** (`criteria.mjs`, the §10.123 loss with §10.128's price term; the end = the 1932–36 mean; the median of all five, none
+past the barrier):
+
+| line | `g1152-canon12` | `m12b-first` | aim |
+|---|---|---|---|
+| world GDP ÷ vanilla, the end | **0.61×** (0.70, 0.79, 0.55, 0.61, 0.59) | 0.82× (0.71–1.02) | 0.90–1.00 |
+| world GDP by decade, 1846 … 1936 | 0.96 · 0.97 · 0.96 · 0.88 · 0.82 · 0.76 · 0.67 · 0.61 · 0.56 · 0.63 | 0.98 · 0.99 · 1.00 · 0.95 · 0.89 · 0.86 · 0.80 · 0.74 · 0.76 · 0.81 | the 1886 line 0.79–1.01 |
+| U\* the USA, 1913 · end | 49.8% · 41.8% | 46.4% · 26.6% | 25% · 15% |
+| U\* Britain, 1913 · end | 40.8% · 27.5% | 20.9% · 8.2% | 10% · 5% |
+| U\* Germany, 1913 · end | 71.2% · 64.9% | 38.0% · 29.5% | 20% · 20% |
+| U\* the world, 1913 · end | 67.1% · 60.0% | 59.5% · 51.3% | 60% · 50% |
+| industry prices 1935 ÷ 1900 | 0.90 (vanilla 0.89) | 0.89 | ≤ 0.75 |
+| members above 0.5 GDP · hoard above half GDP | 0 · 0.003 | 1 · 0.032 | 0 · 0 |
+| T3 ÷ (T0+T1+T2) · old plants kept | 0.368 · 100.5% | 0.402 · 101.7% | more · < 100% |
+| barrier, worst run | 0.60 (USA 1927–36, run 5) | 0.95 | past at 1 |
+| **loss** | **25.23** (per run 19.63, 31.49, 28.73, 24.43, 29.22) | 13.35 | — |
+
+Per run, U\* 1913 · end: the USA 68·68, 46·25, 48·48, 54·42, 50·41; Britain 29·17, 60·55, 41·27, 29·19, 45·37; Germany 72·64, 71·65,
+71·66, 57·39, 72·78; the world 66·57, 68·60, 65·59, 68·61, 67·61. Run 1's USA lost its civil war; run 2's Britain doubled its
+population 1900–1913 by conquest (60M → 117M, its peasants 17M → 49M). Minor readings: W world 0.65× (`m12b` 0.78×), shortlist 0.64×
+(0.84×); GDP per productive worker 1.01× (1.04×); the shortlist's GDP 0.80× (0.96×); H world 0.14 (vanilla 0.28), shortlist 0.19 (0.41).
+
+**The ledger's other lines** (`m12b-first` beside, where read): construction delivered 1880–1935 **0.59×** vanilla's (0.77×); new plants
+below the best tier their owner runs **27.2%** (46.0%); tier-3 payback 6.6 years (8.3); tier-0 factory payback 51 years (20); misplaced
+capital 1926–36 18% (19%); auto-downsizing (runs 1, 3, 4, 5) 0.52× vanilla's construction points lost; the tiered deposits hold 14.6% of
+the world's productive workers (vanilla 11.9% in the same buildings), 0.83× vanilla's construction points; red flags 163 problem
+market-years against vanilla's 161 (`m12b` 129). Deposit levels by rung (world, median) show the same tier mix as `m12b-first` at
+1880–1935, with fewer levels from 1900 on: the deposits are not where the capital went.
+
+**Technology** (`je_eligibility.mjs`, `tech_census.mjs`). The leader's share at the anchors, `g1152-canon12` / `m12b` / vanilla: tech era 3
+at 1875, production 79 / 64 / 29%, military 31 / 31 / 69%, all 53 / 50 / 55%; tech era 4 at 1905, production 56 / 31 / 38%, military
+8 / 15 / 46%, all 41 / 31 / 51%; tech era 5 at 1935, production 75 / 63 / 25%, military 0 / 0 / 80%, all 42 / 46 / 65%. World-first
+years, `g1152-canon12` / `m12b` / vanilla: nitroglycerin 1843 / 1851 / 1848, dynamite 1851 / 1901 / 1874, pumpjacks 1869 / 1906 / 1878,
+combustion engine 1891 / 1918 / 1897, mechanized farming 1896 / 1923 / 1909, electric railway 1897 / 1919 / 1901, nitrogen fixation
+1903 / 1930 / 1910. **No tech-era-5 military technology is held in any run** (vanilla holds all ten); the tech-era-4 military ones come
+15–25 years after vanilla's (dreadnought 1935 world-first, vanilla 1919). Britain holds 162 technologies at the end against vanilla's
+169 (military 45 against 54). Mass surveillance is never researched; macroeconomics' world-first 1929 (`m12b` 1894),
+modern financial instruments' 1930 (1891).
+
+**Play time** (`wall_clusters.mjs`): all five runs cluster 1, 142–160 minutes (median 150.3), no slowdown episode; `m12b` 159.6, vanilla
+167.6 (two vanilla runs cluster 2). Directional: no alternating vanilla.
+
+**Reading (argued, not shown).** The book sets every economic number m12b-first set; what moved is research. With the entries the 1.2
+book had broken repaired, the production technologies arrive at or before vanilla's dates and well before m12b-first's, and the AI
+builds new plants on the newest rung it holds. At cost step 2.0 each newer rung costs twice the one below, so the same capital makes
+fewer jobs: productive workers per head fall to 0.65× while GDP per worker stays at vanilla's, and world GDP follows the workers. Less
+GDP means less tax and less pool, so construction delivered falls too (0.59×), and the slide compounds from the 1870s on. Mines and oil
+were checked and are not the sink. The direction fits goal 3, but the size overshoots every aim.
+
+**What it does NOT say.** n = 5 against n = 5: the GDP gap (0.61 against 0.82, the runs overlapping only at 0.70–0.79) is directional
+(§2.9). The reading above is a mechanism argued from the ledger's lines, not separated by a perturbation: the book changed research,
+naval weights and the held entries together, and none was measured alone. The 1913 unemployment of run 2's Britain is a conquest's
+peasants, not the economy's. The auto-downsizing lines read four runs (the stitched run has no harness log).
