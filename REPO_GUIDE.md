@@ -1069,6 +1069,11 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   macroeconomics, elevator and paved roads held (90 / 220 / 200 administration levels, 130 / 310 levels of the largest urban centre),
   each follower mark a quarter; level 1 still regenerates `m12d-first`. `emit_research_events.mjs` words an entry's description "falls
   to a quarter" where its condition entry's follower mark is one.
+- **`tools/make_book12.mjs` `--A`, `--craft-cost-div`, `--deposit-cost-level`** (2026-11-23, §10.132; the canon `g1152-canon12b` =
+  `--prefix c12b --name g1152-canon12b --naval-lowered 1 --tech-pass 2 --A 2.35 --craft-cost-div 10 --deposit-cost-level 0.75`): the
+  output step per tier passed to `make_ab_config --A` (default 2.2), the craft cost divisor passed to `make_artisan_config --cost-div`
+  (default 50) and the level on every derived deposit cost passed to `make_deposit_config --cost-level` (default 1); each is recorded in
+  `_book12.rulings` only when it leaves its default, so every earlier book regenerates unchanged.
 - **`tools/make_book12.mjs`** (2026-11-21, BALANCE_FRAMEWORK §10.125, §10.126) — `node tools/make_book12.mjs [--prefix m12b] [--name <prefix>-first] [--naval-lowered 0.8]` (the current book is `--prefix m12b` → `m12b-first`; `m12-first` was made before §10.126 and no longer regenerates; `--naval-lowered` sets `entry_weight_rule.naval_lowered`, default 0.8 = what `m12b-first` was built with, so its recorded command still reproduces it, and a book after it passes `--naval-lowered 1`, §10.127): THE
   MOD 1.2 BOOK. The canon's chain (as `replay_canon_chain.mjs`, then the 1.15 steps of the 1.1.1 canon) with `make_tier4_config --insert
   motor` in place of `--derive motor`, `make_ab_config --cost-ratio 2.0 --ai-ladder 455,1000,2200,4840 --mix-scale
@@ -1077,7 +1082,7 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   `_book12`); then a build (`build.ps1 -SaveTo <prefix>pre -NoDeploy`) and the AI-weights step LAST on it (the deposit and Compound Engines
   entries change which technologies have one). Needs the installed game's snapshot at `C:/claude-code/vic3_game_<version>/game` and the
   1.13.11 one. Writes `config/mod_config.<name>.json` + twin; every intermediate `config/mod_config.<prefix>-*.json` (gitignored).
-- **`tools/make_deposit_config.mjs`** (2026-11-21, §10.115, §10.116 ruling 5, §10.124, §10.125, §10.126) — `--base <book> --suffix <sfx> --cost-step <s> [--start-1836 map|pair]` (the start rule is recorded as `_deposits.start_1836` and emitted by `emit_deposit_start.mjs`; logging left DEPOSITS on 2026-11-21):
+- **`tools/make_deposit_config.mjs`** (2026-11-21, §10.115, §10.116 ruling 5, §10.124, §10.125, §10.126) — `--base <book> --suffix <sfx> --cost-step <s> [--start-1836 map|pair] [--cost-level L]` (`--cost-level`, 2026-11-23, §10.132: every derived rung cost × L, map rungs and those above alike, never a DEPOSITS entry's own `cost` list such as oil's; recorded as `_deposits.cost_level` when not 1) (the start rule is recorded as `_deposits.start_1836` and emitted by `emit_deposit_start.mjs`; logging left DEPOSITS on 2026-11-21):
   adds the tiered deposits (`lib_tier4_spec.mjs` DEPOSITS) to a book as industries with `deposit: true`, `clone_from_vanilla`, `no_mass_be`:
   one rung per vanilla main method, its tier by the era rule, flat output from the highest 1836-map rung, equal value added at base prices
   over the rung's own vanilla mix, the mine pump rungs' tools above 5 as engines, 5,000 workers, vanilla's cost on the 1836-map rungs and ×
@@ -1154,7 +1159,7 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   ran it on a `git archive` of HEAD `9ff63cef`: 14 readers failed). Status: current (preflight, repo-side). Refs: F285 §3, TESTBED_LANDMINES L55.
 
 - **`tools/make_artisan_config.mjs`** — turns the six light-industry t0 rungs into 500-worker craft rungs: per-level recipe, a 5,000-head
-  staffing block × `workforce_mult` 0.1, cost ÷ 50, group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded
+  staffing block × `workforce_mult` 0.1, cost ÷ 50 (`--cost-div <n>` since 2026-11-23, §10.132: 10 in `g1152-canon12b`, a craft at 30 points; recorded as `_artisan.cost_div`, which L31 checks), group `bg_pmr_crafts` (+ `building_groups_add`), `levels_per_mesh` 500, excluded
   secondaries, `craft: true`, `target_be` / `wage_pct` restated; records `_artisan` (checked by L31). Flags: `--staffing ruled|shop|pb`
   (canon pb: 30% shopkeepers / 70% laborers), `--hire-floor X|none` (`min_productivity_to_hire` on the group; default 2, refuses 0, `none` = the
   engine's £3, only for old records), `--craft-rule <share>,<cross>`, `--seed <cities>` (read by emit_craft_start), `--craft-ai <v>`. Throws on a

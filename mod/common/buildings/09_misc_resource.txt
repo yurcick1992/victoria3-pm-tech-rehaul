@@ -47,7 +47,7 @@ building_fishing_wharf = {
 	icon = "gfx/interface/icons/building_icons/fishing_wharf.dds"
 	city_type = port
 	levels_per_mesh = 1
-	required_construction = 200
+	required_construction = 150
 
 	production_method_groups = {
 		pmg_main_fishing_wharf_simple_fishing
@@ -67,7 +67,7 @@ building_fishing_wharf_fishing_trawlers = {
 	icon = "gfx/interface/icons/building_icons/fishing_wharf.dds"
 	city_type = port
 	levels_per_mesh = 1
-	required_construction = 200
+	required_construction = 150
 
 	production_method_groups = {
 		pmg_main_fishing_wharf_fishing_trawlers
@@ -88,7 +88,7 @@ building_fishing_wharf_steam_trawlers = {
 	icon = "gfx/interface/icons/building_icons/fishing_wharf.dds"
 	city_type = port
 	levels_per_mesh = 1
-	required_construction = 260
+	required_construction = 195
 
 	production_method_groups = {
 		pmg_main_fishing_wharf_steam_trawlers
@@ -109,7 +109,7 @@ building_whaling_station = {
 	icon = "gfx/interface/icons/building_icons/whaling_station.dds"
 	city_type = port
 	levels_per_mesh = 1
-	required_construction = 200
+	required_construction = 150
 
 	unlocking_technologies = { navigation }
 
@@ -131,7 +131,7 @@ building_whaling_station_wooden_whaling_ships = {
 	icon = "gfx/interface/icons/building_icons/whaling_station.dds"
 	city_type = port
 	levels_per_mesh = 1
-	required_construction = 200
+	required_construction = 150
 
 	unlocking_technologies = { navigation }
 
@@ -153,7 +153,7 @@ building_whaling_station_steam_whaling_ships = {
 	icon = "gfx/interface/icons/building_icons/whaling_station.dds"
 	city_type = port
 	levels_per_mesh = 1
-	required_construction = 260
+	required_construction = 195
 
 	unlocking_technologies = { gantry_cranes }
 

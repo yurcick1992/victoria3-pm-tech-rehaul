@@ -2,6 +2,7 @@
 // ruled 2026-11-17 and 2026-11-21; the cost step and the names, references and research of the deposit rungs ruled 2026-11-21, §10.125).
 //
 //   node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step 1.3 [--start-1836 map|pair]
+//        [--cost-level 0.75]
 //
 // Each main method of a resource-capped building (lib_tier4_spec DEPOSITS: the five mines, gold, fishing, whaling, oil; logging left the
 // list on 2026-11-21, §10.126) becomes a
@@ -18,7 +19,9 @@
 //     vanilla mix; then (§10.116 ruling 5) on a mine's condensing and diesel pump rungs the tools above 5 become engines, value for value.
 //   - STAFFING: 5,000 workers a level, the rung's own vanilla professions (§10.124 item 6).
 //   - COST: the 1836-map rungs at vanilla's cost, each rung above × the cost step (`--cost-step`, ruled 1.3 for the 1.2 book, §10.125);
-//     a DEPOSITS entry's `cost` list overrides (oil 200 / 200, §10.124 item 7).
+//     a DEPOSITS entry's `cost` list overrides (oil 200 / 200, §10.124 item 7). `--cost-level L` (default 1) multiplies every cost that
+//     is derived so, map rungs and the rungs above alike, never an entry's own `cost` list: 0.75 since BALANCE_FRAMEWORK §10.132
+//     (2026-11-23: the five mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195; oil keeps its 200 / 200).
 //   - AI DESIRE: vanilla's own building block, the same on every rung (gold keeps vanilla's 5000; §10.124 item 9). Nothing is set here: the
 //     clone carries vanilla's block.
 //   - TIER: derived from the method's technology by the era rule (lib_tier4_spec derivePlacement), as for a factory rung; the in-game name
@@ -42,7 +45,8 @@ import { wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
-const BASE = arg('--base'), SFX = arg('--suffix'), STEP = +arg('--cost-step', 'NaN'), START = arg('--start-1836', 'map');
+const BASE = arg('--base'), SFX = arg('--suffix'), STEP = +arg('--cost-step', 'NaN'), START = arg('--start-1836', 'map'), LEVEL = +arg('--cost-level', '1');
+if (!(LEVEL > 0 && LEVEL <= 2)) throw new Error('--cost-level <L in (0, 2]> multiplies the derived deposit costs');
 if (!BASE || !SFX || !(STEP >= 1)) throw new Error('usage: node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step <s ≥ 1> [--start-1836 map|pair]');
 if (!['map', 'pair'].includes(START)) throw new Error(`--start-1836 ${START}: map or pair`);
 const rd = p => readFileSync(p, 'utf8').replace(/^\uFEFF/, '');
@@ -74,7 +78,7 @@ const cfg = JSON.parse(rd(join(REPO, BASE)));
 if (cfg.industries.some(i => i.deposit)) throw new Error(`${BASE} already carries deposit industries — run on a book without them`);
 const eraWage = eraReferenceWage(cfg.era_anchor_years);
 const report = [], record = { rule: 'BALANCE_FRAMEWORK §10.115 (slots, flat output, equal value added, cost), §10.116 ruling 5 (engines on the pump rungs), §10.124 (5,000 workers, oil 200/200, vanilla AI desire), §10.125 (cost step, names, references, research), §10.126 (logging not a deposit; the 1836 pair under start_1836 = pair)',
-  cost_step: STEP, workers_per_level: WORKERS, start_1836: START, slot_rule: { two: 1.5, three_or_four: 2, round: 'up to a multiple of the rung count, at least one a rung', floor_1836: 'gold' },
+  cost_step: STEP, ...(LEVEL !== 1 ? { cost_level: LEVEL, cost_level_rule: 'BALANCE_FRAMEWORK §10.132 (every derived cost × the level; a DEPOSITS cost list untouched)' } : {}), workers_per_level: WORKERS, start_1836: START, slot_rule: { two: 1.5, three_or_four: 2, round: 'up to a multiple of the rung count, at least one a rung', floor_1836: 'gold' },
   secondary_rule: 'output-adding lines × vanilla slots ÷ tiered slots on every rung; labour-saving lines unchanged', industries: {} };
 const pmGoods = cfg.pm_goods || {}, pmEmp = cfg.pm_employment || {};
 const lineNotes = [];
@@ -116,7 +120,7 @@ for (const D of DEPOSITS) {
     for (const g of Object.keys(out)) if (!outGoods.includes(g)) throw new Error(`${D.id}: ${r.pm} makes ${g}, which rung 0 does not`);
     const emp = Object.values(r.emp).reduce((s, x) => s + x, 0);
     if (emp !== WORKERS) throw new Error(`${D.id}: ${r.pm} employs ${emp}, not ${WORKERS} — the staffing rule needs a ruling here`);
-    const cost = D.cost ? D.cost[k] : k < D.map_rungs ? anchorCost : Math.round(anchorCost * Math.pow(STEP, k - D.map_rungs + 1));
+    const cost = D.cost ? D.cost[k] : Math.round(anchorCost * LEVEL * (k < D.map_rungs ? 1 : Math.pow(STEP, k - D.map_rungs + 1)));
     if (!(cost > 0)) throw new Error(`${D.id}: no cost for rung ${k}`);
     const s = slug(r.pm);
     const t = { key: k === 0 ? D.building : `${D.building}_${s}`, name: bldName(vb, name(r.pm)),

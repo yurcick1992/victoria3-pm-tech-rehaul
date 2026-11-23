@@ -4,7 +4,7 @@ building_coal_mine = {
 	icon = "gfx/interface/icons/building_icons/coal_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 	unlocking_technologies = { shaft_mining }
 
@@ -39,7 +39,7 @@ building_coal_mine_atmospheric_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/coal_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 	unlocking_technologies = { atmospheric_engine }
 
@@ -74,7 +74,7 @@ building_coal_mine_condensing_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/coal_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 520
+	required_construction = 390
 	terrain_manipulator = mining
 	unlocking_technologies = { watertube_boiler }
 
@@ -109,7 +109,7 @@ building_coal_mine_diesel_pump = {
 	icon = "gfx/interface/icons/building_icons/coal_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 676
+	required_construction = 507
 	terrain_manipulator = mining
 	unlocking_technologies = { compression_ignition }
 
@@ -145,7 +145,7 @@ building_iron_mine = {
 	icon = "gfx/interface/icons/building_icons/iron_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 
 	unlocking_technologies = { shaft_mining }
@@ -181,7 +181,7 @@ building_iron_mine_atmospheric_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/iron_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 
 	unlocking_technologies = { atmospheric_engine }
@@ -217,7 +217,7 @@ building_iron_mine_condensing_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/iron_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 520
+	required_construction = 390
 	terrain_manipulator = mining
 
 	unlocking_technologies = { watertube_boiler }
@@ -253,7 +253,7 @@ building_iron_mine_diesel_pump = {
 	icon = "gfx/interface/icons/building_icons/iron_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 676
+	required_construction = 507
 	terrain_manipulator = mining
 
 	unlocking_technologies = { compression_ignition }
@@ -290,7 +290,7 @@ building_lead_mine = {
 	icon = "gfx/interface/icons/building_icons/lead_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 	unlocking_technologies = { shaft_mining }
 
@@ -325,7 +325,7 @@ building_lead_mine_atmospheric_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/lead_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 	unlocking_technologies = { atmospheric_engine }
 
@@ -360,7 +360,7 @@ building_lead_mine_condensing_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/lead_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 520
+	required_construction = 390
 	terrain_manipulator = mining
 	unlocking_technologies = { watertube_boiler }
 
@@ -395,7 +395,7 @@ building_lead_mine_diesel_pump = {
 	icon = "gfx/interface/icons/building_icons/lead_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 676
+	required_construction = 507
 	terrain_manipulator = mining
 	unlocking_technologies = { compression_ignition }
 
@@ -431,7 +431,7 @@ building_sulfur_mine = {
 	icon = "gfx/interface/icons/building_icons/sulfur_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 	unlocking_technologies = { shaft_mining }
 
@@ -466,7 +466,7 @@ building_sulfur_mine_atmospheric_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/sulfur_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 	unlocking_technologies = { atmospheric_engine }
 
@@ -501,7 +501,7 @@ building_sulfur_mine_condensing_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/sulfur_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 520
+	required_construction = 390
 	terrain_manipulator = mining
 	unlocking_technologies = { watertube_boiler }
 
@@ -536,7 +536,7 @@ building_sulfur_mine_diesel_pump = {
 	icon = "gfx/interface/icons/building_icons/sulfur_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 676
+	required_construction = 507
 	terrain_manipulator = mining
 	unlocking_technologies = { compression_ignition }
 
@@ -572,7 +572,7 @@ building_gold_mine = {
 	icon = "gfx/interface/icons/building_icons/gold_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 
 	unlocking_technologies = { prospecting }
@@ -596,7 +596,7 @@ building_gold_mine_atmospheric_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/gold_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 
 	unlocking_technologies = { atmospheric_engine }
@@ -620,7 +620,7 @@ building_gold_mine_condensing_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/gold_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 520
+	required_construction = 390
 	terrain_manipulator = mining
 
 	unlocking_technologies = { watertube_boiler }
@@ -644,7 +644,7 @@ building_gold_mine_diesel_pump = {
 	icon = "gfx/interface/icons/building_icons/gold_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 676
+	required_construction = 507
 	terrain_manipulator = mining
 
 	unlocking_technologies = { compression_ignition }
@@ -692,7 +692,7 @@ building_copper_mine = {
 	icon = "gfx/interface/icons/building_icons/copper_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 
 	unlocking_technologies = { shaft_mining }
@@ -713,7 +713,7 @@ building_copper_mine_atmospheric_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/copper_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 400
+	required_construction = 300
 	terrain_manipulator = mining
 
 	unlocking_technologies = { atmospheric_engine }
@@ -734,7 +734,7 @@ building_copper_mine_condensing_engine_pump = {
 	icon = "gfx/interface/icons/building_icons/copper_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 520
+	required_construction = 390
 	terrain_manipulator = mining
 
 	unlocking_technologies = { watertube_boiler }
@@ -755,7 +755,7 @@ building_copper_mine_diesel_pump = {
 	icon = "gfx/interface/icons/building_icons/copper_mine.dds"
 	city_type = mine
 	levels_per_mesh = 50
-	required_construction = 676
+	required_construction = 507
 	terrain_manipulator = mining
 
 	unlocking_technologies = { compression_ignition }

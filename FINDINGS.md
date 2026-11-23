@@ -435,6 +435,9 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F287 | The 1.2 build has four research entries with a source that cannot exist (railways, flash freezing, navigation; combustion engine's diesel source, in the canon too); against the tier anchors production is ahead in tech eras 3 and 5 (64%, 63% held by the leader) and behind only in tech era 4 (31% at 1905; the canon 56%), the military tree behind everywhere (31 / 15 / 0%); the majors spend 44–52% of directed research on the military tree and 24–37% on technologies three or more countries hold; the motor ladder's gates do not chain; combustion engine is open without pumpjacks in 79% of the majors' years | the builds `mod_m12c`, `mod/`; F286's arms | re-read, no game time | here |
 | F288 | The AI's own research choices lose about 1% of directed research to the ahead-of-time penalty, in vanilla and the mod alike (the majors 1.0–1.3%, the world 0.5–0.7%); camera (no entry of ours; vanilla's realism event option only) accounts for 0.1–0.2%; in the mod directed research is 12–14% of what the majors acquire, so under 0.2% of research; the penalty on entry-delivered technologies (14–20% of the majors' acquisitions) is no loss, the grants being free; acceptable, no intervention (user) | vanilla 1.15.1 n=10, 1.1.1 canon n=10, vanilla 1.15.2 n=8, `m12b` n=5, `g1152-canon12` 1 + partial | re-read, no game time | here |
 | F289 | The mod 1.2 canon `g1152-canon12`, five centuries on game 1.15.2: none past the barrier and nobody hoards, but world GDP 0.61× vanilla 1.15.2's median (0.55–0.79, every run under vanilla's lowest 0.89; `m12b-first` 0.82×), the slide from the 1870s on; every depeasantation aim missed by far (Britain 27.5% at the end, Germany 64.9%, the world 60.0%); loss 25.23 against `m12b-first`'s 13.35. Production technologies much earlier than in `m12b-first` (the leader holds 79% of tech era 3 production at 1875, 56% of era 4 at 1905), new plants on the best tier (27% below it, `m12b` 46%), construction delivered 0.59× vanilla's (`m12b` 0.77×), productive workers per head 0.65× at vanilla's GDP per worker; no tech-era-5 military technology in any run; play 150 min, cluster 1 | `g1152-canon12` n=5 against vanilla 1.15.2 n=8 and `m12b-first` n=5 | 5 × 1836→1936 | here |
+| F290 | What separates the canon `g1152-canon12` from `m12b-first` is not the tier mix: both hold tier 2 at about half their manufacturing capital (48% against 52% in 1906) with the same jobs a point (5.4 against 5.1); the canon holds 22–23% less of it by 1906–16. To 1886 the two make the same physical output (0.84 against 0.86 of vanilla's) and the canon's is worth less (more raw and heavy goods, fewer consumer goods); after it the canon makes less of what pops and states buy (consumer manufacturing 0.63–0.72 against 0.95–1.08), its construction speed 0.74–0.80 of `m12b`'s; military spending not the cause; the trigger not separated. Per construction point the newest rung earns the most (profit tier 1 £46–59, tier 2 61–88, tier 3 85–109 a year) and the crafts more than any (90–190; ×5 cost 18–38); the crafts are built mostly where tier 1 is open (backward countries build almost nothing after 1856); the deposits' paybacks against vanilla's by type | `g1152-canon12` n=5, `m12b-first` n=5, vanilla 1.15.2 n=8 | re-read, no game time | here |
+| F291 | Discovered oil is not built up at once, in vanilla either: in the major markets, where the technology is held and oil is in demand, vanilla has built 18–44% of its discovered oil slots by 1936 (median 37%), the canon 5–26% (median 12%), 62% of the canon's qualifying regions never get a rig (vanilla 34%); oil sells at or just under base in both (£33–40, base 40), so both build oil to demand; the canon's buyers are fewer (buildings' oil use 42k against 87k units a week, pops' heating about half of vanilla's by the order books, F292; ports 0.47×, power plants 0.41×, railways 0.57×, logging 0.61×, chemical plants 0.32× of vanilla's levels); a change to oil's slots, rungs or cost would not raise its output while demand binds | `g1152-canon12` n=5 and vanilla 1.15.2 n=8, end saves and summaries | re-read, no game time | here |
+| F292 | Late-game oil by consumer: the canon's buildings use half of vanilla's oil (42k against 87k units a week in 1936); the gap is plastics above all (5.6k against 29.7k: vanilla's glassworks switch to houseware plastics by method, the canon's plastics is a tier-3 rung with 134 levels), then ports (5.4k against 14.8k), other manufacturing, chemicals, logging and automobiles; engines (7.6k against 2.6k), diesel railways, oil-fired power plants and tractors use about 9k more than vanilla's; pops' heating about a third of the markets' oil demand in both (medians 33% and 29%), half of vanilla's oil; F291's "rest" in vanilla is mostly oil beyond demand | `g1152-canon12` n=5, vanilla 1.15.2 n=8, end saves | re-read, no game time | here |
 
 ---
 
@@ -24339,7 +24342,7 @@ modern financial instruments' 1930 (1891).
 **Play time** (`wall_clusters.mjs`): all five runs cluster 1, 142–160 minutes (median 150.3), no slowdown episode; `m12b` 159.6, vanilla
 167.6 (two vanilla runs cluster 2). Directional: no alternating vanilla.
 
-**Reading (argued, not shown).** The book sets every economic number m12b-first set; what moved is research. With the entries the 1.2
+**Reading (argued, not shown; ⚠ F290 finds the tier mix the same in both books, so the mechanism below does not hold as written).** The book sets every economic number m12b-first set; what moved is research. With the entries the 1.2
 book had broken repaired, the production technologies arrive at or before vanilla's dates and well before m12b-first's, and the AI
 builds new plants on the newest rung it holds. At cost step 2.0 each newer rung costs twice the one below, so the same capital makes
 fewer jobs: productive workers per head fall to 0.65× while GDP per worker stays at vanilla's, and world GDP follows the workers. Less
@@ -24350,3 +24353,181 @@ were checked and are not the sink. The direction fits goal 3, but the size overs
 (§2.9). The reading above is a mechanism argued from the ledger's lines, not separated by a perturbation: the book changed research,
 naval weights and the held entries together, and none was measured alone. The 1913 unemployment of run 2's Britain is a conquest's
 peasants, not the economy's. The auto-downsizing lines read four runs (the stitched run has no harness log).
+
+## F290 — WHAT SEPARATES THE CANON `g1152-canon12` FROM `m12b-first` IS NOT THE TIER MIX: BOTH HOLD THE SAME SHARE OF MANUFACTURING CAPITAL ON TIER 2 AND THE SAME JOBS PER POINT, THE CANON HOLDS LESS OF ALL OF IT; TO 1886 THE TWO MAKE THE SAME PHYSICAL OUTPUT AND DIFFER IN WHAT IT IS WORTH, AFTER IT THE CANON MAKES LESS OF WHAT POPS AND STATES BUY. PER CONSTRUCTION POINT THE NEWEST RUNG EARNS THE MOST AND THE CRAFTS EARN MORE THAN ANY RUNG; THE CRAFTS ARE BUILT MOSTLY WHERE TIER 1 IS ALREADY OPEN; THE DEPOSITS' PAYBACK AGAINST VANILLA'S, BY TYPE (2026-11-23; no game time: F289's five canon runs, `m12b-first`'s five, vanilla 1.15.2's eight)
+
+**Sources.** The run lists of the ledger folders `out_canon12_n5` and `out_m12b_n5` (`_mod.txt`, `_van.txt`); the save summaries, one per
+year (January–March); the canon's book for costs and staffing. Readers written in the session's scratchpad (not committed): sector output
+at base prices from `top_producers` (`sector_output.mjs`), profit, value added and jobs per construction point by class (`backward.mjs`,
+`cap2.mjs`, `tier_profit.mjs`), budgets and queues (`budget.mjs`), GDP-weighted technology holdings (`techdiff.mjs`), and
+`out_canon12_n5/deposits.json`. Value added (VA) = goods sales − goods cost at market prices; wages = VA − profit (§2.10); jobs = staffed
+levels × the rung's staffing (a craft level 500). Medians over runs of world-pooled sums unless stated.
+
+**1. Per construction point a year, the newest rung earns the most; the crafts earn more than any rung** (the canon, £ a point a year):
+
+| class | VA | profit | wages | jobs a point (filled) |
+|---|---|---|---|---|
+| crafts (6 points) | 340–450 | 90–190 | 175–280 | 67–77 |
+| other tier-0 rungs | 31–72 | 14–34 | 22–40 | 4–9 |
+| tier 1 | 71–89 | 46–59 | 25–32 | 5–7 |
+| tier 2 | 87–105 | 61–88 | 14–23 | 3–4 |
+| tier 3 (1906 on) | 103–122 | 85–109 | 14–19 | 1.2–1.8 |
+
+At five times the crafts' cost (30 points), other things fixed: VA 69–90 (tier 1's), profit 18–38 (under every factory rung but the
+non-craft tier 0's), jobs 13–15 (two to three times tier 1's).
+
+**2. The tier mix does not separate the two books** (manufacturing, the canon | `m12b-first`): capital 1.37M | 1.47M points in 1877,
+3.55M | 4.57M in 1906, 5.05M | 6.59M in 1916; tier 2's share of it 25 | 28% in 1877, 48 | 52% in 1906, 57 | 54% in 1916; jobs 12.0M |
+12.5M in 1877, 20.0M | 23.2M in 1906, 23.7M | 29.7M in 1916; jobs a point 8.8 | 8.4, 5.4 | 5.1, 4.6 | 4.5. F289's argued reading (the AI
+builds on a dearer rung, so the same capital makes fewer jobs) does not fit: the canon builds less of everything, not dearer things.
+
+**3. Where they part.** Goods output at base prices ÷ vanilla's, the canon | `m12b-first`: 1856 0.95 | 0.98, 1866 0.92 | 0.94, 1876 0.92
+| 0.92, 1886 0.84 | 0.86, 1896 0.77 | 0.84, 1906 0.68 | 0.74, 1916 0.60 | 0.77, 1935 0.58 | 0.81; world GDP 1876 0.88 | 0.95, 1886 0.82 |
+0.89. To 1886 the two make the same amount and the canon's is worth less (GDP is value added at market prices): it makes more raw and
+heavy goods (1886: mining 0.73 | 0.59, heavy manufacturing 0.77 | 0.56; dynamite's world-first 1851 against 1901, pumpjacks' 1869 against
+1906, F289) and fewer consumer goods (0.78 | 0.96). After 1886 the canon makes less, of what pops and states buy: consumer manufacturing
+0.63–0.72 | 0.95–1.08 over 1896–1935, cash crops 0.59–0.88 | 0.79–0.94, staples, military goods 0.64–0.79 | 1.23–1.45, services. Its
+construction queues' speed falls to 0.80 and 0.74 of `m12b-first`'s in 1896 and 1906 (construction sectors 0.84–0.90). Military spending is
+not the cause (goods and wages 0.84–1.03 of `m12b-first`'s). Steel-frame buildings comes later in the canon (held by 17% of the world's
+GDP in 1876 against 32%, caught up by 1886), as do bessemer process, crystal glass, canneries and the held financial and administration
+technologies; dynamite, pumpjacks, nitroglycerin and the naval and land military technologies come earlier.
+
+**4. The deposits' payback against vanilla's** (`deposits.json` and `tier_profit.mjs`, £720 a point): the tier-1 rungs of coal 10.4–12.6
+years (vanilla's mine 7.3–9.8), iron 11–18 (9–14), sulfur 9–16 (9–15), lead 10–32 (12–24), copper 8.6–187 (21–233); fishing 8.7–15.4
+(7.4–8.1), whaling 6.2–11.0 (6.4–9.9), gold 24–34 (6–13), oil 3.8–7.9 (6–15 at vanilla's 400 points; ours 200). Levels in 1935–36 against
+vanilla's: fishing 948 | 1,291, whaling 188 | 201, gold 408 | 394, oil 517 | 1,236. Oil's price 0.89–0.95 of base after 1900 against
+vanilla's 0.82–0.89; its output 60k against 162k units a week in 1936.
+
+**5. The crafts in backward countries.** Backward = holding none of the four tier-1 craft-industry technologies (distillation, lathe,
+steelworking, mechanical tools). They are 5.8% of the world's population and 2.0% of its GDP in 1837–46, 2.4% of its population by 1857,
+and build almost nothing after 1856 (3,666 points a year a run in 1837–46, 413 in 1847–56, under 10 after). The crafts take 2.6% of their
+construction in 1837–46 and 5.6% in 1847–56 (160 and 39 craft levels a run), all their manufacturing jobs and 0.4–3.7% of their GDP.
+The crafts are built mostly where tier 1 is open: unrecognised countries that hold a tier-1 technology (66% of the population, about half
+the GDP) put 0.7–1.2% of their construction into crafts in 1837–76 (about 800 levels a decade a run), 2.6–8.7% of their manufacturing
+construction points, and the crafts hold 91–95% of their manufacturing jobs in 1837–56, 65% in 1867–76 and 43% in 1897–1906; recognised
+countries 0.1–0.3% of their construction.
+
+**What it does NOT say.** n = 5 against n = 5, directional (§2.9). What starts the canon's slide after 1886 is not separated: §3 lists
+what differs, and no perturbation took one difference alone. The per-point readings are world-pooled at the realised prices of the
+book's own runs; a changed cost moves those prices (§2.8), so §1's five-times line and §4's paybacks are static estimates. The construction
+queues' speed is the summary's weekly speed at each year's first save, not a flow. The backward classification reads technologies only.
+
+---
+
+## F291 — DISCOVERED OIL IS NOT BUILT UP AT ONCE, IN VANILLA EITHER: IN THE MAJOR MARKETS, WHERE THE TECHNOLOGY IS HELD AND OIL IS IN DEMAND, VANILLA HAS BUILT 18–44% OF ITS DISCOVERED OIL SLOTS BY 1936 AND THE CANON 5–26%; OIL SELLS AT OR JUST UNDER BASE IN BOTH, SO BOTH BUILD OIL TO DEMAND, NOT TO SLOTS, COST OR TECHNOLOGY; THE CANON'S OIL SECTOR IS SMALLER BECAUSE ITS BUYERS ARE (2026-11-23; no game time: `g1152-canon12` n = 5 and vanilla 1.15.2 n = 8, each run's end save at 1936.1.1 and its yearly summaries; `m12b-first` n = 5 for the demand line)
+
+**Asked.** The user, after F290 §4 found oil the only deposit that pays back fast yet is short: *"Dive deeper in oil, check whether the
+discovered deposits in major markets (where there's a major that has the tech to work them and where there's at least some demand for
+oil) get instantly built up or not."*
+
+**Sources and definitions.** Slots: each run's end save, melted on the fly (`rakaly`), `state_region_manager`: per state region, the
+first oil rung's (vanilla's only rig's) `discovered_amount` and `undiscovered_amount`, and the mod's second rung's amount (§10.124: its
+whole share opens at the region's first discovery). Levels: the summaries' per-state `res`, every year, summed over a split region.
+Selected regions: owned by a country in the market of one of the eleven instrumented tags, where the owner or a major of that market
+holds pumpjacks (the second rung counted where combustion engine is held too), and the market's buildings consume some oil (Σ
+`goods_in.oil` > 0). Readers in the session's scratchpad (`oil_build.mjs`, `oil_demand.mjs`, `oil_buyers.mjs`; not committed) and
+`melted_good_consumers.mjs` on run 1 of each arm.
+
+**1. The slots are discovered and stand empty, in both.** At 1936.1.1, per run (selected regions; capacity = discovered slots of the
+rungs whose technology is held):
+
+| | selected regions | capacity | built | fill | regions with no rig |
+|---|---|---|---|---|---|
+| the canon, 5 runs | 80–107 | 3,040–5,285 | 236–1,391 | 5–26% (median 12%) | 50–66 |
+| vanilla 1.15.2, 8 runs | 60–106 | 2,008–3,037 | 529–1,293 | 18–44% (median 37%) | 19–42 |
+
+Discovery is nearly complete: 36–115 undiscovered slots are left in the canon's selected regions and 40–363 in vanilla's (worldwide
+228–442 and 192–605). The canon's capacity is about 1.5× vanilla's by design (two rungs of 0.75× vanilla's slots each, §10.115).
+
+**2. Nor does a region fill once its first rig is up.** The median fill of the region's end capacity 5 / 10 / 20 years after its first
+rig, by the decade of that rig, over all runs: vanilla 13–30% / 20–54% / 30–60%, the canon 3–13% / 6–25% / 13–50%; 277 of the canon's
+445 selected region-runs never get a rig (62%), 232 of vanilla's 685 (34%).
+
+**3. Oil is not short in either.** The world price, £ (base 40), the canon | vanilla: 1896 39.9 | 39.4, 1906 36.7 | 37.7, 1916 32.7 |
+32.7, 1926 35.3 | 33.6, 1936 37.6 | 35.0. Production, thousand units a week, the canon | vanilla: 6.4 | 6.9 in 1896, 17.5 | 40.4 in
+1916, 60.2 | 161.9 in 1936 (`m12b-first` 61.2).
+
+**4. The canon's buyers are fewer.** Buildings' oil use (Σ `goods_in`) 42.2k against 87.0k units a week in 1936; the rest of
+production, pops' heating (vanilla's `popneed_heating` takes oil at weight 3 and up to the whole need) and the unsold, 12.1k against
+58.2k (33% against 41% of production) (⚠ F292: by the order books pops take about the same share of oil demand in both, about half
+of vanilla's oil, so most of vanilla's rest is oil produced beyond demand). World levels at 1936.1.1 (median), the canon | vanilla: ports 961 | 2,039, power plants 418 |
+1,010, railways 2,522 | 4,395, logging camps 2,071 | 3,388, chemical plants 201 | 628, oil rigs 702 | 1,281 (automotive 258 | 811,
+not like for like: a mod level makes more). In run 1 the largest oil users are, in the canon, plastics glassworks 18%, diesel engines
+15%, ports 8%, rubber-grip tools 8%, logging camps 8%; in vanilla glassworks 29%, ports 17%, chemical plants 13%, logging camps 11%,
+automobiles 9%. Per level the canon's rig makes 60 (both rungs), vanilla's about 115 in 1936 (168k units on 1,445 levels in run 1),
+which the canon's half cost (200 a rung, §10.124) offsets per construction point.
+
+**Reading.** Neither game builds oil because the slots exist: the AI builds it as the market asks, with the price at or under base.
+The canon's oil shortfall (0.37× vanilla's output in 1936) is the size of its oil-using economy, not a cap, a cost or a technology
+gate; a change to oil's slots, rungs or cost would not raise oil output while demand binds.
+
+**What it does NOT say.** The discovery dates are not in the saves, so §2 times a region from its first rig, not from its discovery;
+the selection uses each region's 1936 owner, market and technologies; Σ `goods_in` is the buildings' input as the save records it (run
+1's melt reads the same 61.7k as its summary; the 42k above is the median over runs), and production − buildings is pops' use plus
+whatever the input record overstates, so the pops' share is approximate (F292 reads it from the order books); the AI's own build
+rule is not read, only its outcome. Directional (§2.9).
+
+---
+
+## F292 — LATE-GAME OIL BY CONSUMER: THE CANON'S BUILDINGS USE HALF OF VANILLA'S OIL (42k AGAINST 87k UNITS A WEEK IN 1936); THE GAP IS PLASTICS ABOVE ALL (5.6k AGAINST 29.7k: VANILLA'S GLASSWORKS SWITCH TO PLASTICS FOR FREE, THE CANON'S PLASTICS RUNG IS A TIER-3 BUILDING), THEN PORTS, OTHER MANUFACTURING, CHEMICALS, LOGGING AND AUTOMOBILES; ENGINES, RAILWAYS, FARMS AND POWER PLANTS USE MORE OIL THAN IN VANILLA; POPS' HEATING IS ABOUT A THIRD OF THE MARKETS' OIL DEMAND IN BOTH (2026-11-23; no game time: `g1152-canon12` n = 5 and vanilla 1.15.2 n = 8, each run's end save at 1936.1.1, its 1935.1.1 summary and `markets.tsv`)
+
+**Asked.** The user, after F291 and ruling oil's production side unchanged (§10.132): *"Can you break down the late-game oil
+consumption into categories of consumers, both for mod and vanilla?"*
+
+**Sources.** Buildings: every end save melted on the fly, `building_manager`, each building's oil in `input_goods` (the quantity the
+summaries' `goods_in` sum: run 1 of the canon reads 61,687 in both) and its active methods; grouped by building type into the
+categories below. Pops: the instrumented markets at 1935.1.1 (6–8 a run), `markets.tsv` buy orders for oil minus the oil input of the
+buildings of the countries in that market (the 1935.1.1 summary). Reader `oil_consumers.mjs` in the session's scratchpad (not committed).
+
+**1. Buildings' oil use at 1936.1.1**, thousand units a week, median over runs (share of the median total); the categories' medians do
+not add to the total's:
+
+| category (the main users) | the canon | vanilla | ratio |
+|---|---|---|---|
+| plastics and glass (vanilla's glassworks on houseware plastics; the canon's plastics rung, 134 levels, and crystal glass) | 5.6 (13%) | 29.7 (34%) | 0.19 |
+| ports (modern port) | 5.4 (13%) | 14.8 (17%) | 0.37 |
+| logging (chainsaws) | 5.6 (13%) | 9.3 (11%) | 0.61 |
+| other manufacturing (baking powder food, bolt-action rifles, recoiled barrels, spray-finished furniture) | 3.4 (8%) | 10.0 (12%) | 0.34 |
+| automobiles | 4.2 (10%) | 7.2 (8%) | 0.59 |
+| chemicals, fertilizer, explosives, synthetics (nitrogen fixation) | 1.7 (4%) | 5.4 (6%) | 0.32 |
+| tools (rubber grips) | 2.0 (5%) | 3.6 (4%) | 0.55 |
+| mines, oil rigs, fishing, whaling (diesel pumps) | 0.4 (1%) | 1.7 (2%) | 0.25 |
+| military and shipyards (metal shipbuilding, naval logistics) | 0.0 (0%) | 1.5 (2%) | 0.01 |
+| engines (diesel engines 93 levels, electric engines) | 7.6 (18%) | 2.6 (3%) | 2.94 |
+| railways (diesel trains: 310 oil-using levels against 130) | 3.1 (7%) | 0.5 (1%) | 6.79 |
+| power plants (oil-fired: 92 levels against 57) | 1.7 (4%) | 1.0 (1%) | 1.80 |
+| farms, ranches, plantations (compression-ignition tractors) | 0.9 (2%) | 0.1 (0%) | 7.64 |
+| **all buildings** | **42.2** | **87.0** | **0.49** |
+
+**2. Pops' heating oil** (vanilla's `popneed_heating` takes oil), the instrumented markets at 1935.1.1, buy orders − buildings: the
+canon 2.2–44.0k a run (median 14.7k), 8–48% of the markets' oil demand (median 33%); vanilla 8.7–43.2k (median 28.1k), 17–38% (median
+29%). So pops take about the same share of oil demand in both, and the canon's pops about half of vanilla's oil.
+
+**3. F291's "rest" corrected.** F291 §4 read production − buildings (12.1k against 58.2k) as pops' heating plus the unsold. By the order
+books, pops' share is about the same in both, so most of vanilla's larger rest is oil produced beyond what the markets buy, which fits
+its price under base (0.87 in 1936; the canon 0.94).
+
+**Reading.** Of the 45k a week the canon's buildings use less than vanilla's, about 24k is plastics: vanilla's glassworks switch to
+houseware plastics by method (1,120 levels on it), while the canon's plastics is a tier-3 rung that has 134 levels in 1936. Ports (−9k)
+and the other manufacturing, chemicals, logging and automobiles (−3 to −7k each) follow the smaller economy (F290). The engine rework
+and its kin go the other way: engines, diesel trains, oil-fired power plants and tractors use about 9k a week more than in vanilla.
+
+**4. The engines line, asked next (the user: why vanilla's engines use so little oil, and why the canon's electric rung uses any).**
+World motor-industry levels at 1936.1.1, median over runs: vanilla 1,752, of them 1,624 on steam engines, 188 electric, 14 diesel
+(per run 0, 22, 21, 6, 117, 0, 420, 6); the canon 977: 331 steam, 252 compound, 317 electric, 122 diesel (per run 204, 122, 127, 11 and 0).
+Vanilla's diesel engines need compression ignition (tech era 5), held in 1936 by 0–9% of the world's GDP in seven vanilla runs
+and 38% in one (the run with 420 diesel levels); in the canon by 27–39% in four runs and none in one. So vanilla's engines' oil is
+mostly the assembly-lines automation (5 oil and 5 electricity a level; 71–588 levels a run), and the canon's comes from its diesel
+rung, reached earlier, plus the same automation on more levels (453 against 261). The canon's electric rung has no oil in its recipe
+(57.9 steel, 7.2 electricity, 14.5 copper for 132 engines); its oil is the assembly lines that most of its levels choose. The
+automation is not mandated: the rung's group offers no automation, watertube boiler, rotary valve engine and assembly lines, and at
+1936.1.1 61% of its levels run assembly lines and 37% rotary valve engine (vanilla's electric-engine levels about 48% and 50%; read
+from the summaries' active methods, approximate for vanilla, whose country records mix main methods). The assembly lines' tier copy,
+`pm_assembly_lines_building_motor_industry_motor`, takes 2.19 engines, 0.82 copper, 4.1 oil and 4.1 electricity a level, scaled by staffing and
+throughput. Per engine the canon's diesel rung takes about a fifth of vanilla's diesel oil (25.2 oil for 290 engines against 50 for
+120, §10.116).
+
+**What it does NOT say.** One date (1936.1.1; pops at 1935.1.1); the pops line covers only the instrumented markets; the building input
+record is what a building's methods ask for at its staffing, not what it was supplied; directional (§2.9).
+
+---

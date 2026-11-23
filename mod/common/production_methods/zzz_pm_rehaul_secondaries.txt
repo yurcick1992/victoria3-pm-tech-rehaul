@@ -82,11 +82,11 @@ pm_pot_stills_food_t0 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_sugar_add = 0.46				# x30 =  750
+			goods_input_sugar_add = 0.43				# x30 =  750
 			goods_input_glass_add = 0.09				# x40 =  200
 
 			# output goods
-			goods_output_liquor_add = 1.12			# x30 = 1500
+			goods_output_liquor_add = 1.13			# x30 = 1500
 			goods_output_groceries_add = -0.33 		# x30 = -600
 		}
 
@@ -112,7 +112,7 @@ pm_cannery_food_t1_2 = {
 			goods_input_iron_add = 9.84		# x40 =  400
 
 			# output goods
-			goods_output_groceries_add = 35.75	# x30 =  900
+			goods_output_groceries_add = 38.2	# x30 =  900
 		}
 
 		level_scaled = {
@@ -136,7 +136,7 @@ pm_cannery_fish_food_t1_2 = {
 			goods_input_iron_add = 9.84		# x40 =  400
 
 			# output goods
-			goods_output_groceries_add = 35.75	# x30 =  900
+			goods_output_groceries_add = 38.2	# x30 =  900
 		}
 
 		level_scaled = {
@@ -163,7 +163,7 @@ pm_vacuum_canning_food_t1_2 = {
 			goods_input_oil_add = 4.92 			# x40 =  200
 
 			# output goods
-			goods_output_groceries_add = 71.5	# x30 = 1800
+			goods_output_groceries_add = 76.4	# x30 = 1800
 		}
 
 		level_scaled = {
@@ -195,7 +195,7 @@ pm_vacuum_canning_principle_3_food_t1_2 = {
 			goods_input_oil_add = 4.92 			# x40 =  200
 
 			# output goods
-			goods_output_groceries_add = 85	# config secondary_goods_override (the scaled value was 83.42)
+			goods_output_groceries_add = 85	# config secondary_goods_override (the scaled value was 89.13)
 		}
 
 		level_scaled = {
@@ -219,8 +219,8 @@ pm_pot_stills_food_t1_2 = {
 			goods_input_glass_add = 4.92				# x40 =  200
 
 			# output goods
-			goods_output_liquor_add = 59.58			# x30 = 1500
-			goods_output_groceries_add = -17.87 		# x30 = -600
+			goods_output_liquor_add = 63.67			# x30 = 1500
+			goods_output_groceries_add = -19.1 		# x30 = -600
 		}
 
 		level_scaled = {
@@ -245,8 +245,8 @@ pm_patent_stills_food_t1_2 = {
 			goods_input_copper_add = 4.92				# x40 =   200
 
 			# output goods
-			goods_output_liquor_add = 89.38			# x30 =  2250
-			goods_output_groceries_add = -23.83		# x30 = -600
+			goods_output_liquor_add = 95.5			# x30 =  2250
+			goods_output_groceries_add = -25.46		# x30 = -600
 		}
 
 		level_scaled = {
@@ -289,8 +289,8 @@ pm_craftsman_sewing_textile_t0 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_silk_add = 0.22				# x40 = -600
-			goods_input_fabric_add = -0.33				# x20 =  300
+			goods_input_silk_add = 0.21				# x40 = -600
+			goods_input_fabric_add = -0.31				# x20 =  300
 
 			# output goods
 			goods_output_clothes_add = -0.57			# x30 = -900
@@ -309,8 +309,8 @@ pm_craftsman_sewing_textile_t1 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_silk_add = 4.97				# x40 = -600
-			goods_input_fabric_add = -7.45				# x20 =  300
+			goods_input_silk_add = 4.65				# x40 = -600
+			goods_input_fabric_add = -6.97				# x20 =  300
 
 			# output goods
 			goods_output_clothes_add = -12.85			# x30 = -900
@@ -329,12 +329,12 @@ pm_craftsman_sewing_textile_t2_3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_silk_add = 24.05				# x40 = -600
-			goods_input_fabric_add = -36.08				# x20 =  300
+			goods_input_silk_add = 25.69				# x40 = -600
+			goods_input_fabric_add = -38.54				# x20 =  300
 
 			# output goods
-			goods_output_clothes_add = -62.21			# x30 = -900
-			goods_output_luxury_clothes_add = 62.24		# x60 = 1800
+			goods_output_clothes_add = -71			# x30 = -900
+			goods_output_luxury_clothes_add = 71		# x60 = 1800
 		}
 
 		level_scaled = {
@@ -349,8 +349,8 @@ pm_luxury_furniture_furniture_t0 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_hardwood_add = 0.35
-			goods_input_wood_add = -0.34
+			goods_input_hardwood_add = 0.33
+			goods_input_wood_add = -0.32
 
 			# output goods
 			goods_output_furniture_add = -0.61
@@ -368,11 +368,11 @@ pm_luxury_furniture_furniture_t1 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_hardwood_add = 8.39
-			goods_input_wood_add = -8.38
+			goods_input_hardwood_add = 7.85
+			goods_input_wood_add = -7.84
 
 			# output goods
-			goods_output_furniture_add = -14.77
+			goods_output_furniture_add = -14.76
 			goods_output_luxury_furniture_add = 14.77
 		}
 
@@ -393,9 +393,9 @@ pm_precision_tools_furniture_t1 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_hardwood_add = 13.98			# x40 = -1000
-			goods_input_tools_add = 5.59				# x40 = -400
-			goods_input_wood_add = -13.97				# x20 =  500
+			goods_input_hardwood_add = 13.08			# x40 = -1000
+			goods_input_tools_add = 5.23				# x40 = -400
+			goods_input_wood_add = -13.08				# x20 =  500
 
 			# output goods
 			goods_output_furniture_add = -32.5			# x30 = -1650
@@ -504,12 +504,12 @@ pm_luxury_furniture_furniture_t2_3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_hardwood_add = 40.59
-			goods_input_wood_add = -40.59
+			goods_input_hardwood_add = 43.35
+			goods_input_wood_add = -43.34
 
 			# output goods
-			goods_output_furniture_add = -71.5
-			goods_output_luxury_furniture_add = 71.5
+			goods_output_furniture_add = -81.57
+			goods_output_luxury_furniture_add = 81.6
 		}
 
 		level_scaled = {
@@ -529,13 +529,13 @@ pm_precision_tools_furniture_t2_3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_hardwood_add = 67.65			# x40 = -1000
-			goods_input_tools_add = 27.06				# x40 = -400
-			goods_input_wood_add = -67.65				# x20 =  500
+			goods_input_hardwood_add = 72.25			# x40 = -1000
+			goods_input_tools_add = 28.9				# x40 = -400
+			goods_input_wood_add = -72.24				# x20 =  500
 
 			# output goods
-			goods_output_furniture_add = -157.3			# x30 = -1650
-			goods_output_luxury_furniture_add = 157.3	# x60 =  3300
+			goods_output_furniture_add = -179.5			# x30 = -1650
+			goods_output_luxury_furniture_add = 179.5	# x60 =  3300
 		}
 
 		level_scaled = {
@@ -567,7 +567,7 @@ pm_ceramics_glass_t1 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_dye_add = 1.79
+			goods_input_dye_add = 1.68
 
 			# output goods
 			goods_output_glass_add = -4
@@ -618,8 +618,8 @@ pm_ceramics_glass_t2 = {
 			goods_input_dye_add = 3.94
 
 			# output goods
-			goods_output_glass_add = -8.8
-			goods_output_porcelain_add = 8.8
+			goods_output_glass_add = -9.4
+			goods_output_porcelain_add = 9.4
 		}
 
 		level_scaled = {
@@ -642,8 +642,8 @@ pm_bone_china_glass_t2 = {
 			goods_input_dye_add = 7.88
 
 			# output goods
-			goods_output_glass_add = -17.6
-			goods_output_porcelain_add = 26.4
+			goods_output_glass_add = -18.8
+			goods_output_porcelain_add = 28.2
 		}
 
 		level_scaled = {
@@ -657,11 +657,11 @@ pm_ceramics_glass_t3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_dye_add = 8.67
+			goods_input_dye_add = 9.26
 
 			# output goods
-			goods_output_glass_add = -19.36
-			goods_output_porcelain_add = 19.36
+			goods_output_glass_add = -22.09
+			goods_output_porcelain_add = 22.09
 		}
 
 		level_scaled = {
@@ -681,11 +681,11 @@ pm_bone_china_glass_t3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_dye_add = 17.34
+			goods_input_dye_add = 18.52
 
 			# output goods
-			goods_output_glass_add = -38.72
-			goods_output_porcelain_add = 58.08
+			goods_output_glass_add = -44.18
+			goods_output_porcelain_add = 66.27
 		}
 
 		level_scaled = {
@@ -1005,8 +1005,8 @@ pm_aeroplane_production_automotive_t2 = {
 			goods_input_fabric_add = 5.62
 
 			# output goods
-			goods_output_automobiles_add = -13.2
-			goods_output_aeroplanes_add = 13.2
+			goods_output_automobiles_add = -14.1
+			goods_output_aeroplanes_add = 14.1
 		}
 
 		level_scaled = {
@@ -1027,8 +1027,8 @@ pm_tank_production_automotive_t2 = {
 			goods_input_steel_add = 7.02
 
 			# output goods
-			goods_output_automobiles_add = -26.4
-			goods_output_tanks_add = 26.4
+			goods_output_automobiles_add = -28.2
+			goods_output_tanks_add = 28.2
 		}
 
 		level_scaled = {
@@ -1046,12 +1046,12 @@ pm_aeroplane_production_automotive_t3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_hardwood_add = 12.36
-			goods_input_fabric_add = 12.36
+			goods_input_hardwood_add = 13.21
+			goods_input_fabric_add = 13.21
 
 			# output goods
-			goods_output_automobiles_add = -29.04
-			goods_output_aeroplanes_add = 29.04
+			goods_output_automobiles_add = -33.14
+			goods_output_aeroplanes_add = 33.14
 		}
 
 		level_scaled = {
@@ -1069,11 +1069,11 @@ pm_tank_production_automotive_t3 = {
 	building_modifiers = {
 		workforce_scaled = {
 			# input goods
-			goods_input_steel_add = 15.44
+			goods_input_steel_add = 16.5
 
 			# output goods
-			goods_output_automobiles_add = -58.08
-			goods_output_tanks_add = 58.08
+			goods_output_automobiles_add = -66.28
+			goods_output_tanks_add = 66.28
 		}
 
 		level_scaled = {
@@ -1089,8 +1089,8 @@ pm_radios_electrics_t2 = {
 	building_modifiers = {
 		workforce_scaled = {
 			goods_input_electricity_add = 98.43
-			goods_output_telephones_add = -44
-			goods_output_radios_add = 88
+			goods_output_telephones_add = -47
+			goods_output_radios_add = 94
 		}
 
 		level_scaled = {

@@ -12,7 +12,7 @@ building_food_industry = {
 		pmg_main_food_bakery
 		pmg_distillery_food_industry
 	}
-	required_construction = 6
+	required_construction = 30
 	ai_value = 800
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -69,7 +69,7 @@ building_textile_mill = {
 		pmg_main_textile_handsewn_clothes
 		pmg_luxury_building_textile_mill_textile_mill
 	}
-	required_construction = 6
+	required_construction = 30
 	ai_value = 800
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -157,7 +157,7 @@ building_furniture_manufactory = {
 		pmg_main_furniture_handcrafted_furniture
 		pmg_luxury_building_furniture_manufactory_furniture_manufactory
 	}
-	required_construction = 6
+	required_construction = 30
 	ai_value = 800
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -244,7 +244,7 @@ building_glassworks = {
 		pmg_main_glass_forest_glass
 		pmg_luxury_building_glassworks_glassworks
 	}
-	required_construction = 6
+	required_construction = 30
 	ai_value = 800
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -358,7 +358,7 @@ building_tooling_workshop = {
 	production_method_groups = {
 		pmg_main_tooling_crude_tools
 	}
-	required_construction = 6
+	required_construction = 30
 	ai_value = 800
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"
@@ -472,7 +472,7 @@ building_paper_mill = {
 	production_method_groups = {
 		pmg_main_paper_pulp_pressing
 	}
-	required_construction = 6
+	required_construction = 30
 	ai_value = 800
 	ownership_type = self
 	background = "gfx/interface/icons/building_icons/backgrounds/building_panel_bg_light_industry.dds"

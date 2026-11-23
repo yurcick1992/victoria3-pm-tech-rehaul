@@ -16,6 +16,7 @@
 //   • a 500-worker level: a 5,000-head staffing block × `workforce_mult` 0.1 (the graded-port path) — every product an integer;
 //   • the cloud session's tuned recipe per level (below), NO ×1.2 input lift (e1–e3 keep theirs);
 //   • construction cost = the base e0's ÷ 50 (600 → 12, 316 → 6) — kept by ruling: "Faster payback is narratively deliberate";
+//     `--cost-div <n>` sets the divisor (default 50; 10 since BALANCE_FRAMEWORK §10.132, 2026-11-23: a craft at 30 points);
 //   • the child building group `bg_pmr_crafts` (parent bg_light_industry): no economy of scale, urbanization 2, infrastructure ×1/10;
 //   • automation stripped, plus Vacuum Canning (both variants) and Patent Stills; the kept secondaries' employment × 0.1;
 //   • companies can neither build nor form off it (`craft: true`, read by emit_companies);
@@ -87,7 +88,7 @@ if (HIRE_FLOOR != null && !(Number.isFinite(HIRE_FLOOR) && HIRE_FLOOR > 0))
   die(`--hire-floor must be a positive number or none (got ${HIRE_FLOOR_ARG}); for "no floor" pass a small one such as 0.01 — 0 may read as unset`);
 
 const WM = 0.1;          // a craft level is a tenth of a 5,000-head level
-const COST_DIV = 50;     // construction cost = the base e0's ÷ 50
+const COST_DIV = (() => { const v = argOf('--cost-div', '50'); const n = +v; if (!(Number.isFinite(n) && n >= 1)) die('--cost-div <n>, a number >= 1 (the e0 cost is divided by it)'); return n; })();   // construction cost = the base e0's ÷ COST_DIV (default 50; 10 by §10.132)
 const GROUP = 'bg_pmr_crafts';
 // per industry: the per-LEVEL recipe (500 heads), the two 5,000-head staffing blocks, and what the craft rung does not carry
 // --staffing pb (user-ruled 2026-10-01, BALANCE_FRAMEWORK §10.91.4): EVERY craft staffed 30% shopkeepers / 70% laborers (no machinists —

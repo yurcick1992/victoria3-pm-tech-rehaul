@@ -99,6 +99,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.129 | the mod 1.2 technology pass, first rulings: every research-entry reference the 1.2 book broke or misplaced is fixed, after a thorough check (combustion engine's sources among them); mining workers become a source for nitroglycerin (150,000) and dynamite (250,000); the financial, university and administration entries that run ahead are held (marks raised) and a follower's mark goes from ½ to ¼; refused: army size as a source (too easy to farm), any other new condition type for now, dropping the standing −20% AI weight where an entry cannot tick; parked as a hypothesis: a lower literacy line for a follower; open: military-industry marks (agreed in general, not elsewhere), the dynamite prerequisite of pumpjacks pending the production-tree pass, faster tech spread | in force; the open parts ruled in §10.130; built into `m12d-first` | here |
 | 10.130 | the technology pass, second rulings, and the book `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped, the first prerequisite removed from a vanilla technology); the research marks of arms, artillery and munition × 0.25 (explosives and synthetics stay × 0.5); no entry for navigation; shift work: no entry, its AI research weight × 1.2; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels, a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build from this book on (landmine L56) | in force; built (`m12d-first`, `2e25dfe4`, `make_book12.mjs --tech-pass 1`), the alternate `mod_m12d`, not measured, not deployed; combustion engine on three separate sources, never a sum; macroeconomics' 200 levels is the builder's number, confirmed by §10.131, which also corrects item 5 (the administration and autoscaling entries' followers are a quarter too) | here |
 | 10.131 | the mod 1.2 canon: every ruling of 2026-11-21/22 in one book, canonised before its n=3 (`g1152-canon12`, `3978ad19`); macroeconomics 200 with a follower ¼, correcting §10.130 item 5; identification documents 18 → 90 and mass surveillance 30 → 220 administration levels, elevator 80 → 130 and paved roads 160 → 310 levels of the largest urban centre, every follower ¼ (the builder's marks); the autoscaling buildings are urban centres, financial districts, manor houses and subsistence buildings; the university entries not built, open | in force; the canon since 2026-11-22 (commit `a04216fe`); measured by `20261122_142920_g1152-canon12-n3` | here |
+| 10.132 | the five mines, gold, fishing and whaling cost 0.75× on every rung (mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195), the step 1.3 kept, no recipe moved; the crafts cost 5× (the divisor 50 → 10: 30 points a level), recipe unchanged; oil's production stays as it is (F291, F292: built to demand, in vanilla too); §10.115's vanilla cost on the 1836-map rungs was a starting point, not a principle; what "1836 stays vanilla" protects, in order: world GDP, no new shortages in major markets, each good's combined output in 1836–1838, the 1836 geography and demography — not build costs; the book branches from `g1152-canon12` and is canonised before its runs; A 2.35 (B, C, in1 unchanged) | in force; the canon `g1152-canon12b` (`2b4ec38a`) since 2026-11-23, not measured | here |
 
 ---
 
@@ -6742,3 +6743,85 @@ the financial ones of `m12d-first` included; their bar lines were right). It rep
 
 **Measured by:** the n=3 `20261122_142920_g1152-canon12-n3` (three centuries, fixed n, every run played; the schedule's predictions
 are §10.130's and, for the holds, the first holders near their anchors).
+
+## §10.132 — THE FIVE MINES, GOLD, FISHING AND WHALING COST A QUARTER LESS ON EVERY RUNG; THE CRAFTS COST FIVE TIMES MORE; WHAT "1836 STAYS VANILLA" PROTECTS (user-ruled 2026-11-23)
+
+**What prompted it.** F289: the canon `g1152-canon12` ends at 0.61× vanilla 1.15.2's world GDP. Asked which levers to move, the user
+named the factory ladder (C, A, B) and *"the rural counterparts, where they're not locked"*. Read on the canon's five centuries at their
+own prices (the scratchpad readers of 2026-11-23, recorded in F290): a tier-1 deposit rung pays back in 10.4–13.2 years against a vanilla
+mine's 7.9–10.0, and about +7% flat output or about −25% cost on every rung would close that, other things fixed. The user: *"by
+"locking" [I meant] exactly the flat output. I don't want to go exponential there for narrative reasons, but maybe a slightly higher flat
+(or a slightly cheaper build cost throughout) is the way to go."* Claude recommended the cost cut (no recipe and no 1836 pair to re-derive;
+5,000 jobs a level for fewer points), noting that it puts the 1836-map rungs under vanilla's cost, against §10.115's cost item.
+
+**1. The ruling.** *"If you don't have additional arguments, let's have -25% to all mine costs."* Claude had none. Every rung of the
+five mines (coal, iron, lead, sulfur, copper) costs 0.75× its cost in the canon: **300 / 300 / 390 / 507** points (from 400 / 400 / 520 /
+676); the cost step 1.3 above the 1836-map rungs is unchanged. No recipe, output, staffing or AI desire moves. Readings that go with it
+(static, at the canon's realised prices, so directional): the cut brings coal's and iron's tier-1 rungs to about a vanilla mine's
+payback, while sulfur's, lead's and copper's already pay back about as fast as vanilla's late in the century and will pay back faster;
+the ruling is one number for all five, as the ladders are uniform (§1.4). The supply it adds pulls the raw prices back from their 10–20%
+premium over vanilla's, which gives back part of the gain.
+
+**2. §10.115's cost item was a starting point, not a principle.** It read: Claude's defaults *"as starting points"*, the 1836-map rungs
+at vanilla's cost. The user: *"Having vanilla cost in 1836 is not really important. Was the ruling regarding the cost specifically?
+That's weird."* It was not: the 1836-map rungs' cost was a default, and it no longer binds the mines.
+
+**3. What "1836 stays vanilla" (§1.4) protects, by decreasing importance (the user):**
+1. world GDP;
+2. no new shortages in the major markets (removing some where vanilla is genuinely off balance is acceptable);
+3. the combined output of each good, worldwide and in the major markets, at least in 1836–1838;
+4. the geography and the social and demographic picture of exactly 1836.
+
+Vanilla's build costs are not on the list: a cost moves only what is built after the start.
+
+**4. Fishing and whaling: the same cut, ruled.** Claude advised it (F290 §4): fishing's tier-1 rung paid back in 8.7–15.4 years against
+a vanilla wharf's 7.4–8.1 at the same 200 points, the world's fish output was 0.29–0.45× vanilla's, its levels 0.73×, fish 5–19% dearer
+after 1900; whaling was on par already (6.2–11.0 against 6.4–9.9 years, 188 levels against 201) and shares fishing's cost line. The user:
+*"Fishing and whaling also gets -25%, together with mines. Main reason -- uniformity and reducing rulings count."* Every rung of both costs
+0.75× its cost in the canon: **150 / 150 / 195** (from 200 / 200 / 260).
+
+**5. The crafts cost five times more, ruled.** The user: *"All right, "craft x5" goes."* The craft rule's cost divisor goes from 50 to 10:
+every craft level costs **30 points** (from 6), its recipe, staffing and AI desire unchanged (exception 1 of CLAUDE.md §1.3 changes only in
+the divisor). The aim, the user's: the crafts past a 20-year payback at the steel-frame construction method and realised prices, without
+improving their recipe. Read on the canon's runs (F290 §1, static): pooled crafts pay back in 21–32 years at steel frame from 1866 on
+(textile, the most profitable, from about 1900); their profit per construction point falls from £90–190 a year to £18–38, under every
+factory rung but the non-craft tier 0's, which restores the frontier rule at the bottom of the ladder; their value added per point falls
+to tier 1's (£69–90) and their jobs per point to 13–15, still two to three times tier 1's. The early-game costs Claude listed and the user
+accepted: before about 1880 the world builds with iron frame and wood, where a 30-point craft pays back in 24–33 years, so the AI mostly
+stops building crafts before 1870, where it holds tier-1 technologies it builds those instead; the countries with no tier-1 craft
+technology build almost nothing after 1856 anyway (F290 §5); downsized craft levels are rarely rebuilt, which helps the tier-0 aim; the
+1836 start is untouched (the map is placed), the 1836–1855 path may drift. A higher cost does not make existing crafts insolvent.
+
+**6. Gold: the same cut, ruled.** Claude first advised none: gold keeps vanilla's static AI desire 5000 and already had vanilla's level
+count (408 against 394 in 1935) while paying back in 24–34 years (vanilla 6–13), so its cost is not what limits it; what is short is output
+per level (15 on tiers 1–3, 8 on tier 0; gold output 0.43× vanilla's, about 0.4% of the world's goods output). Asked again in the light
+of item 4's reason, Claude recommended including it (one rule for every tiered deposit but oil, which already costs half vanilla's; a
+small effect), and the user ruled it: gold's rungs cost **300 / 300 / 390 / 507**.
+
+**7. Oil, with Claude's advice:**
+- **oil: no cut; the user asks whether oil should be rethought from scratch.** It already costs half vanilla's (200 a rung) and pays back
+  fastest of any deposit (3.3–8.5 years; vanilla 6–15 at 400), yet has 0.42× vanilla's levels in 1935 (517 against 1,236) and 0.37× its
+  output in 1936; its price is 0.89–0.95 of base, about 5% over vanilla's, so it is not short. It is limited by where it can be built and
+  by demand, not by return. The user asked next (2026-11-23) whether the discovered oil of the major markets, where a major holds the
+  technology and there is some demand for oil, is built up at once or not. F291: not at once, in vanilla either (by 1936
+  vanilla has built 18–44% of those slots, the canon 5–26%); oil sells at or just under base in both, so both build it to demand, and
+  the canon's oil-using economy is smaller (ports, power plants, railways, logging, chemical plants 0.32–0.61× vanilla's levels; pops'
+  heating about half of vanilla's oil, F292; plastics, a tier-3 rung, the largest single gap). A change to oil's slots, rungs or cost would not raise its output while demand binds.
+  **Ruled the same day: oil's production side stays as it is.** The user: *"Leave oil production as is. The much lower supply is
+  somewhat expected with engine rework, although I expected a smaller number."*
+
+**8. The book and A 2.35.** It branches from the canon `g1152-canon12` (`3978ad19`) and is canonised before its runs (the user,
+2026-11-23). Claude proposed A 2.2 → **2.35**, with B 1.64, C 2.0 and in1 1.2 unchanged: by F165's lever readings (game 1.13 books, A
+2.0–2.2, so an extrapolation) about × 1.3 on world GDP, 0.61 → about 0.80 (0.77–0.84) before the deposit and craft changes, under the
+0.90–1.00 aim as the under-side rule asks; A rather than C because it adds frontier output, which the price aim wants, and thins the
+tier-0 rungs (F165), while per unit of GDP both shorten tier 3's payback about alike; at 1935's prices, before they respond, tier 3
+6.8 → 5.0 years, tier 2 10.0 → 7.8, tier 1 untouched (A scales tiers 2 and 3 only); A 2.3 the cautious alternative. The user: *"Yes,
+A 2.35"*. The desire ladder stays 455 / 1000 / 2200 / 4840 (C unchanged).
+
+**The book `g1152-canon12b`** (sha256 `2b4ec38a24535e0a`, tree twin `36f9a19ddfb3fdfd`): `node tools/make_book12.mjs --prefix c12b
+--name g1152-canon12b --naval-lowered 1 --tech-pass 2 --A 2.35 --craft-cost-div 10 --deposit-cost-level 0.75` on game 1.15.2 (the
+three options new, their defaults regenerating every earlier book). By field diff against `g1152-canon12`: the 29 tier-2 and tier-3
+manufacturing outputs, each × (2.35 / 2.2)^(tier − 1), and their `target_be`; the six crafts' cost 6 → 30; the 30 rungs of the five
+mines, gold, fishing and whaling at 0.75× cost (oil's 200 / 200 kept); the records (`_ab.A`, `_artisan.cost_div`,
+`_deposits.cost_level`, `_book12`, the chain's names and stamps); no input, AI desire, research or tree field; the tree twin only its
+stamp. Copied verbatim over `config/mod_config.json` + `config/tech_tree_options.json`, built (every linter and both preflights passing) and deployed. Not measured.

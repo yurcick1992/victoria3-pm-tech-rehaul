@@ -2,6 +2,12 @@
 // rulings carried through it, every intermediate book under a prefix so nothing existing is touched.
 //
 //   node tools/make_book12.mjs [--prefix m12] [--name m12-first] [--naval-lowered 0.8] [--tech-pass 1]
+//        [--A 2.2] [--craft-cost-div 50] [--deposit-cost-level 1]
+//
+// --A, --craft-cost-div, --deposit-cost-level (BALANCE_FRAMEWORK §10.132, ruled 2026-11-23; the defaults regenerate every earlier book):
+//   the output step per tier (make_ab_config --A; the canon 2.2, the book g1152-canon12b 2.35), the craft rule's cost divisor
+//   (make_artisan_config --cost-div; 50, then 10: a craft at 30 points) and the level on every derived deposit cost (make_deposit_config
+//   --cost-level; 1, then 0.75: the five mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195, oil's own 200 / 200 kept).
 //
 // --tech-pass 1: the mod 1.2 technology pass (BALANCE_FRAMEWORK §10.129, §10.130, ruled 2026-11-22 after F286 and F287); off by default, so
 // m12b-first and m12c-first regenerate from their recorded commands. It carries:
@@ -54,6 +60,11 @@ const NAME = opt('--name', `${P}-first`);
 const NAVAL_LOWERED = +opt('--naval-lowered', '0.8');
 const TECH_PASS_LEVEL = +opt('--tech-pass', '0'); if (![0, 1, 2].includes(TECH_PASS_LEVEL)) throw new Error('--tech-pass 0 | 1 | 2');
 const TECH_PASS = TECH_PASS_LEVEL >= 1;
+const A_STEP = opt('--A', '2.2'), CRAFT_DIV = opt('--craft-cost-div', '50'), DEP_LEVEL = opt('--deposit-cost-level', '1');
+if (!(+A_STEP > 1)) throw new Error('--A <the output step per tier, > 1>');
+if (!(+CRAFT_DIV >= 1)) throw new Error('--craft-cost-div <n >= 1>');
+if (!(+DEP_LEVEL > 0 && +DEP_LEVEL <= 2)) throw new Error('--deposit-cost-level <L in (0, 2]>');
+const A_SET = +A_STEP !== 2.2, CRAFT_SET = +CRAFT_DIV !== 50, DEP_SET = +DEP_LEVEL !== 1;
 if (!(NAVAL_LOWERED > 0 && NAVAL_LOWERED <= 1)) throw new Error('--naval-lowered <a multiplier in (0, 1]>');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const SNAP_OLD = 'C:/claude-code/vic3_game_1.13.11/game';
@@ -71,19 +82,19 @@ const T4 = `${P}-tier4`;
 // ---- the canon's chain, with the 1.2 structure, slope, desire and the quarter ------------------------------------------------------------
 run(['tools/make_tier4_config.mjs', '--insert', 'motor'], { TIER4_SUFFIX: T4 });
 run(['tools/make_tier4_techs.mjs', ...(TECH_PASS ? ['--prereq-swap', 'pumping-engines'] : [])], { TIER4_SUFFIX: T4 });
-run(['tools/make_ab_config.mjs', '--base', `config/mod_config.${T4}.json`, '--A', '2.2', '--B', '1.64', '--in0', '1.2', '--cost-ratio', '2.0',
+run(['tools/make_ab_config.mjs', '--base', `config/mod_config.${T4}.json`, '--A', A_STEP, '--B', '1.64', '--in0', '1.2', '--cost-ratio', '2.0',
   '--in0-for', 'motor:1', '--divisor', '0.000125', '--anchor-cost', '--ai-ladder', '455,1000,2200,4840', '--ai-defines',
   'MONEY_SPENDING_CONSTRUCTION_TOO_LARGE_INVESTMENT_POOL_FACTOR=0.95,MONEY_SPENDING_CONSTRUCTION_CRITICAL_THRESHOLD=1.0,MONEY_SPENDING_CONSTRUCTION_EXCESSIVE_THRESHOLD=2.0,CONSTRUCTION_MAX_NUM_PRODUCTION_BUILDING_CONSTRUCTIONS_SCALED=0.1,PRODUCTION_BUILDING_LONG_CONSTRUCTION_TIME_THRESHOLD=160,PRODUCTION_BUILDING_VERY_LONG_CONSTRUCTION_TIME_THRESHOLD=240',
   '--bar-months', '24', '--anchor-for', 'food:1,textile:1,furniture:1,glass:1,tooling:1,paper:1,fertilizer:1,explosives:1,steel:1,motor:1,automotive:1,arms:1,artillery:1,munition:1,synthetics:1,electrics:1,art_academy:1',
   '--down-step', '1.5', '--in1-pop', '1.2', '--mix-scale', 'pm_electric_engines:electricity:0.25,pm_diesel_engines:oil:0.25', '--suffix', `${P}-ab`,
-  '--variant', `${P}-ab|the canon's A/B book (e1a12-ai1135-m10ac)|BALANCE_FRAMEWORK 10.116, 10.117, 10.124 (the mod 1.2 book)|C 2.0, the desire ladder 455/1000/2200/4840, the motor insertion (Compound Engines) and the quarter`]);
+  '--variant', `${P}-ab|the canon's A/B book (e1a12-ai1135-m10ac)|BALANCE_FRAMEWORK 10.116, 10.117, 10.124 (the mod 1.2 book)|C 2.0, the desire ladder 455/1000/2200/4840, the motor insertion (Compound Engines) and the quarter${A_SET ? `; A ${A_STEP} (BALANCE_FRAMEWORK 10.132)` : ''}`]);
 run(['tools/make_trade_config.mjs', '--base', b('ab'), '--suffix', `${P}-trade`, '--ruled-by', 'user 2026-10-01: the e1-anchor book on the canon\'s trade table (x1)']);
 run(['tools/make_dam_config.mjs', '--base', b('trade'), '--suffix', `${P}-dams`]);
 { const f = b('dams'); const j = JSON.parse(readFileSync(f, 'utf8'));
   j.dams.rules = 'family'; delete j.dams.log_levels;
   j._dams_family = 'dams.rules = family, as the canon (canon-dams-family-nolog: BALANCE_FRAMEWORK 10.89.12); no monthly dam log (the canon dropped it 2026-09-29)';
   writeFileSync(f, JSON.stringify(j)); console.log(`\n(hand) ${f}: dams.rules = family, log_levels dropped`); }
-run(['tools/make_artisan_config.mjs', '--base', b('dams'), '--suffix', `${P}-art`, '--staffing', 'pb', '--hire-floor', '2', '--craft-rule', '0.6,0.89', '--seed', '5', '--craft-ai', '800']);
+run(['tools/make_artisan_config.mjs', '--base', b('dams'), '--suffix', `${P}-art`, '--staffing', 'pb', '--hire-floor', '2', '--craft-rule', '0.6,0.89', '--seed', '5', '--craft-ai', '800', ...(CRAFT_SET ? ['--cost-div', CRAFT_DIV] : [])]);
 run(['tools/make_merge_config.mjs', '--base', b('art'), '--suffix', `${P}-merge`, '--host-cost', 'textile:own', '--ai-rule', 'cond']);
 run(['tools/make_research_extra_config.mjs', '--base', b('merge'), '--suffix', `${P}-jex`]);
 run(['tools/make_dam4_config.mjs', '--base', `${P}-jex`, '--suffix', `${P}-dam4`, '--script-placement']);
@@ -116,7 +127,7 @@ run(['tools/make_dam_inputs_config.mjs', '--base', b('bz'), '--suffix', `${P}-dc
 run(['tools/make_value_overrides_config.mjs', '--base', b('dcu'), '--suffix', `${P}-ra`, '--set', 'g115-research-adds']);
 run(['tools/make_research_conditions_config.mjs', '--base', b('ra'), '--suffix', `${P}-il`, '--set', 'g115-idea-laws']);
 // ---- the 1.2 additions --------------------------------------------------------------------------------------------------------------
-run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`, '--cost-step', '1.3', '--start-1836', 'pair']);
+run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`, '--cost-step', '1.3', '--start-1836', 'pair', ...(DEP_SET ? ['--cost-level', DEP_LEVEL] : [])]);
 {
   const j = JSON.parse(readFileSync(b('dep'), 'utf8'));
   // the same-acre steps on the world's technology: every vanilla method of the four named steps (§10.124 item 1), read from the game
@@ -206,7 +217,10 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
       'agri_steps': '§10.124 items 1 and 3; §10.116.1',
       ...(NAVAL_LOWERED !== 0.8 ? { [`research_events.entry_weight_rule.naval_lowered ${NAVAL_LOWERED}`]: '§10.127 (ruled 2026-11-22)' } : {}),
       ...(TECH_PASS ? { 'the technology pass (_tech_pass)': '§10.129, §10.130 (ruled 2026-11-22)' } : {}),
-      ...(TECH_PASS_LEVEL >= 2 ? { 'the administration and urban-centre holds, followers a quarter': '§10.131 (ruled 2026-11-22)' } : {}) } };
+      ...(TECH_PASS_LEVEL >= 2 ? { 'the administration and urban-centre holds, followers a quarter': '§10.131 (ruled 2026-11-22)' } : {}),
+      ...(A_SET ? { [`A ${A_STEP}`]: '§10.132 item 8 (ruled 2026-11-23)' } : {}),
+      ...(CRAFT_SET ? { [`craft cost divisor ${CRAFT_DIV}`]: '§10.132 item 5 (ruled 2026-11-23)' } : {}),
+      ...(DEP_SET ? { [`deposit cost level ${DEP_LEVEL} (every derived deposit cost; oil's own list kept)`]: '§10.132 items 1, 4 and 6 (ruled 2026-11-23)' } : {}) } };
   writeFileSync(b('pre'), JSON.stringify(j));
   writeFileSync(`config/tech_tree_options.${P}-pre.json`, readFileSync(`config/tech_tree_options.${P}-dep.json`));
   console.log(`\n(hand) ${b('pre')}: the 1.2 book fields (mark rule, weight rule, tier-scaled lines, engines on the power lines, craft fixes, ${worldGate.length} world-gated methods, ${irrigation.length} irrigation drives)`);
