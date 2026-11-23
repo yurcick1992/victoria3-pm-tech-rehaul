@@ -438,6 +438,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F290 | What separates the canon `g1152-canon12` from `m12b-first` is not the tier mix: both hold tier 2 at about half their manufacturing capital (48% against 52% in 1906) with the same jobs a point (5.4 against 5.1); the canon holds 22–23% less of it by 1906–16. To 1886 the two make the same physical output (0.84 against 0.86 of vanilla's) and the canon's is worth less (more raw and heavy goods, fewer consumer goods); after it the canon makes less of what pops and states buy (consumer manufacturing 0.63–0.72 against 0.95–1.08), its construction speed 0.74–0.80 of `m12b`'s; military spending not the cause; the trigger not separated. Per construction point the newest rung earns the most (profit tier 1 £46–59, tier 2 61–88, tier 3 85–109 a year) and the crafts more than any (90–190; ×5 cost 18–38); the crafts are built mostly where tier 1 is open (backward countries build almost nothing after 1856); the deposits' paybacks against vanilla's by type | `g1152-canon12` n=5, `m12b-first` n=5, vanilla 1.15.2 n=8 | re-read, no game time | here |
 | F291 | Discovered oil is not built up at once, in vanilla either: in the major markets, where the technology is held and oil is in demand, vanilla has built 18–44% of its discovered oil slots by 1936 (median 37%), the canon 5–26% (median 12%), 62% of the canon's qualifying regions never get a rig (vanilla 34%); oil sells at or just under base in both (£33–40, base 40), so both build oil to demand; the canon's buyers are fewer (buildings' oil use 42k against 87k units a week, pops' heating about half of vanilla's by the order books, F292; ports 0.47×, power plants 0.41×, railways 0.57×, logging 0.61×, chemical plants 0.32× of vanilla's levels); a change to oil's slots, rungs or cost would not raise its output while demand binds | `g1152-canon12` n=5 and vanilla 1.15.2 n=8, end saves and summaries | re-read, no game time | here |
 | F292 | Late-game oil by consumer: the canon's buildings use half of vanilla's oil (42k against 87k units a week in 1936); the gap is plastics above all (5.6k against 29.7k: vanilla's glassworks switch to houseware plastics by method, the canon's plastics is a tier-3 rung with 134 levels), then ports (5.4k against 14.8k), other manufacturing, chemicals, logging and automobiles; engines (7.6k against 2.6k), diesel railways, oil-fired power plants and tractors use about 9k more than vanilla's; pops' heating about a third of the markets' oil demand in both (medians 33% and 29%), half of vanilla's oil; F291's "rest" in vanilla is mostly oil beyond demand | `g1152-canon12` n=5, vanilla 1.15.2 n=8, end saves | re-read, no game time | here |
+| F293 | The canon `g1152-canon12b`, two centuries on game 1.15.2: world GDP 0.87× vanilla 1.15.2 (0.94, 0.80; `g1152-canon12` 0.61×), the gain output per worker (1.14–1.26×), not jobs (0.70–0.74× per head); none past the barrier, nobody hoards; Britain 5.7% and 49.5% U\* at the end, Germany 72%, the world 54%; industry prices 0.85 of 1900; T3 32.9% of tiered; no tech-era-5 military technology; loss 16.93 (11.45, 25.16) against 25.23; play 186 and 168 min | `g1152-canon12b` n=2 against vanilla 1.15.2 n=8 and `g1152-canon12` n=5 | 2 × 1836→1936 | here |
 
 ---
 
@@ -24529,5 +24530,65 @@ throughput. Per engine the canon's diesel rung takes about a fifth of vanilla's 
 
 **What it does NOT say.** One date (1936.1.1; pops at 1935.1.1); the pops line covers only the instrumented markets; the building input
 record is what a building's methods ask for at its staffing, not what it was supplied; directional (§2.9).
+
+---
+
+## F293 — THE CANON `g1152-canon12b`, TWO CENTURIES: WORLD GDP 0.87× VANILLA 1.15.2'S (0.94 AND 0.80), UP FROM `g1152-canon12`'S 0.61× AND NEAR THE 0.90–1.00 AIM; THE SLIDE AFTER 1900 TURNS INTO A RECOVERY FROM 1916 IN RUN 1 AND FLATTENS IN RUN 2; LOSS 16.93 (11.45 AND 25.16) AGAINST 25.23; THE GAIN IS OUTPUT PER WORKER (1.14–1.26× VANILLA'S), NOT JOBS (0.70–0.74× PER HEAD); BRITAIN SPLITS 5.7% AGAINST 49.5% AT THE END; NO TECH-ERA-5 MILITARY TECHNOLOGY IN EITHER RUN (2026-11-23; `g1152-canon12b` n = 2, session `20261123_132305_g1152-canon12b-n2`; against vanilla 1.15.2 n = 8, `20261119_210048_g1152-vanilla8`, and `g1152-canon12` n = 5, F289)
+
+**Arms.** `{kind: config, config: config/mod_config.g1152-canon12b.json}`, the canon since 2026-11-23 (sha256 `2b4ec38a24535e0a`,
+§10.132: `g1152-canon12` + A 2.35, the crafts at 30 points, the five mines, gold, fishing and whaling at 0.75× cost). Two fixed-n
+centuries 1836→1936 on game 1.15.2, no crash, every DLC mounted, both cluster 1 (185.9 and 167.6 min). The predictions were written into
+the schedule before run 1 (`g1152_canon12b_n2.json`); their outcome is in the session's `VERDICT.md`.
+
+**The register** (`criteria.mjs`; the end = the 1932–36 mean; at n = 2 the mean of both runs):
+
+| line | `g1152-canon12b` (run 1 · run 2) | `g1152-canon12` (F289, n = 5) | aim |
+|---|---|---|---|
+| world GDP ÷ vanilla, the end | **0.87×** (0.94 · 0.80) | 0.61× | 0.90–1.00 |
+| world GDP by decade, 1846 … 1936 (run 1) | 1.00 · 0.98 · 0.98 · 0.88 · 0.85 · 0.81 · 0.78 · 0.80 · 0.89 · 0.93 | 0.96 · 0.97 · 0.96 · 0.88 · 0.82 · 0.76 · 0.67 · 0.61 · 0.56 · 0.63 | the 1886 line 0.79–1.01 |
+| world GDP by decade (run 2) | 0.98 · 0.94 · 0.97 · 0.88 · 0.87 · 0.82 · 0.76 · 0.72 · 0.76 · 0.76 | | |
+| U\* the USA, 1913 · end | 43.2% · 24.7% (42.8 · 4.7; 43.6 · 44.6) | 49.8% · 41.8% | 25% · 15% |
+| U\* Britain, 1913 · end | 41.5% · 27.6% (29.1 · 5.7; 54.0 · 49.5) | 40.8% · 27.5% | 10% · 5% |
+| U\* Germany, 1913 · end | 76.3% · 71.6% (73.8 · 64.4; 78.9 · 78.9) | 71.2% · 64.9% | 20% · 20% |
+| U\* the world, 1913 · end | 63.4% · 53.6% (64.0 · 51.8; 62.8 · 55.4) | 67.1% · 60.0% | 60% · 50% |
+| industry prices 1935 ÷ 1900 | 0.85 (0.92 · 0.77; vanilla 0.89) | 0.90 | ≤ 0.75 |
+| members above 0.5 GDP · hoard above half GDP | 0 · 0.000 | 0 · 0.003 | 0 · 0 |
+| T3 ÷ (T0+T1+T2) | 0.599, 32.9% of tiered (1.019 · 0.180) | 0.368 | more |
+| T0 slope · old plants kept | −0.529 · 106.2% (101.1 · 111.2) | — · 100.5% | falling · < 100% |
+| barrier, worst run | 0.30 (USA 1927–36, run 1) | 0.60 | past at 1 |
+| **loss** | **16.93** (11.45 · 25.16) | 25.23 | — |
+
+Minor readings: W 0.72× (world), 0.69× (shortlist); the shortlist's GDP 0.93×; H 0.16 world (0.56× vanilla's), 0.08 shortlist (0.18×);
+GDP at base prices 0.95×; PI 0.95×, PP 0.91×, both falling. Germany did not form in either run (Prussia stands in where it exists).
+
+**The decomposition at 1935** (`first_run_decomp.mjs`, ÷ vanilla's median): world GDP 0.95× and 0.81×, productive workers per head 0.74×
+and 0.70×, GDP per productive worker 1.26× and 1.14× (`g1152-canon12`'s plus2 runs: 0.61×, 0.63×, about 1.03×). Shortlist: per worker
+1.60× and 1.31×, workers per head 0.75× and 0.63×.
+
+**Technology** (`tech_census.mjs`, the end): the majors hold GBR 164.0, USA 158.5, NET 160.5, FRA 163.5 (production 52–57, military
+44.5–47, society 59.5–61; vanilla GBR 169.3 with military 54.3). No country holds any tech-era-5 military technology in either run
+(vanilla holds every one, 2–11 countries a run). The leader's share of tech era 3 at 1875 57.5%, tech era 4 at 1905 53.8%, tech era 5 at the
+end 46.2% (`g1152-canon12` 52.5%, 41.0%, 46.2%; vanilla 55.0%, 51.3%, 69.2%). Run 1's tech-era-5 production technologies spread to 5–10
+countries each (`g1152-canon12` 2–7). 42% of the majors' acquisitions had a research-entry stage (`g1152-canon12` 33%).
+
+**Reading.** The §10.132 changes moved world GDP by about +0.26 (0.61 → 0.87), more than §10.132.8's extrapolation from F165 (to about 0.80,
+before the deposit and craft changes); which of the three changes bought how much is not separable from this batch. The two runs diverge
+from about 1906: run 1 recovers to 0.93 with Britain and the USA near full employment and T3 half of tiered workers, run 2 stays near 0.76
+with Britain's U\* at 49.5% and T3 at 15%. The price aim is the largest term left in run 1 (8.28 of 11.45); in run 2 it is nearly met (0.77)
+while the U\* and T3 terms carry the loss.
+
+**What it does NOT say.** n = 2: the mean is not a median and the runs differ by more than the gap to the aim (§2.9); the per-country U\*
+levels move with territory and civil wars and are weak here above all: run 1's American civil war split the USA (the Confederacy 112M
+people at the end, the USA 31M), so its USA lines read the smaller part, and run 2's Prussia lost almost all its land around 1871 (about 1M
+people from the 1880s; no Germany forms in either run), so its Germany line (79%) reads that remnant; no alternating vanilla, so the play
+times are directional (§3.4); the crafts and deposits predictions are not read.
+
+**The ledger** (claude.ai/artifact/ArkRJWK19f1s4rDkcxq4Wd, `REPORT.html` in the session) adds: construction delivered 1880–1935 0.76×
+vanilla's (`g1152-canon12` 0.59×); new plants below the owner's best tier 23.3% (27%); misplaced capital 17% in 1926–36; tier 3 repays its
+construction in 6.8 years, a tier-0 craft in 41 and a tier-0 factory in 52; auto-downsizing destroys 0.56× vanilla's construction points a
+run; the tiered deposits hold 15.4% of the world's productive workers (vanilla's same buildings 11.9%) on 0.77× vanilla's construction
+points; lead, copper and oil leave vanilla's 1836–1845 range in both runs (1840: lead 484 a week against 595, copper 235 against 188, oil
+441 against 273). Red flags on the order books: 159 problem market-years (153, 165) against the same vanilla's 161 and `g1152-canon12`'s
+163; Japanese paper, German silk (no producer and mostly no buyer) and Japanese hardwood carry two thirds.
 
 ---
