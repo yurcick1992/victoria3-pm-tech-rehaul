@@ -493,6 +493,8 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.130 | the technology pass, second rulings, built as `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped); the research marks of arms, artillery and munition × 0.25; no entry for navigation; shift work's AI research weight × 1.2 and no entry; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels; a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build (L56) | in force; built, not measured; item 5 corrected by §10.131 |
 | 10.131 | the mod 1.2 canon: every ruling of the last days in one book, canonised before its n=3 (`g1152-canon12`); the administration and urban-centre entries held (identification documents 90, mass surveillance 220, macroeconomics 200 administration levels; elevator 130, paved roads 310 levels of the largest urban centre), every held follower a quarter; the autoscaling buildings: urban centres, financial districts, manor houses, subsistence buildings; the university entries open | in force; the canon since 2026-11-22; its n=3 playing |
 | 10.132 | the five mines, gold, fishing and whaling cost 0.75× on every rung (mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195); the crafts cost 5× (30 points a level, recipe unchanged); oil's production unchanged; what "1836 stays vanilla" protects, in order: world GDP, no new shortages in major markets, each good's combined output in 1836–1838, the 1836 geography and demography — not build costs; A 2.35; the canon `g1152-canon12b` | in force; the canon since 2026-11-23, measured by six centuries (F293, F294) |
+| 10.133 | gold minting broadly follows vanilla: every gold rung mints 500 a level (vanilla's top 1,000 ÷ the mod's two slots per vanilla slot), the explosives lines half of vanilla's (62.5 / 125), so a fully built deposit mints what vanilla's does at each technology stage; for the next book, possibly re-decided later | in force for the next book; the canon `1.2.d2` since 2026-11-24, not measured (F296) |
+| 10.134 | `1.2.d2` canonised (§10.133's gold minting on `g1152-canon12b`); debug builds are numbered continuously, major.minor.dN, the number the user's decision (an extremely minor change a fourth number, 1.2.d2.1, or none): it is the book's name, file and record (`_debug_version`) and shows in a debug build's mod name and init marker; `1.2.d1` is read as `g1152-canon12b` | in force; the canon since 2026-11-24, not measured |
 
 ---
 
@@ -685,13 +687,19 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 
 ## 4.1 What it is
 
-**Since 2026-11-23 `config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the mod 1.2 book
-`config/mod_config.g1152-canon12b.json` + twin** — sha256 prefix **`2b4ec38a24535e0a`** (the tree twin `36f9a19ddfb3fdfd`), canonised
+**Since 2026-11-24 `config/mod_config.json` + `config/tech_tree_options.json` are verbatim copies of the book `1.2.d2`
+(`config/mod_config.1.2.d2.json` + twin)** — sha256 prefix **`102f924c6abf5155`** (the tree twin `f72917a24fd8c954`), canonised before its runs
+(§10.133, §10.134), `node tools/make_book12.mjs --prefix d2 --name 1.2.d2 --naval-lowered 1 --tech-pass 2 --A 2.35 --craft-cost-div 10
+--deposit-cost-level 0.75 --country-effects 1`: the book below with the gold rungs minting 500 a level and the gold explosives lines half
+of vanilla's (field diff: nothing else but `_debug_version` and labels). Not measured. `mod/` and the deployed copy are its debug build.
+
+**From 2026-11-23 to 11-24 the canon was the mod 1.2 book
+`config/mod_config.g1152-canon12b.json` + twin** (`1.2.d1` in the debug numbering) — sha256 prefix **`2b4ec38a24535e0a`** (the tree twin `36f9a19ddfb3fdfd`), canonised
 before its runs (§10.132), `node tools/make_book12.mjs --prefix c12b --name g1152-canon12b --naval-lowered 1 --tech-pass 2 --A 2.35
 --craft-cost-div 10 --deposit-cost-level 0.75`: the book below with A 2.35, the crafts at 30 points and the five mines, gold, fishing and
 whaling at 0.75× cost on every rung (field diff: nothing else). Measured by six centuries (F293, F294: world GDP 0.97× vanilla 1.15.2
-at the median, runs 0.78–1.24; two of six past the barrier; loss 9.31 on the four intact). `mod/` and the deployed copy hold its release
-build, for the user's look (2026-11-23); the next default build turns them back into a debug build.
+at the median, runs 0.78–1.24; two of six past the barrier; loss 9.31 on the four intact). Its gold rungs
+mint nothing (F296).
 
 **From 2026-11-22 to 11-23 the canon was the mod 1.2 book `config/mod_config.g1152-canon12.json` + twin** — sha256 prefix **`3978ad1917b0f9ea`** (the tree twin `0376680b3fae3f19`), canonised on
 game 1.15.2 before its first runs (§10.131; commit `a04216fe`), `node tools/make_book12.mjs --prefix c12 --name g1152-canon12
@@ -784,10 +792,11 @@ What §1.2 and §1.3 leave out:
   book broke (railways, flash freezing, navigation, combustion engine's sources), pumpjacks on rotary valve engine in place of dynamite,
   mining workers as a source for nitroglycerin and dynamite, the military industries' marks × 0.25, the financial entries and
   macroeconomics held, shift work's AI weight × 1.2. Not measured, not deployed.
-  **The canon since 2026-11-23: `g1152-canon12b`** (`2b4ec38a`, §10.132) = `g1152-canon12` + A 2.35, the crafts at 30 points, the five
+  **The canon since 2026-11-24: `1.2.d2`** (`102f924c`, §10.133, §10.134) = `g1152-canon12b` + gold minting (500 a level on every rung); not measured.
+  **The canon from 2026-11-23 to 11-24: `g1152-canon12b`** (`2b4ec38a`, §10.132) = `g1152-canon12` + A 2.35, the crafts at 30 points, the five
   mines, gold, fishing and whaling at 0.75× cost; measured by six centuries (F293's two, then F294's four: world GDP 0.97× at the median,
   0.78–1.24; two of six past the barrier (Britain at 1.13×, the USA at 0.78×); loss 9.31 on the four intact against
-  `g1152-canon12`'s 25.23; on those four Britain's U\* 3.3% at the end, Germany's 64.5%; no tech-era-5 military technology in any run). It followed F289 (`g1152-canon12`'s five centuries: world GDP 0.61×
+  `g1152-canon12`'s 25.23; **its gold rungs mint nothing, fixed in `1.2.d2`, F296**; on those four Britain's U\* 3.3% at the end, Germany's 64.5%; no tech-era-5 military technology in any run). It followed F289 (`g1152-canon12`'s five centuries: world GDP 0.61×
   vanilla 1.15.2), F290 (what separates it from `m12b-first`), F291–F292 (oil, left as it is).
   **The canon from 2026-11-22 to 11-23: `g1152-canon12`** (`3978ad19`, §10.131) = `m12d-first` + identification documents 18 → 90 and mass
   surveillance 30 → 220 administration levels, elevator 80 → 130 and paved roads 160 → 310 levels of the largest urban centre, every
@@ -911,7 +920,8 @@ One line per canon; the reasons are in the § named. The files of every former c
 | 11-08 → 11-12 | `g115c-canon-bz-dcu-ra-il` | the 1.0 chain replayed on game 1.15 (copper in five rungs, as vanilla) + bronze artillery + dam copper + copper trade class C + 1.15's research adds ×1/3 + the idea entries' 1.15 laws — **mod 1.1** (game 1.15.0) | 10.108, 10.109 |
 | 11-12 → 11-22 | `g1151-canon-bz-dcu-ra-il-aw` | the same chain replayed on game 1.15.1: the telephone rung follows vanilla's new recipe (value-neutral); the AI research weights of six technologies with research entries back to 1.13.11's — **mod 1.1.1** (game 1.15.1), **mod 1.1.2** (game 1.15.2) | 10.111, 10.122 |
 | 11-22 → 11-23 | `g1152-canon12` | the mod 1.2 book: tiered deposits, the motor ladder, C 2.0, the 1.2 rulings, the technology pass, the administration and urban-centre holds — canonised before its first runs (game 1.15.2); measured by F289 (world GDP 0.61×) | 10.115–10.131 |
-| 11-23 → | `g1152-canon12b` | A 2.35; the crafts at 30 points; the five mines, gold, fishing and whaling at 0.75× cost — canonised before its runs; measured by F293 and F294 (n = 6: world GDP 0.97×, two of six past the barrier) | 10.132 |
+| 11-23 → 11-24 | `g1152-canon12b` (`1.2.d1`) | A 2.35; the crafts at 30 points; the five mines, gold, fishing and whaling at 0.75× cost — canonised before its runs; measured by F293 and F294 (n = 6: world GDP 0.97×, two of six past the barrier) | 10.132 |
+| 11-24 → | `1.2.d2` | the gold rungs mint 500 a level (nothing in the 1.2 books before it), the gold explosives lines half of vanilla's — canonised before its runs; debug builds numbered from here | 10.133, 10.134 |
 
 ⚠ **Returning to the pre-artmerge family would need the performance changes reimplemented** — those books carry neither tick-cost fix (resource-slot
 dams, `dams.layout = resource4`; trigger-placed research entries, `research_events.placement = script`; F220/F221).
@@ -924,6 +934,10 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 - A canonisation is a user ruling. The named copy is written first, the change proven by **field diff** against the previous canon (only the intended
   keys move), then copied verbatim over `config/mod_config.json` + twin, built, linted and deployed; record the sha256 and the ruling in BALANCE_FRAMEWORK
   and BACKLOG.
+- **Debug builds are numbered `major.minor.dN`** (§10.134; today `1.2.d2`): the number is the book's name (`config/mod_config.1.2.d2.json`, the
+  record `_debug_version`), and every doc, schedule, finding and reply refers to the book by it. **The user decides the number:** ask before
+  numbering a book; an extremely minor change may take a fourth number (`1.2.d2.1`) or none. Books before `1.2.d2` keep their names
+  (`1.2.d1` is read as `g1152-canon12b`).
 - A named book is the record of what was MEASURED: never overwrite it to carry a later change — make a new name.
 - Regenerate a book through its recorded chain (`_ab.command`, the `_*_variant` records), never by hand edits. `make_ab_config.mjs` and the `make_*_config.mjs`
   makers are catalogued in `REPO_GUIDE.md`. ⚠ Almost every intermediate book of the canon's chain is gitignored, so a full regeneration starts from
@@ -949,7 +963,7 @@ dams, `dams.layout = resource4`; trigger-placed research entries, `research_even
 
 **Measurement**
 3. **A run's configuration is unambiguous before it launches.** State back, and get agreement on: which ARM (`{kind: control}` = vanilla + telemetry
-   and nothing else, ever; `{kind: config, config: <path>}` = which book; an overlay is not a control; `{kind: external, mod: <path>}` = someone
+   and nothing else, ever; `{kind: config, config: <path>}` = which book, named by its debug version, §4.4; an overlay is not a control; `{kind: external, mod: <path>}` = someone
    else's mod from a frozen copy + telemetry, never a control and never read against the register), **which book a new config branches from**
    (never assume — a wrong base cost a whole century batch, F234), the span, n, the metrics and what is compared against what. A probe of how the
    ENGINE behaves belongs on vanilla + telemetry (our content would confound it); a short reading of how OUR economy behaves belongs on the
@@ -1053,7 +1067,7 @@ Other flags: `-NoDeploy`, `-NoLint`, `-ControlOnly` (vanilla + telemetry; requir
   derived drift guard (the output price, % of base, at which the rung's base recipe under its most basic secondaries covers inputs + wages), not a design
   input. An industry-level `disabled: true` hands the industry back to vanilla; every reader loop must skip disabled industries (L27).
 - **Deployment** is a real copy (`robocopy /MIR`) of `mod/` to `Documents\Paradox Interactive\Victoria 3\mod\pm_tech_rehaul` — a junction does not work.
-  Restart the Paradox launcher to rescan; the mod name carries `(built yyyy-MM-dd HH:mm)`.
+  Restart the Paradox launcher to rescan; the mod name carries `(built yyyy-MM-dd HH:mm)` and, on a numbered book, its debug version ("Version 1.2.d2").
 - **After an in-game load, read `error.log`** (MODDING_NOTES); the linters check economics, not engine errors. The build emits a self-diagnostic on_action
   that logs `PM_TECH_REHAUL: init OK … (build <ts>)` to `debug.log` at game start; add a `PM_TECH_REHAUL WARN` tripwire there when a change could break
   something no linter sees.

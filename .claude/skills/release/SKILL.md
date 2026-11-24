@@ -42,7 +42,9 @@ the shell's Documents folder) is what the user uploads.
    overhaul. Version <release>`**, the form of the Workshop item's title (the user, 2026-11-19; "[1.15] … Version 1.1.2"; the macro
    version is the game's major.minor, as `supported_game_version` "1.15.*"); `supported_game_version` covers the installed game
    (`"1.15.*"`); the `short_description` still true. This file is the only hand-maintained one in `mod/`. Remind the user that the Workshop
-   item's own title is set on its Steam page.
+   item's own title is set on its Steam page. Between releases the file's `name` shows the last debug build's book number ("Version 1.2.d2 (built …)",
+   BALANCE_FRAMEWORK §10.134) while `version` stays the last release's; a `-Release` build writes `version` into the name itself, so `version`
+   is the field that must be right.
 2. `powershell -ExecutionPolicy Bypass -File tools\build.ps1 -Release` (it deploys). Every lint and the preflight must pass; the output names
    the debug_log lines it stripped and "RELEASE BUILD: no build stamp …".
 3. README's replaced-file list: `node tools/list_replaced_files.mjs` on the build, pasted into README's section, its label naming the version.

@@ -699,8 +699,14 @@ foreach ($ind in $cfg.industries) {
         }
         # country modifiers: shipyards grant naval capacity (country_ship_construction_add) from the SAME
         # PM that makes clippers/steamers — dropping it silently breaks building/maintaining navies.
-        if ($null -ne $t.ship_construction) {
-            $pm += "`tcountry_modifiers = {","`t`tworkforce_scaled = {","`t`t`tcountry_ship_construction_add = $(QtyMul $t.ship_construction $fxM)","`t`t}","`t}"
+        # country_effects (a deposit rung's: gold's minting, make_deposit_config --country-effects; landmine L57) - the same block.
+        $countryMods = @()
+        if ($null -ne $t.ship_construction) { $countryMods += "country_ship_construction_add = $(QtyMul $t.ship_construction $fxM)" }
+        if ($null -ne $t.country_effects) { foreach ($ce in $t.country_effects.PSObject.Properties) { $countryMods += "$($ce.Name) = $(QtyMul $ce.Value $fxM)" } }
+        if ($countryMods.Count -gt 0) {
+            $pm += "`tcountry_modifiers = {","`t`tworkforce_scaled = {"
+            foreach ($cm in $countryMods) { $pm += "`t`t`t$cm" }
+            $pm += "`t`t}","`t}"
         }
         $pm += "`tbuilding_modifiers = {","`t`tworkforce_scaled = {"
         # EXACT VOLUMES FOR EVERY TIER (user-ruled 2026-08-17): the config's solved volumes emit
@@ -1381,12 +1387,24 @@ if ($cfg.pm_employment) { foreach ($p in $cfg.pm_employment.PSObject.Properties)
     foreach ($e in $p.Value.PSObject.Properties) { $ov[$e.Name] = [double]$e.Value }
     $pmEmp[$p.Name] = $ov
 } }
+# country-effect override lookup: pm -> [ordered]@{ country modifier = value } (config `pm_country`: a deposit line's minting, landmine L57)
+$pmCountry = @{}
+if ($cfg.pm_country) { foreach ($p in $cfg.pm_country.PSObject.Properties) {
+    $ov = [ordered]@{}
+    foreach ($e in $p.Value.PSObject.Properties) { $ov[$e.Name] = [double]$e.Value }
+    $pmCountry[$p.Name] = $ov
+    if (-not ($pmGoods.ContainsKey($p.Name) -or $pmEmp.ContainsKey($p.Name))) { throw "pm_country names '$($p.Name)', which carries no pm_goods/pm_employment override - its block would never be rewritten" }
+} }
 # Rewrite ONE overridden PM's block (replacement semantics; see the header comment above). $blk is the
 # block's lines, header line included; returns the new lines. Throws when the PM cannot carry the
 # override, because a silently skipped override ships a mod that disagrees with the model.
-function Convert-PmBlock([System.Collections.Generic.List[string]]$blk, [string]$pmName, $goodsOv, $empOv) {
+function Convert-PmBlock([System.Collections.Generic.List[string]]$blk, [string]$pmName, $goodsOv, $empOv, $countryOv) {
     $out = New-Object System.Collections.Generic.List[string]
+    $countryDone = @{}
     foreach ($ln in $blk) {
+        if ($countryOv -and $ln -match '^(\s*)(country_[a-z_]+)\s*=\s*-?[0-9.]+' -and $countryOv.Contains($Matches[2])) {
+            $out.Add("$($Matches[1])$($Matches[2]) = $(Format-Qty $countryOv[$Matches[2]])"); $countryDone[$Matches[2]] = $true; continue
+        }
         if ($goodsOv -and $ln -match '^\s*goods_(input|output)_[a-z_]+_add\s*=') { continue }
         if ($empOv   -and $ln -match '^\s*building_employment_[a-z_]+_add\s*=')  { continue }
         if ($goodsOv -and $ln -match '^\s*required_input_goods\s*=\s*([a-z_]+)') {
@@ -1394,6 +1412,7 @@ function Convert-PmBlock([System.Collections.Generic.List[string]]$blk, [string]
         }
         $out.Add($ln)
     }
+    if ($countryOv) { foreach ($k in $countryOv.Keys) { if (-not $countryDone[$k]) { throw "pm override: $pmName has no $k line - cannot apply the country override" } } }
     # locate `building_modifiers = {` and its extent, then the target sub-block(s) INSIDE it — the file
     # also has workforce_scaled under state_modifiers, so anchoring on the sub-block name alone is wrong
     $bmIx = -1
@@ -1556,7 +1575,7 @@ foreach ($pf in (Get-ChildItem (Join-Path $Game 'common\production_methods') -Fi
                 # scale — so an override is scaled too rather than escaping it.
                 $blk2 = if ($pmGoods.ContainsKey($name) -or $pmEmp.ContainsKey($name)) {
                     [void]$pmOverridden.Add($name)
-                    Convert-PmBlock $blk $name $pmGoods[$name] $pmEmp[$name]
+                    Convert-PmBlock $blk $name $pmGoods[$name] $pmEmp[$name] $pmCountry[$name]
                 } else { $blk }
                 if ($granPms.Contains($name)) { $blk2 = Scale-PmBlock $blk2 $granDiv }
                 foreach ($nl in $blk2) { $outL.Add($nl) }
@@ -1658,10 +1677,10 @@ $diagLine = if ($Release) {
     $relMeta = Get-Content (Join-Path $repo 'mod\.metadata\metadata.json') -Raw | ConvertFrom-Json
     if (-not $relMeta.version) { throw "-Release: mod\.metadata\metadata.json has no version - the manifest line cannot name one" }
     # the name without a "(built ...)" stamp: a debug build of mod/ writes one into this very file, and it is stripped only further down
-    $relName = ($relMeta.name -replace '\s*\(built[^)]*\)', '').Trim()
+    $relName = (($relMeta.name -replace '\s*\(built[^)]*\)', '') -replace 'Version [0-9][0-9a-z.]*', "Version $($relMeta.version)").Trim()
     if (-not $relName) { throw "-Release: mod\.metadata\metadata.json has no name - the manifest line cannot name the mod" }
     "PM_TECH_REHAUL: init OK - $relName $($relMeta.version) loaded (release build)"
-} else { "PM_TECH_REHAUL: init OK - mod loaded, game started (build $diagTs) on [TimeKeeper.GetCurrentDate.GetString]" }
+} else { "PM_TECH_REHAUL: init OK - mod loaded, game started ($(if ($cfg._debug_version) { "$($cfg._debug_version), " })build $diagTs) on [TimeKeeper.GetCurrentDate.GetString]" }
 # ⭐ TRIPWIRE (GAME_UPDATE_1_15 Q11, BALANCE_FRAMEWORK §10.109.4): emit_vanilla_refs counts "crafts out" as a parent group's levels minus the
 #   craft group's - right only if the engine's group-level counters include child groups (inferred from vanilla's own AI decrees, which
 #   count bg_manufacturing and bg_extraction, groups with no building of their own; never measured). Once a game, on one country with
@@ -2068,6 +2087,10 @@ $metaPath = Join-Path $modAbs '.metadata\metadata.json'
 $ts = Get-Date -Format 'yyyy-MM-dd HH:mm'
 $meta = Get-Content $metaPath -Raw
 $meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*?)\s*\(built[^)]*\)(")', '${1}${2}')          # strip any prior "(built ...)"
+# the version the NAME shows: a debug build's book number (major.minor.dN[.M], BALANCE_FRAMEWORK §10.134), else metadata.json's own `version` -
+# always rewritten, because the name in mod/.metadata is the last build's and would carry its number into another book or a release
+$nameVersion = if (-not $Release -and $cfg._debug_version) { [string]$cfg._debug_version } else { [string](ConvertFrom-Json $meta).version }
+$meta = [regex]::Replace($meta, '("name"\s*:\s*"[^"]*Version )[0-9][0-9a-z.]*', ('${1}' + $nameVersion))
 if ($Release) {
     # a release build's name is the mod's name alone (POLISH_1_0.md R1)
     [System.IO.File]::WriteAllText($metaPath, $meta, $noBom)

@@ -183,10 +183,15 @@ on a hand edit. Use the editor on it to read and explore; change the canon throu
 
 ## The canon
 
-The balance book the builder ships by default is **`jex-dam4s-rs-x25-m10ac-dpriv-wm99`**, copied verbatim into
-`config/mod_config.json` (+ `config/tech_tree_options.json`): up to four rungs per industry, each rung one of
-vanilla's own production methods with vanilla's name, gate, staffing and icon, sized by the A/B ladder (output
-×2.2, input value ×1.64 and construction cost ×1.9 per tier). The formula and its exceptions are `CLAUDE.md`
+The balance book the builder ships by default is **`1.2.d2`**, copied verbatim into `config/mod_config.json`
+(+ `config/tech_tree_options.json`): up to four rungs per industry, each rung one of vanilla's own production
+methods with vanilla's name, gate, staffing and icon, sized by the A/B ladder (output ×2.35, input value ×1.64
+and construction cost ×2.0 per tier), with mines, wharves and oil rigs tiered too.
+
+**Versions.** A released version is `major.minor.patch` (1.1.2). A debug build carries its book's debug version,
+`major.minor.dN` (1.2.d2; a fourth number for an extremely minor change): the mod name in the launcher and the
+start-up line in `debug.log` show it, and the book is `config/mod_config.<version>.json`.
+ The formula and its exceptions are `CLAUDE.md`
 §1.3; what the book contains and where it stands, `CLAUDE.md` Part 4.
 
 ## Licence

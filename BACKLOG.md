@@ -13,6 +13,8 @@ ruling or by order · **RESEARCH** = an unexplained measurement · **DEFECT** = 
 
 ## The order (from ROADMAP and the user's rulings; updated 2026-11-21)
 
+**The canon is `1.2.d2` (2026-11-24, §10.133, §10.134), not yet played.** Books are numbered `major.minor.dN` from here, the number the user's decision.
+
 **Now (the user, 2026-11-21):** the vanilla 1.15.2 reference is done (F274), the same-book machinery merged and proven (F275), the
 pre-1.2 probes done (F276–F280; the research-weight rule ruled −20% / −50% with the ticking signal, built in the emitters), and the register's
 tools are on §10.120 / §10.123. **The mod 1.2 book is BUILT (2026-11-21, §10.125, §10.126):** `config/mod_config.m12b-first.json` (+ twin),
@@ -196,6 +198,8 @@ Closed:
 
 ## D. AI, construction, companies, dams
 
+- **DONE 2026-11-24 (§10.133, §10.134): gold mints 500 a level on every rung, the canon `1.2.d2`** (it minted nothing in every 1.2 book to `g1152-canon12b`) · open: its first runs; the amount may be re-decided (250 / 750 / 500 / 500 keeps 1836 at vanilla's) · FINDINGS F296, landmine L57
+- **PROPOSED, not ruled (F296)** · the deposits' t2 and t3 pollution per level scaled with output (× the rung's output ÷ its vanilla method's), since flat output makes them 1.5–2.3× vanilla's per ton; factories stay vanilla's per level · FINDINGS F296
 - **OPEN, found 2026-11-24 (F294), nothing ruled** · the government's dam queues and the hoard: in the canon's runs
   the interventionist governments keep 45–88 weeks of work in their own queue, mostly dams (vanilla's 4–15 weeks), so their private queue
   gets about the law's half of the construction points (`country_private_construction_allocation_mult` 0.5) and the pool outruns it; the

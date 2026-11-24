@@ -2,7 +2,7 @@
 // rulings carried through it, every intermediate book under a prefix so nothing existing is touched.
 //
 //   node tools/make_book12.mjs [--prefix m12] [--name m12-first] [--naval-lowered 0.8] [--tech-pass 1]
-//        [--A 2.2] [--craft-cost-div 50] [--deposit-cost-level 1]
+//        [--A 2.2] [--craft-cost-div 50] [--deposit-cost-level 1] [--country-effects 1]
 //
 // --A, --craft-cost-div, --deposit-cost-level (BALANCE_FRAMEWORK §10.132, ruled 2026-11-23; the defaults regenerate every earlier book):
 //   the output step per tier (make_ab_config --A; the canon 2.2, the book g1152-canon12b 2.35), the craft rule's cost divisor
@@ -24,6 +24,11 @@
 // --tech-pass 2 (§10.131, 2026-11-22; the 1.2 canon): all of the above, and the administration and urban-centre entries held, every held
 //   entry's follower mark a quarter: identification documents 18 -> 90 administration levels, mass surveillance 30 -> 220, macroeconomics
 //   200 (follower 50), elevator 80 -> 130 levels of the largest urban centre, paved roads 160 -> 310.
+//
+// --name <major>.<minor>.d<n>[.<m>] (the debug build numbering, BALANCE_FRAMEWORK §10.134; the user decides the number): the book carries it as
+//   `_debug_version`, and its debug builds show it in the mod's name and the init marker.
+// --country-effects 1 (found 2026-11-24, FINDINGS F296; off by default, so every earlier book regenerates): the tiered deposits carry their
+//   vanilla methods' country effects — gold's minting, 500 a level on every rung (§10.133; make_deposit_config --country-effects).
 //
 // --naval-lowered: the standing multiply on a technology with a NAVAL research entry (`entry_weight_rule.naval_lowered`). The default
 // 0.8 is the rule `m12b-first` was built with (its recorded command has no flag and still reproduces it); since BALANCE_FRAMEWORK §10.127
@@ -60,7 +65,8 @@ const NAME = opt('--name', `${P}-first`);
 const NAVAL_LOWERED = +opt('--naval-lowered', '0.8');
 const TECH_PASS_LEVEL = +opt('--tech-pass', '0'); if (![0, 1, 2].includes(TECH_PASS_LEVEL)) throw new Error('--tech-pass 0 | 1 | 2');
 const TECH_PASS = TECH_PASS_LEVEL >= 1;
-const A_STEP = opt('--A', '2.2'), CRAFT_DIV = opt('--craft-cost-div', '50'), DEP_LEVEL = opt('--deposit-cost-level', '1');
+const A_STEP = opt('--A', '2.2'), CRAFT_DIV = opt('--craft-cost-div', '50'), DEP_LEVEL = opt('--deposit-cost-level', '1'), EFFECTS = opt('--country-effects', '0');
+if (!['0', '1'].includes(EFFECTS)) throw new Error('--country-effects 0 | 1');
 if (!(+A_STEP > 1)) throw new Error('--A <the output step per tier, > 1>');
 if (!(+CRAFT_DIV >= 1)) throw new Error('--craft-cost-div <n >= 1>');
 if (!(+DEP_LEVEL > 0 && +DEP_LEVEL <= 2)) throw new Error('--deposit-cost-level <L in (0, 2]>');
@@ -127,7 +133,7 @@ run(['tools/make_dam_inputs_config.mjs', '--base', b('bz'), '--suffix', `${P}-dc
 run(['tools/make_value_overrides_config.mjs', '--base', b('dcu'), '--suffix', `${P}-ra`, '--set', 'g115-research-adds']);
 run(['tools/make_research_conditions_config.mjs', '--base', b('ra'), '--suffix', `${P}-il`, '--set', 'g115-idea-laws']);
 // ---- the 1.2 additions --------------------------------------------------------------------------------------------------------------
-run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`, '--cost-step', '1.3', '--start-1836', 'pair', ...(DEP_SET ? ['--cost-level', DEP_LEVEL] : [])]);
+run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`, '--cost-step', '1.3', '--start-1836', 'pair', ...(DEP_SET ? ['--cost-level', DEP_LEVEL] : []), ...(EFFECTS === '1' ? ['--country-effects', '1'] : [])]);
 {
   const j = JSON.parse(readFileSync(b('dep'), 'utf8'));
   // the same-acre steps on the world's technology: every vanilla method of the four named steps (§10.124 item 1), read from the game
@@ -206,6 +212,7 @@ run(['tools/make_deposit_config.mjs', '--base', b('il'), '--suffix', `${P}-dep`,
     if (TECH_PASS_LEVEL >= 2) techPass.level2 = 'the administration and urban-centre entries held, every held follower a quarter (§10.131, ruled 2026-11-22)';
     j._tech_pass = techPass;
   }
+  if (/^\d+\.\d+\.d\d+(\.\d+)?$/.test(NAME)) j._debug_version = NAME;
   j._book12 = { name: NAME, game_version: gameVersion, generated: new Date().toISOString(), command: 'node tools/make_book12.mjs ' + argv.join(' '),
     rulings: {
       'motor ladder (insert motor)': '§10.116 ruling 4, §10.116.2 (Compound Engines on pumpjacks, shown as Pumping Engines)',

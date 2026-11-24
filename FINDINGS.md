@@ -441,6 +441,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F293 | The canon `g1152-canon12b`, two centuries on game 1.15.2: world GDP 0.87× vanilla 1.15.2 (0.94, 0.80; `g1152-canon12` 0.61×), the gain output per worker (1.14–1.26×), not jobs (0.70–0.74× per head); none past the barrier, nobody hoards; Britain 5.7% and 49.5% U\* at the end, Germany 72%, the world 54%; industry prices 0.85 of 1900; T3 32.9% of tiered; no tech-era-5 military technology; loss 16.93 (11.45, 25.16) against 25.23; play 186 and 168 min | `g1152-canon12b` n=2 against vanilla 1.15.2 n=8 and `g1152-canon12` n=5 | 2 × 1836→1936 | here |
 | F294 | The canon `g1152-canon12b` over six centuries (F293's two + four): world GDP 0.97× vanilla 1.15.2 (median; runs 0.78–1.24), on the 0.90–1.00 aim at the median with a spread wider than the aim; two of six runs past the barrier (GBR 2.40, USA 1.22, both 1927–36) and a member above 0.5 GDP in every new run: the hoard is back, a pool taking in more than the private builders spend, with the private share of points low where an Interventionist government's queue is mostly dams (a direction, not separated); loss 9.31 on the four intact; U\* at the end over all six the USA 16.2%, Britain 4.9%, Germany 64.5%, the world 52.1% (the four intact: 4.2, 3.3, 64.5, 52.1); industry prices 0.85 of 1900; T3 38.9% of tiered; no tech-era-5 military technology; run 4's USA hoards at 46.6% U\* with three quarters of its private queue in dams; India leaves Britain's market in 2 of 6 `canon12b` runs (vanilla 2 of 8) | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | 4 × 1836→1936 | here |
 | F295 | Why the canon's auto-downsizing destroys less construction than vanilla's (6.1M against 7.9M points a run, 0.77×, a direction): standing capital and its idle share are about equal (12.6% against 12.7% empty), less of the idle capacity is torn down (0.046 against 0.062 points lost per empty point-year); the old rungs are emptier than vanilla's (t0 non-craft 50% against 27%, t1 30% against 15%) but sit in plants of about two levels (vanilla 5–6), under the engine's one-empty-level rule; U\* and free method switching do not explain it; so points destroyed understates the canon's idle old capital | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | none (re-read) | here |
+| F296 | The tiered gold mines of the mod 1.2 books mint nothing from their main methods (vanilla 250 / 500 / 750 / 1,000 a level): the rungs are rebuilt from recipe fields and lost `country_minting_add`; their gold minting is 0.27–0.30× vanilla's at half the gold, 1.3–1.5% of world government income, 5–29% for the gold countries. Every other non-goods effect of every rung is vanilla's; pollution and infrastructure use are vanilla's per level, so per unit of output a t3 factory has about a third of vanilla's and a t2 / t3 deposit 1.5–2.3×. Fixed in the canon `1.2.d2` (500 a level, §10.133, §10.134), landmine L57 | `g1152-canon12b` n=6, vanilla 1.15.2 n=8, and the build | re-read, no game time | here |
 
 ---
 
@@ -24674,6 +24675,46 @@ territory and civil wars (F293's run 1 split the USA, run 2 reduced Prussia; run
 the USA won); the barrier's premise is from game 1.15.1, and one counterexample does not refit it; the dams' share of a queue is by
 construction points left, not by money; the crash dumps were not opened; no alternating vanilla, so play times are directional (§3.4).
 
+**Raw resources, and the two runs with the larger world (read 2026-11-24; `top_producers` world totals, `fill_deposits.mjs` on runs 1 and 2 of
+the plus4 session, `markets.tsv` at the dump dates over the eight instrumented markets plus the other tags').** World output of the
+tiered deposits' goods, 1935 ÷ vanilla's median (vanilla's own eight-run range beside it):
+
+| good | run 1 (1.13×, past the barrier) · run 2 (1.24×) | the other four (GDP 0.79–1.01) | vanilla's range |
+|---|---|---|---|
+| coal | 0.64 · 0.71 | 0.47–0.61 | 0.87–1.21 |
+| iron | 0.65 · 0.75 | 0.43–0.63 | 0.84–1.18 |
+| lead | 0.79 · 0.77 | 0.40–0.54 | 0.61–1.27 |
+| sulfur | 0.61 · 0.72 | 0.38–0.51 | 0.77–1.24 |
+| copper | 1.52 · 1.64 | 1.00–1.49 | 0.51–1.31 |
+| gold | 0.61 · 0.47 | 0.47–0.56 | 0.88–1.08 |
+| oil | 0.55 · 0.66 | 0.28–0.74 | 0.74–1.15 |
+| fish | 0.36 · 0.32 | 0.26–0.36 | 0.85–1.19 |
+
+So the shortfall holds in the larger worlds, a little smaller: coal 0.68, iron 0.70 of vanilla at world GDP 1.19× (mean of the two), where the
+four others read 0.54 and 0.56 at 0.89×. It is not there from the start: coal and iron run 1.05–1.4× vanilla in 1850–90 in the pair, and fall
+below from 1900. Output per level is about half vanilla's (coal 0.52, iron 0.51, sulfur 0.51, fish 0.36, gold 0.38; copper 0.77) because a level of
+a newer rung makes what an old one makes (§10.115) while vanilla's method upgrades raise the same building's output. So the pair holds more levels
+than vanilla's (coal 4,740 against 3,726) at lower output, with 42.6M workers in the deposits against 35.6M (16.3% of productive workers against
+11.9%). The slots are not what binds: 8–53% of them are used (vanilla 13–66%; coal 23% against 36%), and coal and iron levels are 83–97% staffed
+(copper and gold less).
+The payback of a 1936 level in the pair is 7–11 years for coal, 7–13 for iron, 9–17 for sulfur, 18–32 for gold, against vanilla's 7, 9, 9 and 6.
+
+**Shortages: mild, not gone.** In the pair the mined goods sell above vanilla's price from 1890 on (median of the markets, price ÷ base at 1920–35
+in the pair, the other four and vanilla: coal 1.24 · 1.20 · 1.05, iron 1.14 · 1.11 · 0.95, lead 1.22 · 1.22 · 0.96, copper 1.16 · 1.18 · 0.96,
+oil 1.03 · 1.12 · 0.80), and buyers ask 1.1–1.3 units for every one sold of coal, iron, lead, copper and oil (sulfur is even), where vanilla's markets ask 0.8–1.0. A price at or
+above 1.7 of base is rare: 0–3% of the market readings in the pair (rubber 7%, vanilla 8%), and at or above 1.5 it is 0–15% (copper 15%,
+coal 10%, lead 5%; vanilla 0–6%, rubber apart). The problem market-years that a raw good causes (my count of the HIGH flags with at least 10 units of demand,
+the tool's own total counts overlapping years once) are 54 and 42 in the pair against 24–91 a run in vanilla and 103–171 in the other
+four, mostly silk (a farm good), hardwood and iron. So raw shortages are a problem of the poorer runs rather than the richer ones, and in both
+they are short of a failure.
+
+**Other consequences read here, no more than indicated.** (1) Mined goods are 15–29% dearer than vanilla's while engines and steel are cheaper
+(engines 0.87 of base against 1.28 in the pair, steel 0.94 against 1.06; tools level, 0.94 against 0.92): the spread between an input and
+the good made from it is narrower in the pair. Which industries lose profit by it was not read. (2) More labour per ton of ore: the deposits take 7M more workers than
+vanilla's for two thirds of the output. (3) Gold at half of vanilla's: what that does to treasuries was not read. (4) Fish at a third: its price
+sits at 0.94–1.0 of base against vanilla's 0.88; pops' diets were not read. ⚠ Run 1 is past the barrier, so its
+readings other than the barrier line are the less reliable half of the pair; run 2 alone reads the same direction.
+
 **The ledger** (claude.ai/artifact/SsUxfKAwuUgXJ6UXumU83B, `REPORT.html` in the plus4 session; the six runs, the register on the four not
 past the barrier) adds: construction delivered 1880–1935 0.83× vanilla's, new plants below the owner's best tier 23.9%, misplaced capital 19%
 in 1926–36, tier 3 repaying its construction in 6.7 years (a tier-0 craft 45, a tier-0 factory 52), auto-downsizing destroying 0.77× vanilla's
@@ -24811,5 +24852,64 @@ share of t0 and t1 (50% and 30% against 27% and 15%) is the better reading of wa
   eligible); the cause is not read.
 - Why the canon's t2 and t3 are better staffed is not tested (that they must be built, not switched to, is a guess).
 - The state-level reading of hireable labour (in the scripts' output) was not used: about a third of the drops could not be placed on a state.
+
+---
+
+## F296 — THE TIERED GOLD MINES MINT NOTHING FROM THEIR MAIN METHODS: GOLD'S MINTING IS 0.27–0.30× VANILLA'S AT HALF THE GOLD, 1.3–1.5% OF WORLD GOVERNMENT INCOME AND 5–29% FOR THE GOLD COUNTRIES; NO OTHER RUNG LOST A NON-GOODS EFFECT; POLLUTION AND INFRASTRUCTURE USE ARE VANILLA'S PER LEVEL (2026-11-24; no game time: the six `g1152-canon12b` runs of F293 and F294, vanilla 1.15.2 n = 8, the built mod and vanilla's files)
+
+**How it was found.** The user asked what half of vanilla's gold does to treasuries (F294's unread item), and whether every gold rung carries
+the AI value 5,000. It does: all four rungs carry `ai_value = 5000` and `ai_nationalization_desire = 1.0`. But their main methods carry no
+`country_minting_add`, where vanilla's four carry 250 / 500 / 750 / 1,000 per fully staffed level.
+
+**The proof.** In the saves `weekly_income` slot 8 is minting: 500 + GDP ÷ 1,000 (capped at 200,000), plus the gold buildings' amounts, × 1.1 to 1.5
+by five society technologies. Countries without gold fit that to 0.1% in both arms. With gold, vanilla's world total fits only with the main
+methods in (model ÷ actual 0.990–0.995 with, 0.906–0.937 without), the mod's only with them out (0.995–0.999 without, 1.04–1.07 with).
+
+| 1935, £k a week, world | rich pair (runs 1–2 of plus4) | other four | vanilla |
+|---|---|---|---|
+| gold minting (main + explosives + fields) | 0 + 135 + 12 | 0 + 124 + 8 | 375 + 105 + 7 |
+| the main methods at vanilla's rates, lost | 269 | 257 | — |
+| lost, share of all government income | 1.3% | 1.5% | — |
+| all minting, actual | 5,368 | 4,745 | 5,507 |
+| all government income | 20,106 | 17,512 | 18,369 |
+
+Gold output is about half of vanilla's, gold's minting 0.30× and 0.27×. It is small for the world (minting is mostly GDP's, 90% of it in vanilla and 97% in the mod) and large for a
+gold country, at vanilla's rates: South Africa 29% of its income, Australia 15–18%, Chile 18%, Japan 12%, Mexico 5–11%, the USA 4%, Russia 5% (one run per
+arm). The explosives lines were off the other way: their gold is halved (the slot rule of §10.115) and their minting was not (125 / 250 a level).
+
+**Scope.** The tiered deposits, so every 1.2 book from `m12-first` (2026-11-21) to `g1152-canon12b`, and every reading of them (F283–F285, F289–F294).
+Mod 1.1.2 and before are unaffected (gold mines are vanilla's there). What the lost income did to those runs' states was not read; nothing in
+F289–F294 is withdrawn, and a government in a gold country was poorer than the design meant.
+
+**The audit of everything else** (87 rungs with a vanilla method, 51 non-goods effects; the 4 minted rungs have none; 95 secondary and automation
+methods, 41 with a non-goods effect):
+- **Only gold lost an effect.** Every secondary and automation method keeps vanilla's non-goods effects. (The bronze artillery variant is
+  shown where vanilla hides it, as ruled in §10.108.2.)
+- **Pollution per level is vanilla's own method's, on every rung with one,** the factories' and the deposits'; crafts have none, as vanilla's
+  first methods; the minted rungs take the rung below's. Per unit of output it then moves with the output: a t2 factory has 0.43–0.77× its own vanilla
+  method's and a t3 0.30–0.45× (steel t3 5.0 a hundred against 16.7), and a deposit's later rungs more than vanilla's, because their output is flat: t2 1.5×
+  (coal, iron, lead, sulfur, copper) to 1.67× (gold, oil) and 2× (fishing, whaling), t3 1.75–2.25× (gold 2×). The t2 pump rung is the most
+  polluting mine per ton (37.5 a hundred against t1's 12.5 and t3's 25), though its fuel per level was cut with its inputs (10 coal against 15).
+- **Infrastructure use is the building group's, per level, unchanged:** light industry 1.5, heavy 2.5, military 2, mines and oil 2, wharves 1, the
+  art academy 0.5; a craft 0.15 a 500-worker level (1.5 a 5,000). So per unit of output it follows the same ratios as pollution: a t3 factory about
+  a third of vanilla's, a t3 mine 1.75–2.25×. Worldwide it nets out, and infrastructure is short in more states than vanilla early and
+  in fewer late: usage ÷ vanilla's 1.07 in 1860, 1.06 in 1880, 0.97 in 1900, 0.81 in 1920, 0.82 in 1935 (the pair 1.08, 1.11, 1.06, 1.00, 0.98); states
+  short 11.3% against 8.3% in 1860, 13.2% against 7.7% in 1880, 9.5% against 6.1% in 1900, 6.9% against 9.1% in 1920, 8.2% against 12.7% in 1935; usage
+  that no infrastructure serves 0.7–1.4% of all use (vanilla 0.5–2.0%).
+
+**The fix, ruled (BALANCE_FRAMEWORK §10.133) and the canon since 2026-11-24 (§10.134):** every gold rung mints 500 a level, vanilla's top 1,000 ÷ the two mod
+slots per vanilla slot, and the explosives lines take the slot ratio (62.5 / 125): the book `1.2.d2` (sha256 `102f924c6abf5155`;
+`make_book12.mjs … --country-effects 1`). Field diff against `g1152-canon12b`: these values and the record labels only. By the minting model above,
+applied to the runs' recorded mines, the main methods would mint 1.78–1.88× vanilla's in 1840 (small states' picks mines), 1.31–1.38× in 1860, 0.97× in 1880,
+and 0.74–0.78× in 1935. (A first version scaled with each rung's output, 250 / 500 / 450 / 500, was built as `m12e-gold`, replaced before any run and deleted.)
+⚠ No game run has played either.
+
+**The detector.** Landmine L57 (`tools/lint_rung_effects.mjs`): fails a build whose rung drops an effect or a gate of its vanilla method, for a book with
+`_deposits.country_effects`. Proven: it reports the six defects on the canon's build (KNOWN, not a failure, the book being a record), passes on
+the fixed builds (`m12e-gold`, `1.2.d2`), and fails on a copy of the first with one minting line set to 0 and one line unscaled.
+
+**What it does NOT say.** Whether the lost income changed the runs' course; whether the fixed book's economy differs measurably (a 0.7–0.8% change
+of government income is under the spread of any two runs); the pollution readings are per level and per unit, and no state's pollution was
+read (the summaries do not hold it).
 
 ---

@@ -144,6 +144,8 @@ run has one identity across its folder, `build_state.json` and its telemetry tok
   nondeterminism is the build time stamped into the mod `name`, which any "did this rebuild change?" check must exclude). Each
   `mod_sched_<setup>/` is deleted when the schedule ends (`-KeepMods` keeps them). `{kind: recipe}` (ordered solver steps) is
   deliberately not implemented: author a config file and reference it.
+- **Name the arm by its book's debug version** (`config/mod_config.1.2.d2.json`, label `1.2.d2-…`; BALANCE_FRAMEWORK §10.134), in the schedule, the
+  session label, the verdict and the finding. A book without a number is named as before; the user decides the number.
 - **An alternate config needs its paired tree twin** `config/tech_tree_options.<suffix>.json`, or the build dies half-way (L20,
   checked per setup before the estimate prints).
 - **Extra game arguments**: schedule key `game_args` → `run_observer -ExtraGameArgs`. `-script_profiling` crashes a headless game.

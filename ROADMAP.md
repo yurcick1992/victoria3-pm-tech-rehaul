@@ -21,6 +21,7 @@ carrying 1.0's balance untuned (one automated century beside vanilla 1.15, F268,
 of 2026-11-09 (§10.110.1): **mod 1.2 in late November**, the balance retune on the 24 vs 24 batch plus minor changes; **mod 1.3 around
 2026-12-20**, the major changes, extraction first. What goes where is in "What is ahead"; everything below the table is per step.
 **Since 2026-11-16 (§10.115): the extraction overhaul is mod 1.2**, as tiered deposits; the two release sections below carry the change.
+**Since 2026-11-24 (§10.134): the books on the way to a release are numbered `major.minor.dN`** (the canon is `1.2.d2`), the number the user's decision.
 
 | step | what | status | closed | pointers |
 |---|---|---|---|---|

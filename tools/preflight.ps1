@@ -2090,6 +2090,20 @@ function Invoke-ModLint([string]$Id, [string]$Title, [string]$ScriptName, [strin
     else { Add-Result $Id $Title 'FAIL' ($out.Trim() + [Environment]::NewLine + "FIX: $Fix") }
 }
 
+function Test-LmL57 {
+    <#
+      L57 - A RUNG'S METHOD WITHOUT ITS VANILLA METHOD'S NON-GOODS EFFECT (found 2026-11-24, FINDINGS F296).
+      A rung's main method is rebuilt from the book's recipe fields, so anything else vanilla's method does is lost unless a field carries it.
+      The tiered gold mines of the mod 1.2 books minted nothing from their main methods (vanilla 250 / 500 / 750 / 1000 a level): the mod
+      loads, the mines sell their gold, and only the treasury is short. Every 1.2 century to 2026-11-24 played so. Shipyards
+      (ship_construction) and the electricity gate were earlier cases of the same class.
+      DETECTOR: tools/lint_rung_effects.mjs on the BUILT mod and its book: every non-goods modifier and gate of a rung's vanilla method is on
+      the built method, and every one of a scaled line is scaled with its goods. It FAILS for a book that carries _deposits.country_effects;
+      a book without it predates the check (records that must still build) and has its defects printed as KNOWN.
+    #>
+    Invoke-ModLint 'L57' 'a rung''s method without its vanilla method''s non-goods effect' 'lint_rung_effects.mjs' 'carry the effect in the book''s generator (make_deposit_config --country-effects) and emit it in build.ps1'
+}
+
 function Test-LmL51 {
     <#
       L51 - A DATA-SYSTEM FUNCTION THE INSTALLED ENGINE NO LONGER REGISTERS (found 2026-11-12, GAME_UPDATE_1_15_1 V18).
@@ -2467,7 +2481,9 @@ $CHECKS = @(
     # L55 walks the ledger fill's readers: none counts the tiered deposits as manufacturing (repo-side).
     @{ Id = 'L55'; Artifact = $false; Fn = { Test-LmL55 } },
     # L56 reads the BUILT mod: every source a research entry counts can exist while the entry is open (an artifact check).
-    @{ Id = 'L56'; Artifact = $true;  Fn = { Test-LmL56 } }
+    @{ Id = 'L56'; Artifact = $true;  Fn = { Test-LmL56 } },
+    # L57 reads the BUILT mod: a rung's method carries its vanilla method's non-goods effects (an artifact check).
+    @{ Id = 'L57'; Artifact = $true;  Fn = { Test-LmL57 } }
 )
 if ($RepoOnly) { $CHECKS = @($CHECKS | Where-Object { -not $_.Artifact }) }
 if ($Only) {

@@ -120,6 +120,7 @@ detector · OPEN = live; a detector or fix is owed. "Proven" = broken on purpose
 | L54 | a short run measured on one book and the century then played on another: both build, play and report, and the short run's reading is quoted for the century's book (the same-book rule, §10.118) | the gate in `tools/testbed/lib_same_book.ps1`, called by `run_schedule.ps1` at plan time and around a continuation's build (throws); `Test-LmL54` proves the gate exists and trips, on `tools/testbed/fixtures/same_book/` | harness; repo, every build | AUTO, proven (the run loop with a stubbed build and observer); not yet run with a real build and game |
 | L55 | a ledger reader that walks every industry of the book counts the tiered deposits as manufacturing (and vanilla's mines as tier-0 rungs on a vanilla run): the report reads, nothing fails (F285 §3: below-best 46.0% for 26–28.5%) | `Test-LmL55` (`tools/lint_ledger_industries.mjs`): every reader the ledger fill runs takes `lib_industries.mjs`'s manufacturing list or an `L55:` marker | repo, every build | AUTO, proven; fixed |
 | L56 | a research entry whose source cannot exist: it counts a method no building offers any more (the mod 1.2 deposit rungs: railways, flash freezing) or a rung its own technology unlocks (navigation; combustion engine's diesel source), reads 0 for ever and never ticks (F286 §2, F287 §1) | `Test-LmL56` (`tools/lint_research_sources.mjs`): every source a research bar compares, walked to buildings and methods the build defines; fails a book with `research_events.require_live_sources`, lists an older book's as known | every build | AUTO, proven (`--strict` fails on `mod_m12c`); fixed in `m12d-first` |
+| L57 | a rung's main method is rebuilt from recipe fields and loses a non-goods effect of its vanilla method: the mod loads, the good sells and only the treasury is short (the tiered gold mines minted nothing, F296) | `Test-LmL57` (`tools/lint_rung_effects.mjs`) | every build | AUTO, proven; fixed in `1.2.d2`, KNOWN in earlier 1.2 books |
 
 ---
 
@@ -1423,3 +1424,24 @@ engine counts the motor's Compound and Electric Engines rungs.
 **Limits.** It reads whether a source CAN exist, not whether anyone reaches its mark (F286's subject), and not the frontline, naval or
 idea conditions beyond their ship types. A source dead only in part (an "every tier" source counting a rung behind the technology's
 own successor) is a warning.
+
+### L57 — a rung's method without its vanilla method's non-goods effect
+
+**Defect.** A rung's main method is written from the book's recipe fields (goods, employment, pollution, …), not copied from vanilla's. Whatever
+vanilla's method does beyond those fields is lost, and nothing fails: the tiered gold mines of the mod 1.2 books minted nothing from their
+main methods (vanilla's `country_minting_add` 250 / 500 / 750 / 1,000 a level), while their gold sold and their jobs filled. The
+shipyards' `country_ship_construction_add` and the electricity gate (POLISH B4) were earlier cases of the same class.
+
+**How it was found.** The user's question about gold and treasuries (2026-11-24), then the built methods compared with vanilla's (F296). Every 1.2
+century to that date played so.
+
+**Detector.** `Test-LmL57` → `tools/lint_rung_effects.mjs <modRoot> <config>` on the BUILT mod: for every rung with a `vanilla_pm`, every modifier of the vanilla
+method that is not a goods or employment line is on the built one (pollution equal, others non-zero) and every gate but the technology is there;
+for every vanilla method the book rescales (`pm_goods`), a `country_*` effect takes the same ratio as its output. It FAILS a book that carries
+`_deposits.country_effects` (`make_deposit_config --country-effects`); a book without it predates the check and its defects print as KNOWN.
+
+**Proven 2026-11-24:** on the canon's build six KNOWN defects and, with `--strict`, exit 1; on the fixed builds (the output-scaled first version, then `1.2.d2`) 0 defects; on a copy of the first with one
+minting line set to 0 and one explosives line unscaled, 2 ERRORs and exit 1.
+
+**Limits.** A rung with no `vanilla_pm` (the four minted ones) is not compared, nor is a merged rung's host-side group; a building-level
+field is L49's; a `country_*` effect outside `workforce_scaled` is refused by `make_deposit_config`.

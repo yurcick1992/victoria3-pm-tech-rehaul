@@ -100,6 +100,8 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.130 | the technology pass, second rulings, and the book `m12d-first`: pumpjacks ← steam donkey + rotary valve engine (dynamite dropped, the first prerequisite removed from a vanilla technology); the research marks of arms, artillery and munition × 0.25 (explosives and synthetics stay × 0.5); no entry for navigation; shift work: no entry, its AI research weight × 1.2; the follower's quarter only for the nine held financial entries (100 / 150 / 400 / 700 levels, a follower 25 / 38 / 100 / 175), every other entry the half; tech spread deferred; a research source that cannot exist fails the build from this book on (landmine L56) | in force; built (`m12d-first`, `2e25dfe4`, `make_book12.mjs --tech-pass 1`), the alternate `mod_m12d`, not measured, not deployed; combustion engine on three separate sources, never a sum; macroeconomics' 200 levels is the builder's number, confirmed by §10.131, which also corrects item 5 (the administration and autoscaling entries' followers are a quarter too) | here |
 | 10.131 | the mod 1.2 canon: every ruling of 2026-11-21/22 in one book, canonised before its n=3 (`g1152-canon12`, `3978ad19`); macroeconomics 200 with a follower ¼, correcting §10.130 item 5; identification documents 18 → 90 and mass surveillance 30 → 220 administration levels, elevator 80 → 130 and paved roads 160 → 310 levels of the largest urban centre, every follower ¼ (the builder's marks); the autoscaling buildings are urban centres, financial districts, manor houses and subsistence buildings; the university entries not built, open | in force; the canon since 2026-11-22 (commit `a04216fe`); measured by `20261122_142920_g1152-canon12-n3` | here |
 | 10.132 | the five mines, gold, fishing and whaling cost 0.75× on every rung (mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195), the step 1.3 kept, no recipe moved; the crafts cost 5× (the divisor 50 → 10: 30 points a level), recipe unchanged; oil's production stays as it is (F291, F292: built to demand, in vanilla too); §10.115's vanilla cost on the 1836-map rungs was a starting point, not a principle; what "1836 stays vanilla" protects, in order: world GDP, no new shortages in major markets, each good's combined output in 1836–1838, the 1836 geography and demography — not build costs; the book branches from `g1152-canon12` and is canonised before its runs; A 2.35 (B, C, in1 unchanged) | in force; the canon `g1152-canon12b` (`2b4ec38a`) since 2026-11-23, not measured | here |
+| 10.133 | gold minting broadly follows vanilla: every gold rung mints 500 a level (vanilla's top 1,000 ÷ the mod's two slots per vanilla slot), the explosives lines half of vanilla's (62.5 / 125), so a fully built deposit mints what vanilla's does at each technology stage; for the next book, possibly re-decided later | in force for the next book; the canon `1.2.d2` since 2026-11-24, not measured (F296) |
+| 10.134 | `1.2.d2` canonised (§10.133's gold minting on `g1152-canon12b`); debug builds are numbered continuously, major.minor.dN, the number the user's decision (an extremely minor change a fourth number, 1.2.d2.1, or none): it is the book's name, file and record (`_debug_version`) and shows in a debug build's mod name and init marker; `1.2.d1` is read as `g1152-canon12b` | in force; the canon since 2026-11-24, not measured |
 
 ---
 
@@ -6825,3 +6827,46 @@ manufacturing outputs, each × (2.35 / 2.2)^(tier − 1), and their `target_be`;
 mines, gold, fishing and whaling at 0.75× cost (oil's 200 / 200 kept); the records (`_ab.A`, `_artisan.cost_div`,
 `_deposits.cost_level`, `_book12`, the chain's names and stamps); no input, AI desire, research or tree field; the tree twin only its
 stamp. Copied verbatim over `config/mod_config.json` + `config/tech_tree_options.json`, built (every linter and both preflights passing) and deployed. Not measured.
+
+## §10.133 — GOLD MINTING BROADLY FOLLOWS VANILLA: 500 A LEVEL ON EVERY GOLD RUNG, FOR THE NEXT BOOK (user-ruled 2026-11-24, after FINDINGS F296)
+
+**The defect.** Every mod 1.2 book to `g1152-canon12b` mints nothing from its gold rungs' main methods (vanilla 250 / 500 / 750 / 1,000 a level):
+F296. The user, 2026-11-24: *"No minting on gold? Wow, that's a problem to fix."*
+
+**The rule.** Claude first built minting scaled with each rung's output (250 / 500 / 450 / 500, the book `m12e-gold`, dropped). The user: *"No,
+I want minting from gold mines to broadly follow vanilla. They're intended to be built up, so this simplifies the picture, we basically tune
+the PM recipes to be vanilla_minting / mod_deposit_number."* Each vanilla gold slot is two of the mod's, half a slot for each of the four
+rungs (§10.115), and a later rung adds to the earlier ones, so vanilla's top amount ÷ 2 = **500 on every rung** gives vanilla's minting at
+full build-out at each technology stage (per vanilla slot 250 / 500 / 750 / 1,000 with t0 / t0–t1 / t0–t2 / t0–t3 built). Dividing each vanilla
+amount by two (125 / 250 / 375 / 500) would give 625. The explosives lines take the slot ratio of their gold: nitroglycerin 62.5, dynamite 125.
+
+**The alternative weighed:** 250 / 750 / 500 / 500, the same totals from t1 on with 1836's picks mines at vanilla's 250, recommended by Claude. Flat
+500 doubles what picks mines mint at the start, and on the 1840 map of one mod run takes it from 17% to 35% of Chile's government income, 16% to 33%
+of Bolivia's, 10% to 21% of Argentina's, 3.5% to 5.2% of Austria's. On the mines the six runs built, flat 500 mints 1.78–1.88× vanilla's main methods in 1840, 1.31–1.38×
+in 1860, 0.97× in 1880, 0.74–0.86× in 1900 and 0.74–0.78× in 1935 (they fill 31–34% of the gold slots by 1936, vanilla 49%); the alternative
+1.13–1.19×, 1.02–1.04×, 0.83×, 0.64–0.75× and 0.68×. These apply the amounts to the recorded mines and ignore what more minting would build.
+The user: *"500 flat for the next book, possibly re-decide later."*
+
+**The book:** `1.2.d2`, §10.134 (first generated as `m12f-mint500`, the same book but for its labels; those files are deleted).
+
+## §10.134 — `1.2.d2` CANONISED; DEBUG BUILDS ARE NUMBERED CONTINUOUSLY (user-ruled 2026-11-24)
+
+**The user:** *"Canonise it. In fact, let's have a continuous debug builds numbering, this is getting out of hand. Goes major.minor.[d]temporary.
+Let's name this new one and refer to it 1.2.d2."*
+
+**The numbering.** A debug version is `<major>.<minor>.d<n>`, n running on without gaps within a minor version. The major.minor is the release the book
+works towards (1.2). The number is the book's name: the files `config/mod_config.1.2.d2.json` and `config/tech_tree_options.1.2.d2.json`, the book's record
+`_debug_version` (`make_book12.mjs --name 1.2.d2`), the mod name of its debug builds ("… Version 1.2.d2 (built …)") and the init marker in
+`debug.log` ("init OK - mod loaded, game started (1.2.d2, build …)"). A release build ignores it and shows `mod/.metadata/metadata.json`'s own `version`, which
+stays the last release's (1.1.2) until a release sets it. **Which number a book takes is the user's decision** (the user, the same
+day, on Claude's reading that a book takes the next number when it is built to be played or canonised: *"While true, still, leave it to user's decision.
+Extremely minor changes can go under fourth number, or not at all."*): ask before numbering a book. An extremely minor change may take a
+fourth number (`1.2.d2.1`) or none. Claude's readings, not ruled: `1.2.d1` is `g1152-canon12b`, the canon before it (its files and records keep their
+old name, as do the books before); the intermediates of a generator chain carry no number; a change without a number still never alters the
+bytes of a book that has been played (CLAUDE.md §4.4).
+
+**The canon `1.2.d2`** (sha256 `102f924c6abf5155`, tree twin `f72917a24fd8c954`): `node tools/make_book12.mjs --prefix d2 --name 1.2.d2 --naval-lowered 1
+--tech-pass 2 --A 2.35 --craft-cost-div 10 --deposit-cost-level 0.75 --country-effects 1` on game 1.15.2. By field diff against `g1152-canon12b`: the four
+gold rungs' `country_effects` (500), `pm_country` (the explosives lines' 62.5 / 125), `_debug_version` and the record labels; the tree twin only its stamp.
+Copied verbatim over `config/mod_config.json` + `config/tech_tree_options.json`, built with every linter and both preflights passing, and deployed
+(2026-11-24 11:07). Not measured.

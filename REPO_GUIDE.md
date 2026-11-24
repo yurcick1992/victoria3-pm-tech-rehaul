@@ -97,7 +97,9 @@ canon unless `MOD_CONFIG=config/mod_config.six_rung.json` · *superseded by X*.
 
 ### config/ — the canon and its twin
 
-- **`config/mod_config.json`** — the canon: what `build.ps1` builds and deploys by default. A verbatim copy of the named book
+- **`config/mod_config.json`** — the canon: what `build.ps1` builds and deploys by default. **Today a verbatim copy of `config/mod_config.1.2.d2.json`
+  (sha256 `102f924c6abf5155`, CLAUDE.md §4.1). Books are named by their debug version `major.minor.dN` since 2026-11-24, the number the user's decision
+  (BALANCE_FRAMEWORK §10.134);** the rest of this entry describes the 1.0 canon. The 1.0 canon was a verbatim copy of
   `config/mod_config.jex-dam4s-rs-x25-m10ac-dpriv-wm99.json` (sha256 `728f2c7f84e6f467` since the 2026-10-21 polish). Four rungs per industry on
   tiers t0–t3 (anchors 1836 / 1875 / 1905 / 1940), 17 tiered industries / 56 rungs, of which six t0 rungs are 500-worker craft rungs and six
   are merged into their host as second main methods; every industry anchored at t1 (A 2.2, B 1.64, cost ratio 1.9, in0 1.2, down-step 1.5,
@@ -812,6 +814,9 @@ stale output except under `common/history`, which an emitter writing there must 
   engine band with inputs AT BASE: `target_be ≤ 175` ⇔ O:I ≥ 0.762 at wp 0.25. Recomputes from the goods block, never reads `target_be`; sees
   every tier, shipyards included. `node tools/lint_solvency.mjs [--config <book>] [--census] [--goods-only] [--band]` (`--band` = the retired
   ≤ 400 line, `--goods-only` drops wages; neither is the rule). Status: current (build step). Refs: §10.63, F67.
+- **`tools/lint_rung_effects.mjs`** `<modRoot> [configPath] [--strict]` — landmine L57: every rung's method carries its vanilla method's
+  non-goods effects and gates, and a rescaled line's country effect scales with its output. Fails only for a book that carries
+  `_deposits.country_effects` (`make_deposit_config.mjs --country-effects 1`, `make_book12.mjs --country-effects 1`); `--strict` always. Refs: F296.
 - **`tools/lint_research_sources.mjs`** `<modRoot> [--tree <twin>] [--warn-only] [--late-years 10]` — can every research entry's source
   exist? (2026-11-22, F287 §1.) Reads the BUILD over vanilla (buildings, method groups, methods, technologies, ship types) and walks every
   script value a research bar compares down to its building terms: DEAD-BUILDING, DEAD-METHOD (a method none of the building's groups
@@ -1069,7 +1074,11 @@ stale tree twins; re-run the chain from its root rather than one step. **`tools/
   macroeconomics, elevator and paved roads held (90 / 220 / 200 administration levels, 130 / 310 levels of the largest urban centre),
   each follower mark a quarter; level 1 still regenerates `m12d-first`. `emit_research_events.mjs` words an entry's description "falls
   to a quarter" where its condition entry's follower mark is one.
-- **`tools/make_book12.mjs` `--A`, `--craft-cost-div`, `--deposit-cost-level`** (2026-11-23, §10.132; the canon `g1152-canon12b` =
+- **`tools/make_book12.mjs` `--name <major>.<minor>.d<n>[.<m>]`, `--country-effects 1`** (2026-11-24, §10.133, §10.134; the canon `1.2.d2` = `--prefix d2
+  --name 1.2.d2 --naval-lowered 1 --tech-pass 2 --A 2.35 --craft-cost-div 10 --deposit-cost-level 0.75 --country-effects 1`): a debug-version name is
+  recorded as `_debug_version`, which a debug build shows in the mod name and the init marker (`build.ps1`; a release build never); `--country-effects`
+  gives the tiered deposits their vanilla methods' country effects (gold's minting, 500 a level).
+- **`tools/make_book12.mjs` `--A`, `--craft-cost-div`, `--deposit-cost-level`** (2026-11-23, §10.132; the book `g1152-canon12b` =
   `--prefix c12b --name g1152-canon12b --naval-lowered 1 --tech-pass 2 --A 2.35 --craft-cost-div 10 --deposit-cost-level 0.75`): the
   output step per tier passed to `make_ab_config --A` (default 2.2), the craft cost divisor passed to `make_artisan_config --cost-div`
   (default 50) and the level on every derived deposit cost passed to `make_deposit_config --cost-level` (default 1); each is recorded in

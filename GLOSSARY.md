@@ -82,7 +82,8 @@ but we probably need an internal terminology cheat sheet."* So: one letter, one 
 | **`--in0-level m`**, "**uniform −X%**" | a lift chosen PER INDUSTRY so every industry's tier-0 rung lands on the SAME margin `m` at base prices. CLOSED as a lever (§10.86.4: "the solver all over again"); a per-industry lift is now one ruled number per industry line (§10.101) |
 | **target_be** | the **output price, as % of base, at which a rung covers input goods + wages**. `= 100 ÷ (1 + m)`. Its own drift guard, not a design input |
 | **the book** | one complete `config/mod_config.*.json` — a named point in (A, B, C, in0, ai_value, defines) space |
-| **the canon** / **the incumbent** | the book `config/mod_config.json` currently is; today `jex-dam4s-rs-x25-m10ac-dpriv-wm99` (CLAUDE.md §4.1) |
+| **the canon** / **the incumbent** | the book `config/mod_config.json` currently is; today `1.2.d2` (CLAUDE.md §4.1) |
+| **debug version** (`1.2.d2`) | the number of a debug build's book, `major.minor.dN`, running on without gaps; the user decides it, and an extremely minor change may take a fourth number (`1.2.d2.1`) or none (BALANCE_FRAMEWORK §10.134). It is the book's name; `1.2.d1` is read as `g1152-canon12b` |
 
 ## 6. ECONOMICS
 

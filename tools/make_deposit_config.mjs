@@ -2,7 +2,7 @@
 // ruled 2026-11-17 and 2026-11-21; the cost step and the names, references and research of the deposit rungs ruled 2026-11-21, §10.125).
 //
 //   node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step 1.3 [--start-1836 map|pair]
-//        [--cost-level 0.75]
+//        [--cost-level 0.75] [--country-effects 1]
 //
 // Each main method of a resource-capped building (lib_tier4_spec DEPOSITS: the five mines, gold, fishing, whaling, oil; logging left the
 // list on 2026-11-21, §10.126) becomes a
@@ -30,6 +30,12 @@
 //   - SECONDARY LINES: a line that adds or converts output is × vanilla's slots ÷ the tiered slots (½ for three or four rungs, ⅔ for two),
 //     the same recipe on every rung (vanilla's own method overridden through `pm_goods` / `pm_employment`, because every rung lists vanilla's
 //     group); a line that only saves labour is unchanged.
+//   - COUNTRY EFFECTS (`--country-effects 1`, found 2026-11-24, FINDINGS F296, landmine L57): a vanilla method's `country_modifiers` — today
+//     only gold's `country_minting_add` (250 / 500 / 750 / 1000) — were dropped by every book before the flag, because a rung's method is
+//     rebuilt from its recipe. With the flag every rung carries vanilla's TOP amount ÷ the slot multiple (ruled 2026-11-24 for the next book,
+//     BALANCE_FRAMEWORK §10.133, "possibly re-decide later": gold 1000 ÷ 2 = 500 on every rung), so a fully built deposit mints what
+//     vanilla's does at each technology stage; an output-adding line's effect takes the line's slot ratio like its goods (`pm_country`:
+//     nitroglycerin 62.5, dynamite 125). Without it the book is as before (a record), and the loss is printed.
 //   - REFERENCES: research_events.necessity_anchors naming a deposit's vanilla key reaches every rung of it (ruled 2026-11-21, §10.125).
 //   - THE 1836 START (`--start-1836`, recorded as `_deposits.start_1836`; emitted by tools/emit_deposit_start.mjs on the converted history):
 //     'map' (the default, m12-first) leaves vanilla's map as converted, each building on the rung its method belongs to; 'pair' (ruled for
@@ -45,7 +51,7 @@ import { wageUnits, eraReferenceWage } from './lib_wage_model.mjs';
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GAME = process.env.VIC3_GAME || 'C:/Program Files (x86)/Steam/steamapps/common/Victoria 3/game';
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
-const BASE = arg('--base'), SFX = arg('--suffix'), STEP = +arg('--cost-step', 'NaN'), START = arg('--start-1836', 'map'), LEVEL = +arg('--cost-level', '1');
+const BASE = arg('--base'), SFX = arg('--suffix'), STEP = +arg('--cost-step', 'NaN'), START = arg('--start-1836', 'map'), LEVEL = +arg('--cost-level', '1'), EFFECTS = arg('--country-effects', '0') === '1';
 if (!(LEVEL > 0 && LEVEL <= 2)) throw new Error('--cost-level <L in (0, 2]> multiplies the derived deposit costs');
 if (!BASE || !SFX || !(STEP >= 1)) throw new Error('usage: node tools/make_deposit_config.mjs --base config/mod_config.<book>.json --suffix <name> --cost-step <s ≥ 1> [--start-1836 map|pair]');
 if (!['map', 'pair'].includes(START)) throw new Error(`--start-1836 ${START}: map or pair`);
@@ -63,6 +69,11 @@ const goodsOf = b => ({ in: Object.fromEntries([...b.matchAll(/goods_input_([a-z
                         out: Object.fromEntries([...b.matchAll(/goods_output_([a-z_]+)_add\s*=\s*(-?[0-9.]+)/g)].map(m => [m[1], +m[2]])) });
 const employmentOf = b => Object.fromEntries([...b.matchAll(/building_employment_([a-z_]+)_add\s*=\s*(-?[0-9]+)/g)].map(m => [m[1], +m[2]]));
 const pollutionOf = b => { const m = b.match(/state_pollution_generation_add\s*=\s*([0-9.]+)/); return m ? +m[1] : 0; };
+// the numeric lines of a method's country_modifiers blocks, by modifier; a nested or non-numeric line is refused, not skipped
+const countryOf = b => { const o = {}; let i = (b || '').search(/country_modifiers\s*=\s*\{/); while (i >= 0) { let d = 0, j = b.indexOf('{', i); const s = j; for (; j < b.length; j++) { if (b[j] === '{') d++; else if (b[j] === '}' && --d === 0) break; }
+  const body = b.slice(s + 1, j); if (/(level_scaled|unscaled)\s*=/.test(body)) throw new Error('country_modifiers outside workforce_scaled - the rule needs a ruling here');
+  for (const m of body.matchAll(/(country_[a-z_]+)\s*=\s*(-?[0-9.]+)/g)) o[m[1]] = (o[m[1]] || 0) + +m[2];
+  const k = b.slice(j).search(/country_modifiers\s*=\s*\{/); i = k < 0 ? -1 : j + k; } return o; };
 const techEra = t => { const m = (TECH[t] || '').match(/era\s*=\s*era_(\d)/); if (!m) throw new Error(`technology ${t}: no era`); return +m[1]; };
 const ENLOC = (() => { const loc = {}; const walk = d => { for (const f of readdirSync(d, { withFileTypes: true })) { const p = join(d, f.name); if (f.isDirectory()) walk(p); else if (f.name.endsWith('_l_english.yml')) for (const line of rd(p).split(/\r?\n/)) { const m = line.match(/^\s*([A-Za-z_0-9\-.]+):\d*\s*"(.*?)"\s*(?:#.*)?$/); if (m && !(m[1] in loc)) loc[m[1]] = m[2]; } } }; walk(join(GAME, 'localization/english')); return loc; })();
 const name = k => { const s = ENLOC[k]; if (!s) throw new Error(`no English name for ${k}`); return s; };
@@ -80,7 +91,7 @@ const eraWage = eraReferenceWage(cfg.era_anchor_years);
 const report = [], record = { rule: 'BALANCE_FRAMEWORK §10.115 (slots, flat output, equal value added, cost), §10.116 ruling 5 (engines on the pump rungs), §10.124 (5,000 workers, oil 200/200, vanilla AI desire), §10.125 (cost step, names, references, research), §10.126 (logging not a deposit; the 1836 pair under start_1836 = pair)',
   cost_step: STEP, ...(LEVEL !== 1 ? { cost_level: LEVEL, cost_level_rule: 'BALANCE_FRAMEWORK §10.132 (every derived cost × the level; a DEPOSITS cost list untouched)' } : {}), workers_per_level: WORKERS, start_1836: START, slot_rule: { two: 1.5, three_or_four: 2, round: 'up to a multiple of the rung count, at least one a rung', floor_1836: 'gold' },
   secondary_rule: 'output-adding lines × vanilla slots ÷ tiered slots on every rung; labour-saving lines unchanged', industries: {} };
-const pmGoods = cfg.pm_goods || {}, pmEmp = cfg.pm_employment || {};
+const pmGoods = cfg.pm_goods || {}, pmEmp = cfg.pm_employment || {}, pmCountry = cfg.pm_country || {}; const effectNotes = [];
 const lineNotes = [];
 
 for (const D of DEPOSITS) {
@@ -98,7 +109,7 @@ for (const D of DEPOSITS) {
   const faults = placementFaults(D.id, eras, gameEras); if (faults.length) throw new Error(faults.join('\n'));
   const vb = name(D.building);
   const anchorCost = ANCH[scalar(bb, 'required_construction')]; if (!anchorCost) throw new Error(`${D.id}: no construction class`);
-  const recs = methods.map(pm => { const b = PM[pm]; if (!b) throw new Error(`${D.id}: method ${pm} not found`); return { pm, ...goodsOf(b), emp: employmentOf(b), pol: pollutionOf(b), tex: scalar(b, 'texture') }; });
+  const recs = methods.map(pm => { const b = PM[pm]; if (!b) throw new Error(`${D.id}: method ${pm} not found`); return { pm, ...goodsOf(b), emp: employmentOf(b), pol: pollutionOf(b), eff: countryOf(b), tex: scalar(b, 'texture') }; });
   // the deposit's goods: everything rung 0 makes; the main good is the one it makes most of (whaling: oil 10 beside meat 5)
   const outGoods = Object.keys(recs[0].out); const mainGood = Object.entries(recs[0].out).sort((a, b) => b[1] - a[1])[0][0];
   const top = recs[D.map_rungs - 1];   // the highest rung on the 1836 map
@@ -129,6 +140,12 @@ for (const D of DEPOSITS) {
       era: eras[k], tech_year: null, natural_year: ERA_YEARS[eras[k]], building_cost: cost };
     const extra = Object.fromEntries(Object.entries(out).filter(([g]) => g !== mainGood));
     if (Object.keys(extra).length) t.extra_outputs = extra;
+    if (Object.keys(r.eff).length) {
+      const topEff = Object.fromEntries(Object.keys(r.eff).map(m => [m, Math.max(...recs.map(x => { if (!(m in x.eff)) throw new Error(`${D.id}: ${x.pm} lacks ${m}, which ${r.pm} has — the flat rule (§10.133) needs a ruling here`); return x.eff[m]; }))]));
+      const eff = Object.fromEntries(Object.entries(topEff).map(([m, q]) => [m, r1(q / slotMult)]));
+      if (EFFECTS) t.country_effects = eff;
+      effectNotes.push(`${t.key}: ${JSON.stringify(r.eff)} (top ${JSON.stringify(topEff)} ÷ ${slotMult}) → ${EFFECTS ? JSON.stringify(eff) : 'DROPPED (no --country-effects)'}`);
+    }
     // the config-side BE convention (lint_solvency L18, the building name's Recipe BE): the rung's era wage over its own staffing, as make_ab_config
     const O = val(out), I = val(inputs), W = eraWage(eras[k]) * wageUnits(t.employment);
     t.wage_pct = Math.round(W / (I + W) * 10000) / 10000; t.target_be = Math.round((I + W) / O * 100);
@@ -148,6 +165,8 @@ for (const D of DEPOSITS) {
     const sc = o => Object.fromEntries(Object.entries(o).map(([k, q]) => [k, r1(q * lineMult)]));
     pmGoods[pm] = { in: sc(gd.in), out: sc(gd.out) };
     const e = employmentOf(b); if (Object.keys(e).length) pmEmp[pm] = Object.fromEntries(Object.entries(e).map(([k, q]) => [k, Math.round(q * lineMult)]));
+    const ce = countryOf(b);
+    if (Object.keys(ce).length) { if (EFFECTS) pmCountry[pm] = sc(ce); effectNotes.push(`line ${pm}: ${JSON.stringify(ce)} → ${EFFECTS ? JSON.stringify(sc(ce)) : 'kept whole (no --country-effects)'}`); }
     lineNotes.push(`${pm}: ${JSON.stringify(gd.in)} → ${JSON.stringify(gd.out)} × ${lineMult.toFixed(3)}`);
   }
   const ind = { id: D.id, output_good: mainGood, deposit: true, no_mass_be: true, clone_from_vanilla: true,
@@ -159,7 +178,8 @@ for (const D of DEPOSITS) {
     rungs: tiers.map(t => ({ key: t.key, era: t.era, output_qty: t.output_qty, inputs: t.inputs, building_cost: t.building_cost })) };
   report.push(...tiers.map((t, k) => `${D.id.padEnd(16)} t${t.era}${k < D.map_rungs ? '*' : ' '} ${t.pm_name.padEnd(28)} ${String(t.output_qty).padStart(5)} ${t.output_good}${t.extra_outputs ? ' + ' + JSON.stringify(t.extra_outputs) : ''}  from ${Object.entries(t.inputs).map(([g, q]) => q + ' ' + g).join(' + ') || '(nothing)'}  cost ${t.building_cost}  [${t.tech || 'no gate'}]`));
 }
-cfg.pm_goods = pmGoods; cfg.pm_employment = pmEmp;
+cfg.pm_goods = pmGoods; cfg.pm_employment = pmEmp; if (Object.keys(pmCountry).length) cfg.pm_country = pmCountry;
+if (EFFECTS) record.country_effects = effectNotes;
 // ⭐ REFERENCES REACH EVERY RUNG (ruled 2026-11-21, §10.125): a research anchor naming a deposit's vanilla key names all its rungs
 const RUNGS_OF = Object.fromEntries(cfg.industries.filter(i => i.deposit).map(i => [i.tiers[0].key, i.tiers.map(t => t.key)]));
 const NA = (cfg.research_events || {}).necessity_anchors || {};
@@ -175,5 +195,6 @@ console.log(`TIERED DEPOSITS (${SFX}) from ${BASE} — cost step ${STEP} above t
 for (const l of report) console.log('  ' + l);
 console.log('  secondary lines scaled (vanilla methods overridden):');
 for (const l of lineNotes) console.log('    ' + l);
+console.log(`  country effects (${EFFECTS ? 'carried' : 'NOT carried'}):`); for (const l of effectNotes) console.log('    ' + l);
 console.log(`  research anchors: ${JSON.stringify(NA)}`);
 console.log(`wrote config/mod_config.${SFX}.json + its tree twin`);
