@@ -206,7 +206,9 @@ Closed:
   lever in a file the mod already owns (`common/ai_strategies/00_default_strategy.txt`). Needs the user's ruling, a syntax probe of a stock term, and a book of its own.
   The user, 2026-11-24: "We'll probably go with pool-size term at 78 weeks for 1.2.d3" (probable, not ruled): an `add` of (`investment_pool` − 0.1 × `gdp`)
   ÷ (750 × 78), at least 0; `investment_pool` in that block needs a syntax probe first. Seen on 1.2.d2's first three runs, for that design: the USA hoards with 26–49% peasants,
-  a private queue of 120–620 weeks and a private share of 0.50–0.58; Britain hoards with 1–4% peasants and a queue down to 17–21 weeks (nothing left to build).
+  a private queue of 120–620 weeks and a private share of 0.50–0.58; Britain hoards with 1–4% peasants and a queue down to 17–21 weeks at home.
+  Ruled by the user, 2026-11-24: NO free-labour condition ("will bring nothing and hurt capital exporters"; counting labour anywhere a country can build is expensive and
+  unnecessary): the target stays reinvestment + pool size.
 - **OPEN, found 2026-11-24 (F294), nothing ruled** · the government's dam queues and the hoard: in the canon's runs
   the interventionist governments keep 45–88 weeks of work in their own queue, mostly dams (vanilla's 4–15 weeks), so their private queue
   gets about the law's half of the construction points (`country_private_construction_allocation_mult` 0.5) and the pool outruns it; the
