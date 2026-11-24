@@ -444,6 +444,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F296 | The tiered gold mines of the mod 1.2 books mint nothing from their main methods (vanilla 250 / 500 / 750 / 1,000 a level): the rungs are rebuilt from recipe fields and lost `country_minting_add`; their gold minting is 0.27–0.30× vanilla's at half the gold, 1.3–1.5% of world government income, 5–29% for the gold countries. Every other non-goods effect of every rung is vanilla's; pollution and infrastructure use are vanilla's per level, so per unit of output a t3 factory has about a third of vanilla's and a t2 / t3 deposit 1.5–2.3×. Fixed in the canon `1.2.d2` (500 a level, §10.133, §10.134), landmine L57 | `g1152-canon12b` n=6, vanilla 1.15.2 n=8, and the build | re-read, no game time | here |
 | F297 | The AI builds the construction sectors its script asks for on every game version (points ÷ target 0.93–1.28; no break from 1.13.11 to 1.15.2), but the target follows the pool's income and not its stock, one point per £750 a week: standing at target the majors would spend 0.85 of their inflow on vanilla 1.13.11, 0.70–0.74 on vanilla 1.15, 0.57–0.63 in mod 1.1, 1.1.1, `m12b-first` and `canon12b`; vanilla's hoarders have run out of labour and work (private queue under 26 weeks in 86–96% of years), the mod's hold over 78 weeks of private work (92–96% in the 1.2 books) with a full treasury | yearly summaries of 11 arms, 1.13.11 to 1.15.2 | none (re-read) | here |
 | F298 | ⚠ **Every mod 1.2 build has dams without slots:** `emit_deposit_slots.mjs` rewrites the state-region files from vanilla after `emit_dams.mjs`, so the 181 dam slots are gone and the engine builds without a cap: 435–1,559 dam levels in 1936 (mod 1.1.1: 88, 0 slot breaches in ten runs), 6–27% of all construction points of 1900–35 (up to half the USA's) into electricity sold at 0.25–0.4 of base; the shortlist's dam share goes with world GDP (r −0.73 over ten runs; 1.23× at 1%, 0.77× at 30%), so the 1.2 readings F283–F297, the canon12b–d2 gap and the sizes of §10.132 stand on it. Against the goals, on the runs least touched: prices farthest, then tier 3 (textile and steel hosts hold the electric method's technology on 100% of shortlist levels and run it on 30–34%), then depeasantation of the leaders at the end and world GDP (≈1.2×) | `1.2.d2` runs 1–4, `g1152-canon12b` n=6, the older 1.2 books, mod 1.1.1 n=10, vanilla 1.15.2 n=8 | none (re-read) | here |
+| F299 | `1.2.d2` over four of seven centuries (the user stopped the batch; every reading carries F298's dam defect): world GDP 1.17× vanilla 1.15.2 (0.82, 1.31, 1.23, 1.11), one run past the barrier (Britain 1.49), loss 14.30 over all four; the main mines' minting 0.83× vanilla's in 1935, all gold's minting 0.81×, total 1.04×, per £ of GDP 0.90×; world population 1.03×; the hoard lighter than vanilla's at the median, the USA's and Britain's | session 20261124_111515 runs 1–4 of 5, vanilla 1.15.2 n=8 | directional; void for the dams' effects | here |
 
 ---
 
@@ -25088,3 +25089,54 @@ or recipe). (3) Deposits' t2 and t3 output up by a fifth (the raw index), as the
 
 **What it does NOT say.** What a repaired 1.2 build does: none has been played. Which of F283–F297's conclusions survive. That the AI would build power plants, or switch methods, under the proposed condition; textile hosts also stand unswitched in states with a surplus (34% of levels in run 3), so some of it is the AI's own inertia. Whether the register's price term should read
 matched goods (a proposal; the aim would have to be re-ruled).
+
+---
+
+## F299 — `1.2.d2` OVER FOUR CENTURIES OF A BATCH OF SEVEN THE USER STOPPED: WORLD GDP 1.17× VANILLA'S AND ONE RUN PAST THE BARRIER, THE GOLD FIX WORKS (THE MAIN MINES MINT 0.83× VANILLA'S IN 1935 WHERE THE BOOK BEFORE MINTED NOTHING), WORLD POPULATION AS VANILLA'S; EVERY READING CARRIES THE DAMS OF F298 (2026-11-24; about 13 h of game time)
+
+**Arms.** `{kind: config, config: config/mod_config.1.2.d2.json}` (sha256 `102f924c6abf5155`), game 1.15.2, session `20261124_111515_g1152-1.2.d2-n7`: runs 1–4 to 1936; run 5 stopped by the user at 1887.6.13 (a file STOP; 23:58 local), runs 6–7
+never started. Four usable (`lib_runs`). Against vanilla 1.15.2 n=8 (F274), beside `g1152-canon12b` n=6 (F293/F294), which is not pooled. No crash, no resume; every DLC mounted; the post-run preflight fails on L17 alone (run 5's abandon, as it should).
+**The batch carries F298's defect** (dams with no slots); the four runs' shares of the shortlist's construction points in dams are 19, 11, 0 and 5%. So F298's reading stands above this one for anything the dams reach.
+
+**The register** (the report reads all four runs; the ruled form takes runs 3 and 4, which diverge, and gives no loss): claude.ai/artifact/XEmCD1n6t84sbpLG8MDhCB (`REPORT_n4.html` in the session).
+
+| | four runs | vanilla 1.15.2 | aim |
+|---|---|---|---|
+| world GDP ÷ vanilla | 1.17 (0.82, 1.31, 1.23, 1.11) | 1 | 0.90–1.00 |
+| world GDP by decade ÷ vanilla, 1846 … 1936 | 0.99 1.01 1.05 0.95 0.96 0.93 0.94 0.96 1.08 1.13 | | |
+| barrier | 1 of 4 past (Britain 1.49; the others 0.70, 0.75, 0.11) | 4 of 8 | none |
+| U\* 1913 · end: the USA | 31.8 · 14.0% | 28.8 · 1.1% | 25 · 15% |
+| Britain | 12.1 · 3.1% | 4.9 · 0.6% | 10 · 5% |
+| Germany | 48.6 · 5.4% | 38.3 · 2.8% | 20 · 20% |
+| the world | 58.3 · 41.4% | 53.0 · 36.8% | 60 · 50% |
+| industry prices 1935 ÷ 1900 | 0.90 | 0.89 | 0.75 |
+| T3 ÷ the other tiers | 0.49 (32.5%) | – | 1 |
+| loss | 14.30 over all four; intact runs 23.26, 16.87, 10.47 | | |
+
+**Minting** (F296's model; scripts in the session's `minting_20261124/`; medians, £k a week, mod / vanilla). Main mines and explosives and fields:
+
+| year | all minting | GDP-based | gold-based | world GDP, £M |
+|---|---|---|---|---|
+| 1860 | 1,118 / 1,059 | 1,076 / 1,040 | 105 / 85 | 761 / 744 |
+| 1880 | 1,578 / 1,579 | 1,450 / 1,459 | 154 / 145 | 1,031 / 1,087 |
+| 1900 | 2,437 / 2,577 | 2,243 / 2,305 | 221 / 273 | 1,656 / 1,790 |
+| 1920 | 3,896 / 4,051 | 3,571 / 3,639 | 329 / 436 | 3,206 / 3,214 |
+| 1935 | 5,721 / 5,510 | 5,330 / 4,984 | 396 / 487 | 5,721 / 4,785 |
+
+In 1935 the main methods mint £312k against £375k (0.83×; the book before: nothing; gold-based £132k there against £396k here), the explosives lines £70k against £105k. Gold output is 0.56× vanilla's, so a unit of gold mints more than in
+vanilla. Minting is 26% of government income against 30%, and 0.90× vanilla's per £ of GDP: GDP ÷ 1,000 is capped at £200k a country, 8 countries are over it (vanilla 6) and it removes 34% of the uncapped sum (28%). The model ÷ actual is 0.99–1.01
+from 1900, 1.06–1.12 before 1860. Slot 8 of `weekly_income` is minting; F297's script left it out of the pool's flows, and its remark on what takes the rest is therefore not about minting.
+
+**Population.** World, M: 1850 1,177 / 1,176, 1890 1,505 / 1,501, 1920 1,803 / 1,797, 1935 2,020 / 1,965 (runs 1,916–2,096; vanilla 1,861–2,017). Where a Qing survives to 1935 it has 459–529M (three runs; a fourth is Taiping with 496M), vanilla's 438–518M (seven of eight runs).
+
+**The hoard.** Shortlist pool ÷ GDP at 1935, median of the first three runs 0.32 (1.2.d1 0.56, vanilla 0.48); members above half a GDP 1.3 a run over those three, 1.0 over all four (vanilla 1.4). The USA's two (0.99 and 1.41 of GDP) have a home queue of 595–620 weeks and 26–49% peasants; Britain's two (1.67 and 0.89) 1–2%
+peasants and a home queue of 17–21 weeks: by F298 the first are dam cases. **India:** by the Company alone three of the four leave Britain's market (1891, 1934, 1872 and 1892); run 1's India in 1890 is another country; vanilla two of eight.
+
+**Predictions** (the schedule's, written before run 1): world GDP median 0.88–1.05: missed, above; per-run range at least 0.25: met (0.49). Gold: 0.75× vanilla in 1935 and above it in 1840–60: met (0.81×; 1.24× in 1860). Barrier past in 1–3: consistent so far (1 of 4). Germany's U\* far above 20% in five of seven: missed
+(end values 23, 3, 8, 2%; 1913 above in all four); the world's 45–58% at the end: missed (41%). Prices 0.80–0.90: met (0.90). No tech-era-5 military technology: met. Play: cluster 1 in all four, 151, 175, 172, 175 min (one under the 155–180; ×1.04 of vanilla's, directional).
+
+**Errors.** `remove_character_role` 41–57 a run (vanilla 8–24) and `Undefined event target diplomatic_play` in `00_victoria_on_wargoal_enforced_effects.txt:248` in runs 2 and 3 and at the start of run 5 (none of vanilla's eight). Cause established for neither; the file is vanilla's, which clears nothing (§2.12). Two other classes are the mod's 1836 fishing wharves
+on states that support none (`State Witu`, `Kaurna`: a level on a 0-slot map, reduced by the engine at the start; known from the earlier 1.2 runs).
+
+**Confidence and what it does NOT say.** Minting and population: measured (high for world totals, medium by country). The register at n=4 with one run past the barrier and the defect above is a direction (§2.9). It says nothing about a build with the dams' slots restored, and nothing about the pool-size term of §10.135, which is in no run. The gold countries' own
+government income was not read.

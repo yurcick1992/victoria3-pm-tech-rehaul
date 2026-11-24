@@ -102,6 +102,7 @@ named. **record** — history: a measurement, a retired arm, a canonisation. **H
 | 10.132 | the five mines, gold, fishing and whaling cost 0.75× on every rung (mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195), the step 1.3 kept, no recipe moved; the crafts cost 5× (the divisor 50 → 10: 30 points a level), recipe unchanged; oil's production stays as it is (F291, F292: built to demand, in vanilla too); §10.115's vanilla cost on the 1836-map rungs was a starting point, not a principle; what "1836 stays vanilla" protects, in order: world GDP, no new shortages in major markets, each good's combined output in 1836–1838, the 1836 geography and demography — not build costs; the book branches from `g1152-canon12` and is canonised before its runs; A 2.35 (B, C, in1 unchanged) | in force; the canon `g1152-canon12b` (`2b4ec38a`) since 2026-11-23, not measured | here |
 | 10.133 | gold minting broadly follows vanilla: every gold rung mints 500 a level (vanilla's top 1,000 ÷ the mod's two slots per vanilla slot), the explosives lines half of vanilla's (62.5 / 125), so a fully built deposit mints what vanilla's does at each technology stage; for the next book, possibly re-decided later | in force for the next book; the canon `1.2.d2` since 2026-11-24, not measured (F296) |
 | 10.134 | `1.2.d2` canonised (§10.133's gold minting on `g1152-canon12b`); debug builds are numbered continuously, major.minor.dN, the number the user's decision (an extremely minor change a fourth number, 1.2.d2.1, or none): it is the book's name, file and record (`_debug_version`) and shows in a debug build's mod name and init marker; `1.2.d1` is read as `g1152-canon12b` | in force; the canon since 2026-11-24, not measured |
+| 10.135 | the AI's construction target (`wanted_construction_output`) gains a term on the investment pool's SIZE: the pool above a tenth of GDP ÷ (750 × 78), at least 0, beside the term on its income; no free-labour condition, the £750 unchanged; goes into `1.2.d2.1` | ruled, not built |
 
 ---
 
@@ -6870,3 +6871,35 @@ bytes of a book that has been played (CLAUDE.md §4.4).
 gold rungs' `country_effects` (500), `pm_country` (the explosives lines' 62.5 / 125), `_debug_version` and the record labels; the tree twin only its stamp.
 Copied verbatim over `config/mod_config.json` + `config/tech_tree_options.json`, built with every linter and both preflights passing, and deployed
 (2026-11-24 11:07). Not measured.
+
+---
+
+## §10.135 — THE AI'S CONSTRUCTION TARGET GAINS A TERM ON THE INVESTMENT POOL'S SIZE; IT GOES INTO `1.2.d2.1` (user-ruled 2026-11-24)
+
+**The user,** after FINDINGS F297: *"We'll probably go with pool-size term at 78 weeks for 1.2.d3"*; on Claude's proposal of a free-labour condition: *"No, free labour condition will bring
+nothing and hurt capital exporters. Counting "is there free labour anywhere this country can build" sounds expensive, and again, unnecessary. Leave it as reinvestment + pool size
+based."*; and, on stopping the batch: *"Record the anti-hoard construction ruling, it will go into 1.2.d2.1."*
+
+**The rule.** `wanted_construction_output` in `common/ai_strategies/00_default_strategy.txt` (a file the mod already owns) gets one more `add`, below the one on the pool's income:
+
+```
+add = {
+	value = investment_pool
+	subtract = { value = gdp  multiply = 0.1 }
+	divide = 58500        # 750 × 78 weeks
+	min = 0
+}
+```
+
+- The pool above a tenth of yearly GDP counts as income spread over 78 weeks, at the rate vanilla's own term uses (£750 of weekly income = one point). It is zero for a pool
+  under a tenth of GDP, so it acts on countries where money piles up and leaves the rest at vanilla's target.
+- The income term and its £750, and every other term and multiplier of the target, are vanilla's. A lower £750 was considered and not taken (it raises every country's target, non-hoarders' included).
+- **No labour condition**: a rich country's pool also builds abroad, and counting labour anywhere it can build is expensive and unnecessary.
+- It is a willingness lever in the sense of §1.4 (no build block, no cap); `gdp` is already read in that block, and vanilla nests `subtract = { value … }` throughout the file.
+
+**What it goes on.** `1.2.d2.1`, a fourth-number change on `1.2.d2`. Nothing else in that book is ruled here; the dam-slot repair of F298 is a build defect and is owed before any run of it.
+
+**Owed.** A syntax probe that `investment_pool` reads in this block (the localization files list it as a trigger, no vanilla script reads it there); a build lint on the emitted term.
+
+**Known against it** (recorded, not ruled on): F298 §2 finds the American hoards, one of the two kinds this term answers, to be dam cases (the dams that stand on no slots), and proposes holding the term until a
+repaired build has been played. Claude's estimates, with prices held still: the pool settles at about 0.36 of GDP where a country needs 1.6× its points. Nothing has been played.

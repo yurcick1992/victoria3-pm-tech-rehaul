@@ -495,6 +495,7 @@ they describe is closed, §10.80), and sit verbatim in `BALANCE_FRAMEWORK_ARCHIV
 | 10.132 | the five mines, gold, fishing and whaling cost 0.75× on every rung (mines and gold 300 / 300 / 390 / 507, fishing and whaling 150 / 150 / 195); the crafts cost 5× (30 points a level, recipe unchanged); oil's production unchanged; what "1836 stays vanilla" protects, in order: world GDP, no new shortages in major markets, each good's combined output in 1836–1838, the 1836 geography and demography — not build costs; A 2.35; the canon `g1152-canon12b` | in force; the canon since 2026-11-23, measured by six centuries (F293, F294) |
 | 10.133 | gold minting broadly follows vanilla: every gold rung mints 500 a level (vanilla's top 1,000 ÷ the mod's two slots per vanilla slot), the explosives lines half of vanilla's (62.5 / 125), so a fully built deposit mints what vanilla's does at each technology stage; for the next book, possibly re-decided later | in force for the next book; the canon `1.2.d2` since 2026-11-24, not measured (F296) |
 | 10.134 | `1.2.d2` canonised (§10.133's gold minting on `g1152-canon12b`); debug builds are numbered continuously, major.minor.dN, the number the user's decision (an extremely minor change a fourth number, 1.2.d2.1, or none): it is the book's name, file and record (`_debug_version`) and shows in a debug build's mod name and init marker; `1.2.d1` is read as `g1152-canon12b` | in force; the canon since 2026-11-24, not measured |
+| 10.135 | the AI's construction target gains a term on the investment pool's size: (pool − 0.1 × GDP) ÷ (750 × 78), at least 0, beside vanilla's term on its income (£750 unchanged); no free-labour condition; for `1.2.d2.1` | ruled 2026-11-24; not built, the script's syntax unprobed |
 
 ---
 
@@ -691,7 +692,7 @@ the pop-matched per-unit cost is a diagnostic beside it, never the verdict — s
 (`config/mod_config.1.2.d2.json` + twin)** — sha256 prefix **`102f924c6abf5155`** (the tree twin `f72917a24fd8c954`), canonised before its runs
 (§10.133, §10.134), `node tools/make_book12.mjs --prefix d2 --name 1.2.d2 --naval-lowered 1 --tech-pass 2 --A 2.35 --craft-cost-div 10
 --deposit-cost-level 0.75 --country-effects 1`: the book below with the gold rungs minting 500 a level and the gold explosives lines half
-of vanilla's (field diff: nothing else but `_debug_version` and labels). Not measured. `mod/` and the deployed copy are its debug build.
+of vanilla's (field diff: nothing else but `_debug_version` and labels). Measured by four centuries of a batch of seven, stopped (F299). `mod/` and the deployed copy are its debug build.
 
 **From 2026-11-23 to 11-24 the canon was the mod 1.2 book
 `config/mod_config.g1152-canon12b.json` + twin** (`1.2.d1` in the debug numbering) — sha256 prefix **`2b4ec38a24535e0a`** (the tree twin `36f9a19ddfb3fdfd`), canonised
@@ -793,7 +794,8 @@ What §1.2 and §1.3 leave out:
   mining workers as a source for nitroglycerin and dynamite, the military industries' marks × 0.25, the financial entries and
   macroeconomics held, shift work's AI weight × 1.2. Not measured, not deployed.
   **The canon since 2026-11-24: `1.2.d2`** (`102f924c`, §10.133, §10.134) = `g1152-canon12b` + gold minting (500 a level on every rung); its
-  seven centuries playing, four read (F298: world GDP 1.17×, runs 0.82–1.31, one past the barrier).
+  seven centuries were begun and the user stopped them on 2026-11-24 (F298's dam defect): four finished and are read (F298, F299: world GDP 1.17×, runs 0.82–1.31, one past the
+  barrier), the fifth stopped in 1887. The next book, `1.2.d2.1`, is to carry the pool-size term of §10.135.
   ⚠ **Every mod 1.2 build has dams without slots (F298, found 2026-11-24, not fixed):** the deposit emitter overwrites the map files the dam
   emitter wrote, so 435–1,559 dam levels stand in 1936 on 181 slots and take 6–27% of all construction points of 1900–35. Every 1.2 reading
   above and below (F283–F297) and the sizes of §10.132 stand on it; `dam_slots.mjs` (§3.3) was not run on those batches.

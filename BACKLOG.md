@@ -202,14 +202,15 @@ Closed:
   against 181 slots, 6–27% of all construction points of 1900–35. Fix when no batch plays (CLAUDE.md §5.1 rule 7): the deposit emitter edits the build's own file where one exists; a build lint asserting every project's slot in the
   emitted map; a landmine with a tripped detector, which also covers two emitters writing one file; `dam_slots.mjs` added to `fill_ledger.sh`. Published mods (1.0–1.1.2) are not affected · FINDINGS F298
 - **PROPOSED, not ruled (2026-11-24, F298)** · for the next book, with the slots back: `cost1` 1.25 (world GDP of a repaired build ≈ 1.2×), a power-plant desire conditional on the state's electricity price (the electric textile and steel
-  methods run on 30–34% of the levels that hold the technology), the deposits' t2 / t3 output × 1.2 a book later, the pool-size term held (its USA cases are dam cases); the price term read on goods priced at both ends · FINDINGS F298
+  methods run on 30–34% of the levels that hold the technology), the deposits' t2 / t3 output × 1.2 a book later, the pool-size term held (its USA cases are dam cases; **the user ruled it in the same day, §10.135**); the price term read on goods priced at both ends · FINDINGS F298
+- **TO DO before any run of `1.2.d2.1`** · the term of §10.135: a syntax probe of `investment_pool` in `wanted_construction_output`, the emitter, a build lint; the repair of the dam slots (F298). The session `20261124_111515` ran four of seven runs before the stop: the finding is F299, the verdict in the session
 - **DONE 2026-11-24 (§10.133, §10.134): gold mints 500 a level on every rung, the canon `1.2.d2`** (it minted nothing in every 1.2 book to `g1152-canon12b`) · open: its first runs; the amount may be re-decided (250 / 750 / 500 / 500 keeps 1836 at vanilla's) · FINDINGS F296, landmine L57
 - **PROPOSED, not ruled (F296)** · the deposits' t2 and t3 pollution per level scaled with output (× the rung's output ÷ its vanilla method's), since flat output makes them 1.5–2.3× vanilla's per ton; factories stay vanilla's per level · FINDINGS F296
-- **OPEN, found 2026-11-24 (F297), nothing ruled; not built** · the AI's construction target (`wanted_construction_output`) is vanilla's, one
+- **RULED 2026-11-24 (BALANCE_FRAMEWORK §10.135), for `1.2.d2.1`; not built** · the AI's construction target (`wanted_construction_output`) is vanilla's, one
   point per £750 of weekly pool income with no term for the pool's stock; the mod's hoarders stand exactly at it with 1–3 years of private
   work queued and a full treasury. Candidate: a term on the pool's STOCK (only hoarders would answer it) or a lower divisor; a willingness
   lever in a file the mod already owns (`common/ai_strategies/00_default_strategy.txt`). Needs the user's ruling, a syntax probe of a stock term, and a book of its own.
-  The user, 2026-11-24: "We'll probably go with pool-size term at 78 weeks for 1.2.d3" (probable, not ruled): an `add` of (`investment_pool` − 0.1 × `gdp`)
+  Ruled: an `add` of (`investment_pool` − 0.1 × `gdp`)
   ÷ (750 × 78), at least 0; `investment_pool` in that block needs a syntax probe first. Seen on 1.2.d2's first three runs, for that design: the USA hoards with 26–49% peasants,
   a private queue of 120–620 weeks and a private share of 0.50–0.58; Britain hoards with 1–4% peasants and a queue down to 17–21 weeks at home.
   Ruled by the user, 2026-11-24: NO free-labour condition ("will bring nothing and hurt capital exporters"; counting labour anywhere a country can build is expensive and
