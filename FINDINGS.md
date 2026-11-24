@@ -439,6 +439,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F291 | Discovered oil is not built up at once, in vanilla either: in the major markets, where the technology is held and oil is in demand, vanilla has built 18–44% of its discovered oil slots by 1936 (median 37%), the canon 5–26% (median 12%), 62% of the canon's qualifying regions never get a rig (vanilla 34%); oil sells at or just under base in both (£33–40, base 40), so both build oil to demand; the canon's buyers are fewer (buildings' oil use 42k against 87k units a week, pops' heating about half of vanilla's by the order books, F292; ports 0.47×, power plants 0.41×, railways 0.57×, logging 0.61×, chemical plants 0.32× of vanilla's levels); a change to oil's slots, rungs or cost would not raise its output while demand binds | `g1152-canon12` n=5 and vanilla 1.15.2 n=8, end saves and summaries | re-read, no game time | here |
 | F292 | Late-game oil by consumer: the canon's buildings use half of vanilla's oil (42k against 87k units a week in 1936); the gap is plastics above all (5.6k against 29.7k: vanilla's glassworks switch to houseware plastics by method, the canon's plastics is a tier-3 rung with 134 levels), then ports (5.4k against 14.8k), other manufacturing, chemicals, logging and automobiles; engines (7.6k against 2.6k), diesel railways, oil-fired power plants and tractors use about 9k more than vanilla's; pops' heating about a third of the markets' oil demand in both (medians 33% and 29%), half of vanilla's oil; F291's "rest" in vanilla is mostly oil beyond demand | `g1152-canon12` n=5, vanilla 1.15.2 n=8, end saves | re-read, no game time | here |
 | F293 | The canon `g1152-canon12b`, two centuries on game 1.15.2: world GDP 0.87× vanilla 1.15.2 (0.94, 0.80; `g1152-canon12` 0.61×), the gain output per worker (1.14–1.26×), not jobs (0.70–0.74× per head); none past the barrier, nobody hoards; Britain 5.7% and 49.5% U\* at the end, Germany 72%, the world 54%; industry prices 0.85 of 1900; T3 32.9% of tiered; no tech-era-5 military technology; loss 16.93 (11.45, 25.16) against 25.23; play 186 and 168 min | `g1152-canon12b` n=2 against vanilla 1.15.2 n=8 and `g1152-canon12` n=5 | 2 × 1836→1936 | here |
+| F294 | The canon `g1152-canon12b` over six centuries (F293's two + four): world GDP 0.97× vanilla 1.15.2 (median; runs 0.78–1.24), on the 0.90–1.00 aim at the median with a spread wider than the aim; two of six runs past the barrier (GBR 2.40, USA 1.22, both 1927–36) and a member above 0.5 GDP in every new run: the hoard is back, a pool taking in more than the private builders spend, with the private share of points low where an Interventionist government's queue is mostly dams (a direction, not separated); loss 9.31 on the four intact; U\* at the end over all six the USA 16.2%, Britain 4.9%, Germany 64.5%, the world 52.1% (the four intact: 4.2, 3.3, 64.5, 52.1); industry prices 0.85 of 1900; T3 38.9% of tiered; no tech-era-5 military technology; run 4's USA hoards at 46.6% U\* with three quarters of its private queue in dams; India leaves Britain's market in 2 of 6 `canon12b` runs (vanilla 2 of 8) | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | 4 × 1836→1936 | here |
 
 ---
 
@@ -24590,5 +24591,154 @@ run; the tiered deposits hold 15.4% of the world's productive workers (vanilla's
 points; lead, copper and oil leave vanilla's 1836–1845 range in both runs (1840: lead 484 a week against 595, copper 235 against 188, oil
 441 against 273). Red flags on the order books: 159 problem market-years (153, 165) against the same vanilla's 161 and `g1152-canon12`'s
 163; Japanese paper, German silk (no producer and mostly no buyer) and Japanese hardwood carry two thirds.
+
+**Why run 2's Britain stalled (read 2026-11-23 from the yearly summaries and `events.tsv`).** India left it. The East India Company
+(styled the Dominion of India) won a civil war against an Indian Liberal Revolt in 1867. It capitulated together with Britain on
+1869-03-26, left Britain's market during 1870 and had no overlord by 1872.1.1. Britain's market fell from 56 members and £283M of GDP
+(1870.1.1) to 19 and £89M (1871.1.1), and Britain's own GDP from 76 to 58 in that year with no state lost. One unlabelled weekly-income slot
+(slot 5, most likely the subject's payments) fell from 123k to 23k; in run 1 it stays at 74–157k. The treasury was empty from 1872 and the
+government funded almost no construction. The construction sector shrank from 161 levels (1868) to 52 (1888), and private construction ran
+at 440–940 points a week to 1928 (run 1: 2,300–5,300 from 1904). GDP then stayed at 105–138 over 1896–1928 (run 1: 161–653).
+Across every 1.15.2 run, India leaves Britain's market in 2 of 8 vanilla runs (1906, 1916) and in 5 of 7 mod runs (`g1152-canon12` 1883,
+1891, 1914, 1918; `g1152-canon12b` 1871). The two mod runs where it leaves before 1890 hold Britain's two lowest GDPs at 1900 (87 and 107,
+against 118–227 in the other mod runs and 167–269 in vanilla). India's revolts and civil wars are no more frequent in the mod (0–3 before
+1900 a mod run, 0–7 a vanilla run), so why it breaks away earlier and more often is open; with n = 7 against 8 it is a direction only.
+How the 1869 capitulation (the war and its opponent) led to the break is not in the summaries.
+
+---
+
+## F294 — THE CANON `g1152-canon12b` OVER SIX CENTURIES: WORLD GDP 0.97× VANILLA 1.15.2 AT THE MEDIAN (RUNS 0.78–1.24), ON THE 0.90–1.00 AIM WITH A SPREAD WIDER THAN THE AIM; TWO OF SIX RUNS PAST THE BARRIER AND A MEMBER ABOVE HALF ITS GDP IN EVERY NEW RUN: THE HOARD IS BACK, A POOL OUTGROWING PRIVATE CONSTRUCTION; LOSS 9.31 ON THE FOUR INTACT RUNS; NO TECH-ERA-5 MILITARY TECHNOLOGY IN ANY RUN; INDIA LEAVES BRITAIN'S MARKET IN 2 OF 6 RUNS, AS IN VANILLA (2026-11-24; `g1152-canon12b` n = 6: F293's two, session `20261123_132305_g1152-canon12b-n2`, and four more, `20261123_211413_g1152-canon12b-plus4`; against vanilla 1.15.2 n = 8, `20261119_210048_g1152-vanilla8`)
+
+**Arms.** `{kind: config, config: config/mod_config.g1152-canon12b.json}`, the canon (sha256 `2b4ec38a24535e0a`, §10.132), the same arm and
+defaults as F293. Four more fixed-n centuries 1836→1936 on game 1.15.2 (the user: *"Go with n=4 more on the same debug config."*), every
+DLC mounted; three crashes (run 1 at 1910.3.1, run 2 at 1841.1.3 and 1880.3.1), each resumed from the run's own autosaves; play 159.8–163.6
+min, three runs cluster 1, one cluster 2 (1869–1872 +34%, no listed bug). The predictions were written into the schedule before run 1
+(`g1152_canon12b_plus4.json`); their outcome is in the session's `VERDICT.md`.
+
+**The register** (`criteria.mjs`; the end = the 1932–36 mean):
+
+| line | six runs, the ruled consensus (the 4 not past) | six runs, all (`--consensus all`) | the four new runs, one by one | aim |
+|---|---|---|---|---|
+| world GDP ÷ vanilla, the end | **0.97×** | 0.97× | 1.13 · 1.24 · 0.99 · 0.78 | 0.90–1.00 |
+| world GDP by decade, 1846 … 1936 | 0.99 · 0.98 · 1.01 · 0.92 · 0.87 · 0.88 · 0.84 · 0.84 · 0.88 · 0.96 | the same | | the 1886 line 0.79–1.01 |
+| barrier (worst member, best ten-year pool ÷ GDP) | — | 2 of 6 past | **2.40 GBR** · 0.54 USA · 0.90 GBR · **1.22 USA** | past at 1 |
+| U\* the USA, 1913 · end | 31.6% · 4.2% | 41.3% · 16.2% | 39.9 · 27.6; 12.9 · 0.1; 20.5 · 3.7; 44.5 · 46.6 | 25% · 15% |
+| U\* Britain, 1913 · end | 19.9% · 3.3% | 20.8% · 4.9% | 20.6 · 5.1; 4.3 · 1.0; 10.7 · 0.8; 21.0 · 4.7 | 10% · 5% |
+| U\* Germany, 1913 · end | 68.9% · 64.5% | 65.7% · 64.5% | 55.8 · 51.6; 53.2 · 0.7; 64.0 · 64.6; 67.4 · 68.6 | 20% · 20% |
+| U\* the world, 1913 · end | 61.6% · 52.1% | 61.6% · 52.1% | 57.9 · 45.1; 56.7 · 42.7; 60.4 · 52.4; 63.8 · 54.3 | 60% · 50% |
+| industry prices 1935 ÷ 1900 | 0.86 (vanilla 0.89) | 0.85 | 0.83 · 0.83 · 0.89 · 0.87 | ≤ 0.75 |
+| members above 0.5 GDP · hoard above half GDP | 0.5 · 0.051 | 1 · 0.156 | 1 (GBR 2.60) · 2 (GBR 0.53, USA 0.79) · 1 (GBR 1.18) · 1 (USA 1.46) | 0 · 0 |
+| T0 slope · T3 ÷ (T0+T1+T2) | −0.397 · 0.672 (40.2% of tiered) | −0.417 · 0.637 (38.9%) | | falling · more |
+| old plants kept | 102.9%, slope 0.020 | 102.9%, slope −0.074 | | < 100%, shrinking |
+| **loss** | **9.31** | 9.08 | (past) · 13.62 · 11.93 · (past) | — |
+
+F293's two runs alone: world GDP 0.94 and 0.80, loss 11.45 and 25.16, barrier 0.30 and 0.08. Minor readings (all six): W 0.74× (world),
+0.76× (shortlist); the shortlist's GDP 1.12×; H 0.25 world (0.91× vanilla's), 0.52 shortlist (1.25×); GDP at base prices 1.04×; PI 0.92×,
+PP 0.89×, both falling. The price term carries half the consensus loss (4.64 of 9.08 over all six).
+
+**The two runs past the barrier.** Both are pools growing faster than the country's private construction spends them (yearly summaries,
+`queues`, `investment_pool`):
+- Run 1, Britain: the pool ÷ GDP rises 0.52 (1900) → 0.86 (1905) → 1.28 (1910) → 2.18 (1920) → 2.57 (1935); the private queue holds 2–4
+  years of work at its speed throughout (1,670–5,750 points a week), dams 13–21% of its points except in 1930 (46%); peasants 20–23% of the
+  workforce in 1900–1910, 4% by 1935.
+- Run 4, the USA: the pool ÷ GDP rises 0.16 (1910) → 0.65 (1920) → 0.96 (1928) → 1.51 (1936) while 44–45% of its workforce stays peasant
+  (13.1M in 1935; U\* 46.6% at the end); the construction sector stays at 128–200 levels from 1910; the private queue holds 3.5–9 years of
+  work (1,010–1,710 points a week), and dams are 60% of its points in 1920 and 1925 and 74% in 1935 (79 small dams, 494k of 670k points).
+  The barrier assumes a member that still has labour does not hoard (§3.2, on 2,705 member-years of 1.15.1); this one does.
+- Run 3's Britain (0.90, not past) shows the same queue in 1920: 5.2 years of work, 76% of it dams; its pool ÷ GDP reaches 1.15 by 1935.
+
+**Technology** (`tech_census.mjs`, the end, six runs): the majors hold GBR 165.3, USA 164.0, FRA 161.3, GER 166.0 (production 55–57,
+military 45.7–47.0, society 60.3–62.3; vanilla GBR 169.3, military 54.3). No country holds any tech-era-5 military technology in any of the
+six runs (vanilla holds every one, 2–11 countries a run); the tech-era-5 production technologies spread to 3.7–10.5 countries a run,
+catalytic synthesis to none (vanilla 0–6.4). The leader's share of tech era 3 at 1875 57.5%, tech era 4 at 1905 59.0%, tech era 5 at the end 50.0% (vanilla 55.0%,
+51.3%, 69.2%). 37.7% of the majors' acquisitions had a research-entry stage.
+
+**India.** It leaves Britain's market in one of the four new runs (run 4: in 1870, independent by 1871), so in 2 of 6 `g1152-canon12b`
+runs (1870, 1871), against 4 of 5 in `g1152-canon12` and 2 of 8 in vanilla 1.15.2. In both runs where it leaves early Britain's 1900 GDP is
+the lowest of its book (219 against 298–371 in the others of this batch; F293's run 2 107). F293's "5 of 7 mod runs" is now 6 of 11, most
+of them `g1152-canon12`'s.
+
+**Errors** (`error_classes.mjs`, the four runs beside vanilla 1.15.2's eight): 48–75 classes only in one run, vanilla's 46–74; the lines
+naming our files belong to the `capital` class of `00_ai_triggers.txt:579`, in all eight vanilla runs.
+
+**Reading.** At n = 6 the canon's world GDP sits on the aim at the median, and the runs scatter over 0.78–1.24, more than the aim's width;
+F293's two runs averaged 0.87×. The four new runs bring back what F293 did not see: a shortlist member above half its GDP in every one
+of them, and two past the barrier, one rich (1.13×) and one the poorest of the six (0.78×), where `g1152-canon12` and F293's two had none. In both hoards the pool outgrows private
+construction for a decade or more, and in the USA's (and run 3's Britain in 1920) dams fill most of the private queue's points; whether the
+dams cause the hoard (a slow, dear project taking the pool's spending slots) or only fill a queue that would be long anyway is not separated
+here. Germany stays far from its aims in five of six runs.
+
+**What it does NOT say.** n = 6, two of them past the barrier: the ruled consensus reads four runs (§2.9); per-country U\* moves with
+territory and civil wars (F293's run 1 split the USA, run 2 reduced Prussia; run 4 of this batch had an American civil war in 1858–59 that
+the USA won); the barrier's premise is from game 1.15.1, and one counterexample does not refit it; the dams' share of a queue is by
+construction points left, not by money; the crash dumps were not opened; no alternating vanilla, so play times are directional (§3.4).
+
+**The ledger** (claude.ai/artifact/SsUxfKAwuUgXJ6UXumU83B, `REPORT.html` in the plus4 session; the six runs, the register on the four not
+past the barrier) adds: construction delivered 1880–1935 0.83× vanilla's, new plants below the owner's best tier 23.9%, misplaced capital 19%
+in 1926–36, tier 3 repaying its construction in 6.7 years (a tier-0 craft 45, a tier-0 factory 52), auto-downsizing destroying 0.77× vanilla's
+construction points a run and 0.68× the jobs, GDP per productive worker 1.31×. Red flags 159 problem market-years against vanilla's 161.
+Three deposit goods leave vanilla's 1836–1845 range (oil in all six runs, lead and copper in three each). The backward-industry line reads
++3% over a decade in-market (vanilla +12%).
+
+**Why run 4's USA hoards with peasants (read 2026-11-24 from the yearly summaries' `queues`, `laws`, `weekly_income` and the per-state
+labour; vanilla's `common/laws/01_economic_system.txt`).** ⚠ A first version of this paragraph, read the same day, said the USA lacks
+construction and that its sector stays small from 1870 because of its 1858–59 civil war. Both are wrong. They compared building LEVELS,
+whose points differ by method (wooden 2, iron frame 5, steel frame 10, arc-welded 15); the next paragraph has the levels-to-points reading.
+Its peasants are spread over every state, the industrial ones included (1935: Illinois 936k, Ohio 853k, New York 554k), so it is not a
+stranded region. Its pool takes in more than its private builders spend (1922–35: inflow 21.3% of GDP, outflow 12.3%; the other mod
+members of the same size 10–42% and 10–40%; vanilla's USAs 12–20% and 7–20%), and its private share of the construction points is low:
+- **The economic-system law sets the private queue's share** (`country_private_construction_allocation_mult`: Interventionism 0.5,
+  Laissez-faire 0.75, Cooperative Ownership 0.35, Traditionalism 0.25, Command Economy 0.1). Run 4's USA is Interventionist throughout
+  1916–36; its private queue gets 51–81% of the points a year (0.60 on average), most years within a few points of 0.5. Run 3's
+  Laissez-faire USA gets 0.76.
+- **The government keeps its half because its own queue is never empty, and the queue is mostly dams.** Run 4's government queue holds
+  18–43 weeks of work in 1890–1910 and 54–131 weeks in 1911–36, 77–96% of its points in dams (the `dear` small dam costs 7,200 points a
+  level). Britain in run 1 is the same: private share 0.40–0.57 in 1905–1926, government queue 22–87 weeks, 84% dams.
+- **Across every shortlist member of 2% of world GDP that is Interventionist in 1916–36** (6 canon12b runs, 8 vanilla 1.15.2 runs): the
+  mod's governments hold 0–88 weeks of work in their queue (11 of 14 members 45–88, at 70–95% dams; the exceptions Britain in F293's run 2
+  with none, France and the United Netherlands in run 4 with 12–16 weeks); vanilla's hold 4–47 (most under 15), no dams
+  (vanilla has none). The three mod members with a pool above 1 GDP at the end hold three of the four lowest private shares of all 31
+  (GBR run 1 0.54, pool 2.59; USA run 4 0.60, 1.35; GBR run 3 0.69, 1.08; the fourth, vanilla's Germany in run 6 at 0.63, has a 14-week
+  queue and no hoard). Other mod members with queues of 45–67 weeks keep 0.83–0.88 private, and hoard less or not at all
+  (Britain and Germany in run 2, France in run 1 and in F293's run 2, Britain and the USA in F293's run 1), so a long queue does not by
+  itself set the low share. What else sets the government's claim (its budget, perhaps) is not read.
+- **The money follows the points.** In 1930 the USA's construction goods cost 1.44M a week; the pool pays 0.77M of it (one weekly-income
+  slot, matching the private queue's 1,712 points a week), and the government 0.67M, about half its own revenue. Over 1922–35 the pool takes
+  in 21.3% of GDP and pays out 12.3% (£489 a private point, about 0.25k points per £M of GDP a year; run 1's USA 0.41, run 3's 0.38, vanilla's
+  USAs 0.17–0.45). At a private share of 0.8 instead of 0.58 the same capacity would pay out about 17%: the pool would grow about half as
+  fast, ceteris paribus. Britain in run 1 reads the same way (inflow 24.7%, outflow 14.8%, share 0.57). Vanilla's own Britains hoard with
+  shares of 0.83–0.93 on an inflow of 22–48% of GDP.
+- **The civil war is a knock-on, not the cause.** The Confederacy seceded on 1928-06-29 and won on 1929-10-19. The USA's GDP fell 356 → 313,
+  its dam levels 148 → 51, its construction sector 214 → 198, and pool ÷ GDP rose 0.96 → 1.18. But the pool had been rising since 1905:
+  0.65 by 1920, 0.82 by 1926.
+
+**The USA's construction sector from 1870, in points (levels × the method's points; `pm_*_buildings` 2 / 5 / 10 / 15).** Run 4's is 345 in
+1870, 300 in 1880, 400 in 1890, 730 in 1900, 1,335 in 1910, 1,985 in 1920, 2,245 in 1935; the other mod runs 280–705, 515–870, 510–870,
+510–1,270, 720–2,225, 1,320–4,635, 2,565–9,810; vanilla's eight USAs 220–630, 290–475, 310–605, 480–800, 800–1,500, 1,330–3,780, 1,600–3,920.
+So it is inside vanilla's range at every date, and the lowest of the mod runs in 1880, 1890 and 1935 only; per £M of GDP it holds 5.0–6.6 in
+1870–1900 (the other mod runs 5–13) and 5.4 in 1935, as run 3 and F293's run 2 do (vanilla 3.1–7.8). The low start has one event behind it:
+- **The 1863–64 steel-frame switch, in a war.** In 1862 all 65 levels ran iron frames (325 points); by 1863 23 of 66 ran steel frames, and by
+  1864 the sector was 34 levels, 28 on steel (310 points): 32 levels gone, 15 points of capacity. In 1863 military goods and wages cost
+  £101k a week (9k the year before; a diplomatic play against Mexico opened in March 1862, peace in July 1863), money stood at £0.2M and expenses at
+  307k against an income of 275k. The other five mod runs switch to steel frames in 1864–73 and keep their levels over the next three
+  years, so their points rise from 280–435 before the switch to 580–870 three years on (run 3, at zero money and £161k a week of military
+  spending the year before its switch, kept 74 levels and went 370 → 700). Vanilla's USAs cut levels too: runs 4 and 5, after 122k and 82k a week of military spending the
+  year before the switch, go 37 → 30 and 41 → 30; runs 1, 7 and 8 lose a quarter to a half of theirs in the 1870s (their wars not checked). A cut of this size and cause is one run's: a direction.
+- **It did not rebuild for twenty years:** the government put almost nothing into construction. The government queue was empty or nearly so in 1862–75, and in most years of 1866–75 (93 of 93,
+  94 of 94, 95 of 95 thousand a week in 1866, 1868 and 1869) the pool's contribution paid for all the construction goods bought; money was
+  £0.0–1.4M. The USA capitulated in a war in November
+  1872, with £87–124k a week of military goods in 1871–72. The sector's points were flat at 285–300 from 1871 to 1883; from 1876 the
+  government's queue had work and construction spending doubled (110 → 235k a week by 1878).
+- Why the AI did not raise the level between 1876 and 1890, with £2.7–5.2M in the treasury, is not read; the government's revenue ran 26–28%
+  of weekly GDP in 1870–76, against 33–41% in the other mod runs and 31–39% in vanilla, after its taxation law moved to proportional in 1866–67
+  (run 1 of this batch is also proportional, at 39–40%).
+
+So the hoard of run 4 is read as two things: the private share of construction points is low under an Interventionist government whose queue is
+mostly dams, and the pool's inflow is above what the private half spends, in a country whose construction capacity was never large against its
+workforce. How much is each is not separated: the flows above give a direction, and the barrier's premise, that a member with labour does
+not hoard (§3.2), does not hold for run 4's USA at 45% peasants. Peasants and hoards are not tied: F293's run 2 USA keeps 43% peasants
+with a pool of 0.12 GDP. Vanilla's own hoards (GBR 2.80, 2.18, 2.06, 1.26; USA 1.11) are Laissez-faire or Interventionist with private shares
+0.79–0.94 and full employment. Not separated: whether the dams cause the long government queues or would be replaced by other government
+projects. n = 3 hoarders: a direction.
 
 ---
