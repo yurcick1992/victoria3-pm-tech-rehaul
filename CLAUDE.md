@@ -792,7 +792,11 @@ What §1.2 and §1.3 leave out:
   book broke (railways, flash freezing, navigation, combustion engine's sources), pumpjacks on rotary valve engine in place of dynamite,
   mining workers as a source for nitroglycerin and dynamite, the military industries' marks × 0.25, the financial entries and
   macroeconomics held, shift work's AI weight × 1.2. Not measured, not deployed.
-  **The canon since 2026-11-24: `1.2.d2`** (`102f924c`, §10.133, §10.134) = `g1152-canon12b` + gold minting (500 a level on every rung); not measured.
+  **The canon since 2026-11-24: `1.2.d2`** (`102f924c`, §10.133, §10.134) = `g1152-canon12b` + gold minting (500 a level on every rung); its
+  seven centuries playing, four read (F298: world GDP 1.17×, runs 0.82–1.31, one past the barrier).
+  ⚠ **Every mod 1.2 build has dams without slots (F298, found 2026-11-24, not fixed):** the deposit emitter overwrites the map files the dam
+  emitter wrote, so 435–1,559 dam levels stand in 1936 on 181 slots and take 6–27% of all construction points of 1900–35. Every 1.2 reading
+  above and below (F283–F297) and the sizes of §10.132 stand on it; `dam_slots.mjs` (§3.3) was not run on those batches.
   **The canon from 2026-11-23 to 11-24: `g1152-canon12b`** (`2b4ec38a`, §10.132) = `g1152-canon12` + A 2.35, the crafts at 30 points, the five
   mines, gold, fishing and whaling at 0.75× cost; measured by six centuries (F293's two, then F294's four: world GDP 0.97× at the median,
   0.78–1.24; two of six past the barrier (Britain at 1.13×, the USA at 0.78×); loss 9.31 on the four intact against

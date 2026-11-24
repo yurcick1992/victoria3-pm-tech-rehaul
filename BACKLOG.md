@@ -198,6 +198,11 @@ Closed:
 
 ## D. AI, construction, companies, dams
 
+- **DEFECT, NOW (found 2026-11-24, F298)** · every mod 1.2 build ships dams with no slots: `emit_deposit_slots.mjs` rewrites `map_data/state_regions` from vanilla over `emit_dams.mjs`'s slots; 435–1,559 dam levels in 1936
+  against 181 slots, 6–27% of all construction points of 1900–35. Fix when no batch plays (CLAUDE.md §5.1 rule 7): the deposit emitter edits the build's own file where one exists; a build lint asserting every project's slot in the
+  emitted map; a landmine with a tripped detector, which also covers two emitters writing one file; `dam_slots.mjs` added to `fill_ledger.sh`. Published mods (1.0–1.1.2) are not affected · FINDINGS F298
+- **PROPOSED, not ruled (2026-11-24, F298)** · for the next book, with the slots back: `cost1` 1.25 (world GDP of a repaired build ≈ 1.2×), a power-plant desire conditional on the state's electricity price (the electric textile and steel
+  methods run on 30–34% of the levels that hold the technology), the deposits' t2 / t3 output × 1.2 a book later, the pool-size term held (its USA cases are dam cases); the price term read on goods priced at both ends · FINDINGS F298
 - **DONE 2026-11-24 (§10.133, §10.134): gold mints 500 a level on every rung, the canon `1.2.d2`** (it minted nothing in every 1.2 book to `g1152-canon12b`) · open: its first runs; the amount may be re-decided (250 / 750 / 500 / 500 keeps 1836 at vanilla's) · FINDINGS F296, landmine L57
 - **PROPOSED, not ruled (F296)** · the deposits' t2 and t3 pollution per level scaled with output (× the rung's output ÷ its vanilla method's), since flat output makes them 1.5–2.3× vanilla's per ton; factories stay vanilla's per level · FINDINGS F296
 - **OPEN, found 2026-11-24 (F297), nothing ruled; not built** · the AI's construction target (`wanted_construction_output`) is vanilla's, one

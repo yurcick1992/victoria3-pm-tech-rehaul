@@ -443,6 +443,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F295 | Why the canon's auto-downsizing destroys less construction than vanilla's (6.1M against 7.9M points a run, 0.77×, a direction): standing capital and its idle share are about equal (12.6% against 12.7% empty), less of the idle capacity is torn down (0.046 against 0.062 points lost per empty point-year); the old rungs are emptier than vanilla's (t0 non-craft 50% against 27%, t1 30% against 15%) but sit in plants of about two levels (vanilla 5–6), under the engine's one-empty-level rule; U\* and free method switching do not explain it; so points destroyed understates the canon's idle old capital | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | none (re-read) | here |
 | F296 | The tiered gold mines of the mod 1.2 books mint nothing from their main methods (vanilla 250 / 500 / 750 / 1,000 a level): the rungs are rebuilt from recipe fields and lost `country_minting_add`; their gold minting is 0.27–0.30× vanilla's at half the gold, 1.3–1.5% of world government income, 5–29% for the gold countries. Every other non-goods effect of every rung is vanilla's; pollution and infrastructure use are vanilla's per level, so per unit of output a t3 factory has about a third of vanilla's and a t2 / t3 deposit 1.5–2.3×. Fixed in the canon `1.2.d2` (500 a level, §10.133, §10.134), landmine L57 | `g1152-canon12b` n=6, vanilla 1.15.2 n=8, and the build | re-read, no game time | here |
 | F297 | The AI builds the construction sectors its script asks for on every game version (points ÷ target 0.93–1.28; no break from 1.13.11 to 1.15.2), but the target follows the pool's income and not its stock, one point per £750 a week: standing at target the majors would spend 0.85 of their inflow on vanilla 1.13.11, 0.70–0.74 on vanilla 1.15, 0.57–0.63 in mod 1.1, 1.1.1, `m12b-first` and `canon12b`; vanilla's hoarders have run out of labour and work (private queue under 26 weeks in 86–96% of years), the mod's hold over 78 weeks of private work (92–96% in the 1.2 books) with a full treasury | yearly summaries of 11 arms, 1.13.11 to 1.15.2 | none (re-read) | here |
+| F298 | ⚠ **Every mod 1.2 build has dams without slots:** `emit_deposit_slots.mjs` rewrites the state-region files from vanilla after `emit_dams.mjs`, so the 181 dam slots are gone and the engine builds without a cap: 435–1,559 dam levels in 1936 (mod 1.1.1: 88, 0 slot breaches in ten runs), 6–27% of all construction points of 1900–35 (up to half the USA's) into electricity sold at 0.25–0.4 of base; the shortlist's dam share goes with world GDP (r −0.73 over ten runs; 1.23× at 1%, 0.77× at 30%), so the 1.2 readings F283–F297, the canon12b–d2 gap and the sizes of §10.132 stand on it. Against the goals, on the runs least touched: prices farthest, then tier 3 (textile and steel hosts hold the electric method's technology on 100% of shortlist levels and run it on 30–34%), then depeasantation of the leaders at the end and world GDP (≈1.2×) | `1.2.d2` runs 1–4, `g1152-canon12b` n=6, the older 1.2 books, mod 1.1.1 n=10, vanilla 1.15.2 n=8 | none (re-read) | here |
 
 ---
 
@@ -25017,3 +25018,73 @@ add sectors the private side cannot use.
 **What it does NOT say.** Whether vanilla's higher government use of the queue is a script or an engine change; what the engine reads as `investment_pool_income` (my
 inflow is the pool's change plus its spending, and nets purchases of existing buildings out); whether a sector could be staffed; no run has played a
 changed target.
+
+## F298 — EVERY MOD 1.2 BUILD HAS DAMS WITHOUT SLOTS (THE DEPOSIT EMITTER OVERWRITES THE MAP FILES THE DAM EMITTER WROTE): 435–1,559 DAM LEVELS IN 1936 AGAINST 181 SLOTS, 6–27% OF ALL CONSTRUCTION POINTS OF 1900–35, THE SHORTLIST'S DAM SHARE GOING WITH WORLD GDP AT r −0.73; AND `1.2.d2` READ AGAINST THE MOD'S GOALS: FALLING PRICES ARE THE FARTHEST, THEN TIER 3, THEN THE LEADERS' DEPEASANTATION AND WORLD GDP (2026-11-24; no game time)
+
+**The question** (the user, 2026-11-24): *"Judging by 4 runs on 1.2.d2, we've overshot … Check the ledger (dive deeper into savegames if needed) against high-level mod
+goals to assess where we're the farthest. Then suggest parameters tune."*
+
+**Arms.** `1.2.d2` runs 1–4 of `20261124_111515_g1152-1.2.d2-n7` (the batch was playing run 5), `g1152-canon12b` n=6 (F293, F294), `g1152-canon12` n=5, `m12b-first` n=4, mod 1.1.1 on
+game 1.15.1 n=10 (`20261112_113429`), vanilla 1.15.2 n=8. Yearly summaries, `markets.tsv`, the ledger `out_d2_n4`, and two kept 1936 saves melted (`1.2.d2` runs 3 and 4). Scripts:
+`tools/testbed/sessions/20261124_111515_g1152-1.2.d2-n7/goals_and_dams_20261124/`.
+
+**1 · The defect.** `emit_dams.mjs` writes the 181 dam slots (small cheap 48, small dear 71, large cheap 21, large dear 41) into `map_data/state_regions/*.txt`; `emit_deposit_slots.mjs`, run later in the
+same build, reads those files from the GAME folder, not from the mod, and writes its own copies over them. `mod/`, `mod_sched_canon` and `mod_m12b` hold no `building_dam_*` line; v1.1.1 and v1.1.2 hold
+122. The group keeps `capped_by_resources = yes`, and with no entry the engine lets the AI build on (São Paulo 33 levels on 2 slots). `dam_slots.mjs`: breaches 0 in mod 1.1.1's ten runs; `m12b-first` 71 + 275,
+`canon12` 44 and 145 in two of its sessions, `canon12b` 109 + 386, `1.2.d2` 536 over four finished runs. The reader is in every report's list (§3.3) and was not run on a 1.2 batch; no build
+check looks at the slots.
+
+| | mod 1.1.1 | `m12b-first` | `canon12` | `canon12b` | `1.2.d2` |
+|---|---|---|---|---|---|
+| dam levels 1935, world (slots 181) | 88 | 581 | 528 | 1,175 | 857 |
+| dams' share of construction points 1910–35: world · shortlist · USA | 1 · 1 · 2% | 12 · 9 · 9% | 20 · 24 · 21% | 20 · 20 · 33% | 11 · 9 · 10% |
+| price of the shortlist dams' electricity ÷ base, 1935 | 0.99 | 0.33 | 0.33 | 0.29 | 0.39 |
+| the runs' USA shares | 0–8% | 1–17% | 3–45% | 2–51% | 0–51% |
+
+(The dams' `ai_value` is a flat 30,000. 0.25 of base is the price floor.)
+
+**2 · What it explains.** Per run, `canon12b` and `1.2.d2` together (n=10; the books differ in gold minting alone): the dams' share of the shortlist's points over 1900–35 is 24, 25, 10, 2, 22, 13 (`canon12b`) and 19, 11, 0, 5% (`1.2.d2`); points over the
+slots are 5–24% of all the world built in 1900–35. World GDP on that share: r −0.73, 1.23× at 1%, 1.01× at 15%, 0.77× at 30%; the world's U\* at the end r +0.79 (40 → 49 → 59%), Germany's r +0.77, the USA's +0.43;
+industry prices, T3 and the barrier do not follow it (r 0.08, 0.10, −0.20). By group (medians): under 6% (n=3) world GDP 1.23, 10–13% (n=3) 1.13, 19% and over (n=4) 0.88. So the gap between `canon12b` (0.97) and `1.2.d2` (1.17) is
+mostly the draw of dams, and the ten runs pooled read 1.05 (0.78–1.31). The USAs that stay peasant (U\* 26–55% at the end, five of ten) put 19–51% of their points of 1910–35 into dams; the three with 0–2% end at 0–1%, and two more (13% and 49%) at 2%. The USA's hoards
+(pool 0.96–1.41 of GDP in three runs) are dam cases, its private queue of 120–620 weeks mostly dams; Britain's (0.87–2.57) are not: U\* 1–5%, dams 0–4% of its points, in the two `1.2.d2` cases a home queue of 17–21 weeks.
+**What stands on it:** F283–F297's world GDP, U\*, hoard and queue readings of the 1.2 books, F290's "what separates" (dams 24% of `canon12`'s shortlist points against 9% of `m12b-first`'s), F294's and F297's USA paragraphs, and the
+sizes of §10.132 (A 2.35, deposits × 0.75), chosen on `canon12`'s 0.61×, the arm with the highest shortlist dam share.
+
+**3 · Against the goals**, on all four `1.2.d2` runs, and on the three runs with a dam share of 5% or less (`canon12b` plus4 run 2, `1.2.d2` runs 3 and 4) as the nearest reading of a repaired build:
+
+| goal | reading (four runs · the three) | aim | in spreads |
+|---|---|---|---|
+| 1–2 old plants pushed out in their own market | −12% a decade (vanilla +12%) | a loss, growing | at it |
+| 1 backward industries whose better producers are abroad | +19% (vanilla +21%) | — | no effect |
+| 2 industry prices 1935 ÷ 1900, the register's aggregate | 0.90 · 0.86 | 0.75 | 3.5 · 2.5 |
+| 2 tier 3 share of tiered workers (÷ the others) | 32.5% (0.49) · 29% | ÷ others ≥ 1 | 3.2 · 4.0 |
+| 2 tier 0, 1935 ÷ the 1900s · tier 3 payback | 0.18 · 8.6 years | falling · 8–15 | at it |
+| 3 hoarding members | 1 a run (Britain by full employment, the USA by dams) | 0 | 1.1 |
+| 4 U\* Britain · USA · Germany · world, the end | 3 · 14 · 5 · 41% · 1 · 0 · 2 · 43% | 5 · 15 · 20 · 50% | 2.5 · 0.1 · 0.8 · 2.0 |
+| 4 U\* 1913, the same | 12 · 32 · 49 · 58% · 6 · 13 · 53 · 57% | 10 · 25 · 20 · 60% | 0.3 · 0.4 · 1.4 · 0.4 |
+| world GDP, the end | 1.17 · 1.23 | 0.90–1.00 | 1.2 · 1.7 |
+
+The excess is the leaders' output per head, not jobs: the shortlist's GDP 1.32× vanilla's at 1.0× its people, manufacturing value added 1.66×, the other classes 0.9–0.95×; the world's construction points 1.7× vanilla's in 1935 (the shortlist's 2.5×), construction goods 19% of
+GDP against 12.6%. The return of new shortlist capital is £83–90 a point a year from 1890, vanilla's £82–86 from 1900.
+
+**4 · Why the prices fall short.**
+- *Composition.* On goods priced both in 1900 and in 1935 the fall in the four big markets is 0.81 (`1.2.d2`), 0.83 (`canon12b`), 0.81 (`m12b-first`), 0.73 (mod 1.1.1), 0.87 (vanilla); over eight markets 0.84 · 0.86 · 0.82 · 0.74 · 0.87. The register's aggregate lets radios enter after 1900 at 1.5 of base. Telephones
+  (one rung, 1.33 → 1.34) and groceries (top rung 1846–80; 1.04 → 1.15 with the grain, meat and fish that go into them) do not fall at all; engines 0.64, automobiles 0.70, fertilizer 0.76, clothes and explosives 0.79, tools 0.80, furniture 0.81, steel and paper 0.84.
+- *Raw materials.* Iron, coal, lead, sulfur, copper and oil (big four, geometric mean ÷ base): mod 1.1.1 0.95 → 0.96 over 1900–35, vanilla 0.93 → 0.92, `canon12b` 1.03 → 1.15, `1.2.d2` 1.06 → 1.19. The nine core goods ÷ that raw index fall by the same in both mods (0.67 of 1900 in 1.1.1, 0.70 in
+  `1.2.d2`); inputs are 0.72–0.77 of sales on steel, tools, explosives and engines t2. The deposit rungs earn more than the average new plant (1935, £ a point a year: iron t1 134, copper t1 116, sulfur and lead t1 98–101, coal t1 90, oil 271–278; all new capital 89), so more return is not
+  what they lack; 0.75× the cost moved the raw index by about −5% in 1900 and not in 1935.
+- *The electric rungs.* On the shortlist in 1935 the electric sewing and electric arc technologies are held for 100% of the host levels (the owners of 92% and 52% of the shortlist's GDP in 1900, of all of it by 1910 and 1920) and run on 34% and 30%. Melted saves (run 3 · run 4): an electric steel level earns £11.6k · 9.7k a week against £3.3k · 2.5k on the old method in states short of electricity,
+  an electric textile level £5.8k · 4.6k against £4.0k · 2.1k; 46–77% of steel levels stand unswitched in states that use more electricity than they make. A power plant earns £26 a point a year, price 1.34 of base; vanilla's desire for it is 1,000, +4,000 for a state's first. In run 3 (no shortlist dams, 22k electricity) the hosts run 8% and 3% electric and tier 3
+  is 26%: the uncapped dams were feeding the electric rungs, so the repair alone lowers tier 3.
+
+**5 · Proposals** (Claude's; nothing ruled, nothing built). (0) Restore the slots (the deposit emitter reads the build's own state-region file where one exists), with a build check and a landmine; the batch's remaining runs measure the defect. (1) Cool by the cost level: `cost1` 1.25 on every manufacturing rung (crafts follow), A, B, C, L unchanged:
+the corpus and F234 read −0.65 to −1.6 on world GDP per unit of log cost, central −1, so 1.2–1.23× → about 0.97 (0.85–1.05), the 1886 point 0.83–0.92, world U\* about 50% by the ten runs' own axis (−3.4 pp of world U\* per +10% GDP). (2) Power plants wanted where electricity is dear (a condition on the state's electricity price in their `ai_value`; no cost
+or recipe). (3) Deposits' t2 and t3 output up by a fifth (the raw index), as the next book's change, not this one's. (4) Hold the pool-size term: the USA cases it was designed on are dam cases. The alternative cooling, A back to 2.2 with the deposits at 1.0× cost, is the state before
+§10.132 plus the repair; it takes tier 3's and the price fall's main lever away.
+
+**Confidence.** The defect, its cause and the breach counts: read in the code and in six sessions (high). That dams cause the low-GDP runs: a mechanism plus a correlation at n=10 (medium; poorer, interventionist countries may also build more of them). World GDP of a repaired build ≈ 1.2×: three runs and the regression (a direction). The size of
+(1): extrapolated from game 1.13 books (directional, §2.8); (2) and (3) are argued.
+
+**What it does NOT say.** What a repaired 1.2 build does: none has been played. Which of F283–F297's conclusions survive. That the AI would build power plants, or switch methods, under the proposed condition; textile hosts also stand unswitched in states with a surplus (34% of levels in run 3), so some of it is the AI's own inertia. Whether the register's price term should read
+matched goods (a proposal; the aim would have to be re-ruled).
