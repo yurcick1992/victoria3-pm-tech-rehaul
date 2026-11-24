@@ -442,6 +442,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F294 | The canon `g1152-canon12b` over six centuries (F293's two + four): world GDP 0.97× vanilla 1.15.2 (median; runs 0.78–1.24), on the 0.90–1.00 aim at the median with a spread wider than the aim; two of six runs past the barrier (GBR 2.40, USA 1.22, both 1927–36) and a member above 0.5 GDP in every new run: the hoard is back, a pool taking in more than the private builders spend, with the private share of points low where an Interventionist government's queue is mostly dams (a direction, not separated); loss 9.31 on the four intact; U\* at the end over all six the USA 16.2%, Britain 4.9%, Germany 64.5%, the world 52.1% (the four intact: 4.2, 3.3, 64.5, 52.1); industry prices 0.85 of 1900; T3 38.9% of tiered; no tech-era-5 military technology; run 4's USA hoards at 46.6% U\* with three quarters of its private queue in dams; India leaves Britain's market in 2 of 6 `canon12b` runs (vanilla 2 of 8) | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | 4 × 1836→1936 | here |
 | F295 | Why the canon's auto-downsizing destroys less construction than vanilla's (6.1M against 7.9M points a run, 0.77×, a direction): standing capital and its idle share are about equal (12.6% against 12.7% empty), less of the idle capacity is torn down (0.046 against 0.062 points lost per empty point-year); the old rungs are emptier than vanilla's (t0 non-craft 50% against 27%, t1 30% against 15%) but sit in plants of about two levels (vanilla 5–6), under the engine's one-empty-level rule; U\* and free method switching do not explain it; so points destroyed understates the canon's idle old capital | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | none (re-read) | here |
 | F296 | The tiered gold mines of the mod 1.2 books mint nothing from their main methods (vanilla 250 / 500 / 750 / 1,000 a level): the rungs are rebuilt from recipe fields and lost `country_minting_add`; their gold minting is 0.27–0.30× vanilla's at half the gold, 1.3–1.5% of world government income, 5–29% for the gold countries. Every other non-goods effect of every rung is vanilla's; pollution and infrastructure use are vanilla's per level, so per unit of output a t3 factory has about a third of vanilla's and a t2 / t3 deposit 1.5–2.3×. Fixed in the canon `1.2.d2` (500 a level, §10.133, §10.134), landmine L57 | `g1152-canon12b` n=6, vanilla 1.15.2 n=8, and the build | re-read, no game time | here |
+| F297 | The AI builds the construction sectors its script asks for on every game version (points ÷ target 0.93–1.28; no break from 1.13.11 to 1.15.2), but the target follows the pool's income and not its stock, one point per £750 a week: standing at target the majors would spend 0.85 of their inflow on vanilla 1.13.11, 0.70–0.74 on vanilla 1.15, 0.57–0.63 in mod 1.1, 1.1.1, `m12b-first` and `canon12b`; vanilla's hoarders have run out of labour and work (private queue under 26 weeks in 86–96% of years), the mod's hold over 78 weeks of private work (92–96% in the 1.2 books) with a full treasury | yearly summaries of 11 arms, 1.13.11 to 1.15.2 | none (re-read) | here |
 
 ---
 
@@ -24913,3 +24914,76 @@ of government income is under the spread of any two runs); the pollution reading
 read (the summaries do not hold it).
 
 ---
+
+## F297 — THE AI BUILDS THE CONSTRUCTION SECTORS ITS SCRIPT ASKS FOR ON EVERY GAME VERSION (NO BREAK FROM 1.13.11 TO 1.15.2), BUT THE SCRIPT'S TARGET FOLLOWS THE POOL'S INCOME AND NOT ITS STOCK, AT ONE POINT PER £750 A WEEK: AT TARGET THE MOD'S MAJORS WOULD SPEND 0.57–0.63 OF THEIR POOL'S INFLOW WHERE VANILLA 1.13.11'S SPENT 0.85; VANILLA'S HOARDERS HAVE NOTHING LEFT TO BUILD, THE MOD'S HAVE TWO YEARS OF PRIVATE WORK QUEUED AND A FULL TREASURY (2026-11-24; no game time)
+
+**The question** (the user, 2026-11-24): can the AI be too little eager to build construction sectors; their number against the hoard, for majors, in the
+recent versions and on 1.13; then: did vanilla break it in 1.15 / 1.15.1 / 1.15.2, or is it tuned to the vanilla economy.
+
+**Arms and reading.** Yearly save summaries, 1905–1935 unless said, the shortlist's members of at least 2% of world GDP. Vanilla 1.13.11 n=56 (one
+unfinished run dropped), mod 1.0 n=48, vanilla 1.15.0 n=11, mod 1.1 n=11, vanilla 1.15.1 n=16, mod 1.1.1 n=15, vanilla 1.15.2 n=8,
+`m12b-first` 5, `canon12` 4, `canon12b` 6, `1.2.d2` 1 (run 1 of 7). Base points = levels × the method's points (2 / 5 / 10 / 15); delivered = the
+two queues' speed; £ per point = construction goods bill ÷ delivered; the pool's spending is weekly income slot 7 (checked against the goods
+bill × the private share); inflow = the pool's yearly change + its spending. Scripts and tables: `tools/testbed/sessions/20261123_211413_g1152-canon12b-plus4/construction_hoard_20261124/`.
+
+**The rule.** `wanted_construction_output` (`common/ai_strategies/00_default_strategy.txt`): 2–10 + (weekly pool income − 7,500) ÷ 750 + government
+income ÷ 5,000 (at most 200) + population ÷ 2,000,000 (at most 100) + 10 + rank (75 for a great power). Identical text on 1.13.11, 1.15.1 and 1.15.2 but for two
+additions (the five-year plan ×1.5; nations under 250,000 people ×0), and the mod's copy is vanilla's. The construction sector and its methods
+are the same too, but for copper in arc welding. New in 1.15: `MONEY_SPENDING_CONSTRUCTION_MAX_INVESTMENT_POOL_WEEKS` 52, a priority rule (a shortfall becomes a must-have),
+not a larger target. The target I compare against assumes a great power and leaves out the ×1.25 of the industrial strategies.
+
+| arm | points ÷ target | delivered ÷ target | £/point | private share of points | pool inflow, % of GDP a year | pool spending ÷ inflow | inflow spent if the AI stood exactly at target | government queue empty, share of country-years | weeks of private work queued |
+|---|---|---|---|---|---|---|---|---|---|
+| vanilla 1.13.11 | 0.93 | 1.10 | 552 | 0.89 | 19.4 | 0.86 | 0.85 | 48% | 17 |
+| mod 1.0 (1.13.11) | 1.17 | 1.35 | 502 | 0.86 | 22.5 | 0.89 | 0.69 | 31% | 42 |
+| vanilla 1.15.0 | 1.08 | 1.18 | 511 | 0.86 | 20.4 | 0.79 | 0.71 | 28% | 15 |
+| mod 1.1 (1.15.0) | 1.16 | 1.38 | 475 | 0.80 | 25.3 | 0.77 | 0.59 | 13% | 56 |
+| vanilla 1.15.1 | 1.05 | 1.14 | 519 | 0.84 | 20.7 | 0.76 | 0.70 | 25% | 15 |
+| mod 1.1.1 (1.15.1) | 1.28 | 1.43 | 464 | 0.79 | 22.9 | 0.77 | 0.57 | 7% | 53 |
+| vanilla 1.15.2 | 1.10 | 1.23 | 532 | 0.81 | 18.0 | 0.83 | 0.74 | 14% | 15 |
+| `m12b-first` | 1.21 | 1.53 | 479 | 0.80 | 21.8 | 0.89 | 0.63 | 20% | 66 |
+| `canon12` | 1.28 | 1.39 | 500 | 0.82 | 19.9 | 0.92 | 0.73 | 29% | 68 |
+| `canon12b` | 1.20 | 1.51 | 496 | 0.77 | 22.6 | 0.87 | 0.60 | 14% | 100 |
+| `1.2.d2` (n=1) | 1.55 | 1.76 | 481 | 0.66 | 17.4 | 0.92 | 0.59 | 3% | 123 |
+
+(Sums over country-years, so the largest weigh most. `1.2.d2`'s ratios carry one France whose pool takes in 3.9% of GDP a year: its 1920–35 delivered ÷ target is 3.89.)
+
+**1 · The AI is not refusing.** Sector points per £M of GDP, the median over the 1920–35 member-years: vanilla 1.13.11 4.88, 1.15.0 6.06, 1.15.1 5.45,
+1.15.2 5.51; mod 1.0 6.42, 1.1 7.12, 1.1.1 7.09, `m12b-first` 6.69, `canon12` 7.39, `canon12b` 7.25. More than vanilla everywhere, and 1.15 vanilla more
+than 1.13 vanilla. Growth over five years of points against the target, by pool ÷ GDP at the start, 1895–1930: 0.94–1.05 of each other in every arm and every
+bucket but two (vanilla 1.15.2 above 0.5: ×1.04 against ×1.13; `1.2.d2` n=21).
+
+**2 · The pool's stock has no visible place in it.** Points ÷ target by pool ÷ GDP (1900–35): mod 1.0 1.03 / 1.05 / 1.05 / 1.04 / 1.04 / 1.04 (h under 0.02, 0.02–0.1,
+0.1–0.3, 0.3–0.6, 0.6–1, over 1); `canon12b` 1.20 / 1.20 / 1.08 / 1.07 / 1.01 / 1.02; vanilla 1.15.2 1.15 / 1.04 / 0.96 / 0.93 / 1.04 / 1.12. A major with three times its GDP in the
+pool holds as many points as the formula wants, not more. `TOO_LARGE_INVESTMENT_POOL_FACTOR` (the mod's 0.95) and the 52-week rule leave no
+mark on the level; they may act on priority below the target only.
+
+**3 · Two kinds of hoard** (country-years above half a GDP, 1900–35):
+
+| arm | country-years | private queue under 26 weeks | over 78 weeks | peasants under 5% | treasury above 10% of GDP | points needed ÷ points delivered to hold the pool level (median) |
+|---|---|---|---|---|---|---|
+| vanilla 1.13.11 | 736 | 86% | 0% | 74% | 15% | 1.27 |
+| vanilla 1.15.0 / .1 / .2 | 258 / 370 / 102 | 92 / 93 / 96% | 0% | 93 / 85 / 73% | 40 / 61 / 56% | 1.43 / 1.58 / 1.68 |
+| mod 1.0 | 344 | 9% | 62% | 59% | 51% | 1.54 |
+| mod 1.1 / 1.1.1 | 319 / 350 | 17 / 32% | 65 / 40% | 42 / 77% | 83 / 90% | 1.92 / 1.72 |
+| 1.2 books: `m12b-first` / `canon12b` | 24 / 74 | 0 / 0% | 96 / 92% | 29 / 24% | 100 / 95% | 1.75 / 1.62 |
+
+Vanilla's hoarders have run out of labour and of things to build. The mod's hold one to three years of private work in the queue, money for it in the pool and a
+treasury above a tenth of GDP: what is missing is construction points, and the AI stands at its target.
+
+**4 · Why the same target is too low here.** At target the pool spends (private share × target × £ per point) ÷ inflow. Four terms
+move against it from vanilla 1.13.11 to the 1.2 book: the pool takes in more (19–20% → 22–23% of GDP a year), a point costs less (£552 → £496), the private queue gets
+less of the capacity (0.89 → 0.77, dams in the government's queue: 69–76% of its points left), and the fixed terms (rank, population, a capped government term)
+that vanilla adds to the target shrink against a bigger pool. The 1.15 step on vanilla alone is 0.85 → 0.70–0.74: £ per point 552 → 511–532 and
+the private share 0.89 → 0.81–0.86, the government's own queue being empty in 14–28% of years, against 48%. Nothing in the files explains the government's larger queue, and no change is visible
+between 1.15.1 and 1.15.2. The AI's 1.4–1.5× delivered over target (the sectors' own productivity and efficiency on top of their base points) is what holds most majors
+level; the ones with a low private share or a high inflow are not held.
+
+**Confidence.** The formula and the diffs are read (high). Points ÷ target at 1.0–1.05 for every mod hoard bucket is measured on 319–350 country-years of 27–42 members
+(high for mod 1.0, 1.1 and 1.1.1, low for the 1.2 books: 5 hoarding members in `canon12b`, 5 in `m12b-first`, 1 in `canon12`). That a target reading the pool's stock would end the hoard is an argument, not a measurement: more points also
+raise the demand for construction goods, the price of a point and the government's share of the bill, and at h under 0.1 the pool is spent as it comes in, so a higher target there would only
+add sectors the private side cannot use.
+
+**What it does NOT say.** Whether vanilla's higher government use of the queue is a script or an engine change; what the engine reads as `investment_pool_income` (my
+inflow is the pool's change plus its spending, and nets purchases of existing buildings out); whether a sector could be staffed; no run has played a
+changed target.

@@ -200,6 +200,10 @@ Closed:
 
 - **DONE 2026-11-24 (§10.133, §10.134): gold mints 500 a level on every rung, the canon `1.2.d2`** (it minted nothing in every 1.2 book to `g1152-canon12b`) · open: its first runs; the amount may be re-decided (250 / 750 / 500 / 500 keeps 1836 at vanilla's) · FINDINGS F296, landmine L57
 - **PROPOSED, not ruled (F296)** · the deposits' t2 and t3 pollution per level scaled with output (× the rung's output ÷ its vanilla method's), since flat output makes them 1.5–2.3× vanilla's per ton; factories stay vanilla's per level · FINDINGS F296
+- **OPEN, found 2026-11-24 (F297), nothing ruled; not built** · the AI's construction target (`wanted_construction_output`) is vanilla's, one
+  point per £750 of weekly pool income with no term for the pool's stock; the mod's hoarders stand exactly at it with 1–3 years of private
+  work queued and a full treasury. Candidate: a term on the pool's STOCK (only hoarders would answer it) or a lower divisor; a willingness
+  lever in a file the mod already owns (`common/ai_strategies/00_default_strategy.txt`). Needs the user's ruling, a syntax probe of a stock term, and a book of its own.
 - **OPEN, found 2026-11-24 (F294), nothing ruled** · the government's dam queues and the hoard: in the canon's runs
   the interventionist governments keep 45–88 weeks of work in their own queue, mostly dams (vanilla's 4–15 weeks), so their private queue
   gets about the law's half of the construction points (`country_private_construction_allocation_mult` 0.5) and the pool outruns it; the
