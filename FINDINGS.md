@@ -440,6 +440,7 @@ An archived finding leaves a heading here with a pointer. Four numbers were issu
 | F292 | Late-game oil by consumer: the canon's buildings use half of vanilla's oil (42k against 87k units a week in 1936); the gap is plastics above all (5.6k against 29.7k: vanilla's glassworks switch to houseware plastics by method, the canon's plastics is a tier-3 rung with 134 levels), then ports (5.4k against 14.8k), other manufacturing, chemicals, logging and automobiles; engines (7.6k against 2.6k), diesel railways, oil-fired power plants and tractors use about 9k more than vanilla's; pops' heating about a third of the markets' oil demand in both (medians 33% and 29%), half of vanilla's oil; F291's "rest" in vanilla is mostly oil beyond demand | `g1152-canon12` n=5, vanilla 1.15.2 n=8, end saves | re-read, no game time | here |
 | F293 | The canon `g1152-canon12b`, two centuries on game 1.15.2: world GDP 0.87× vanilla 1.15.2 (0.94, 0.80; `g1152-canon12` 0.61×), the gain output per worker (1.14–1.26×), not jobs (0.70–0.74× per head); none past the barrier, nobody hoards; Britain 5.7% and 49.5% U\* at the end, Germany 72%, the world 54%; industry prices 0.85 of 1900; T3 32.9% of tiered; no tech-era-5 military technology; loss 16.93 (11.45, 25.16) against 25.23; play 186 and 168 min | `g1152-canon12b` n=2 against vanilla 1.15.2 n=8 and `g1152-canon12` n=5 | 2 × 1836→1936 | here |
 | F294 | The canon `g1152-canon12b` over six centuries (F293's two + four): world GDP 0.97× vanilla 1.15.2 (median; runs 0.78–1.24), on the 0.90–1.00 aim at the median with a spread wider than the aim; two of six runs past the barrier (GBR 2.40, USA 1.22, both 1927–36) and a member above 0.5 GDP in every new run: the hoard is back, a pool taking in more than the private builders spend, with the private share of points low where an Interventionist government's queue is mostly dams (a direction, not separated); loss 9.31 on the four intact; U\* at the end over all six the USA 16.2%, Britain 4.9%, Germany 64.5%, the world 52.1% (the four intact: 4.2, 3.3, 64.5, 52.1); industry prices 0.85 of 1900; T3 38.9% of tiered; no tech-era-5 military technology; run 4's USA hoards at 46.6% U\* with three quarters of its private queue in dams; India leaves Britain's market in 2 of 6 `canon12b` runs (vanilla 2 of 8) | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | 4 × 1836→1936 | here |
+| F295 | Why the canon's auto-downsizing destroys less construction than vanilla's (6.1M against 7.9M points a run, 0.77×, a direction): standing capital and its idle share are about equal (12.6% against 12.7% empty), less of the idle capacity is torn down (0.046 against 0.062 points lost per empty point-year); the old rungs are emptier than vanilla's (t0 non-craft 50% against 27%, t1 30% against 15%) but sit in plants of about two levels (vanilla 5–6), under the engine's one-empty-level rule; U\* and free method switching do not explain it; so points destroyed understates the canon's idle old capital | `g1152-canon12b` n=6 against vanilla 1.15.2 n=8 | none (re-read) | here |
 
 ---
 
@@ -24740,5 +24741,75 @@ not hoard (§3.2), does not hold for run 4's USA at 45% peasants. Peasants and h
 with a pool of 0.12 GDP. Vanilla's own hoards (GBR 2.80, 2.18, 2.06, 1.26; USA 1.11) are Laissez-faire or Interventionist with private shares
 0.79–0.94 and full employment. Not separated: whether the dams cause the long government queues or would be replaced by other government
 projects. n = 3 hoarders: a direction.
+
+---
+
+## F295 — THE CANON'S AUTO-DOWNSIZING DESTROYS LESS CONSTRUCTION THAN VANILLA'S (0.77×, A DIRECTION) BECAUSE LESS OF ITS IDLE CAPACITY IS TORN DOWN, NOT BECAUSE LESS IS IDLE: THE OLD RUNGS ARE EMPTIER THAN VANILLA'S BUT SIT IN PLANTS OF ABOUT TWO LEVELS, UNDER THE ENGINE'S ONE-EMPTY-LEVEL RULE; U\* AND FREE METHOD SWITCHING DO NOT EXPLAIN IT (2026-11-24; a re-read of F294's six `g1152-canon12b` centuries against vanilla 1.15.2 n = 8, `20261119_210048_g1152-vanilla8`; no game time)
+
+**Why.** The user (2026-11-24): *"Why does vanilla lose more capital to auto-downsizing? This seems counterintuitive, given that we create
+more early-game buildings that are bound to get obsolete."* F294's ledger reads 0.77× vanilla's construction points and 0.68× its jobs.
+
+**How read.** The monthly poll's auto drops (§10.107's rules; 6.08M against 7.88M points a run, the ledger's reader 6.09M and 7.88M) joined to
+the yearly summaries. Standing capital = levels × `required_construction`, summed over the yearly summaries (point-years); empty = the same × (1 −
+staffing ÷ levels); tiers by the ledger's mapping, manufacturing only; costs from `mod/` (the canon's release build), as in the ledger.
+Plant sizes and the rule's reach from the 14 kept end saves (1936.1.1; `downsize_series.mjs extract`). Scripts, extracts and the printed
+tables: `20261123_211413_g1152-canon12b-plus4/downsize_read_20261124/` (gitignored). `sw.mjs` there prints the switching test, the other
+scripts are in `output.txt`.
+
+**The gap is a direction.** Per run: canon 5.60 · 3.15 · 7.98 · 9.01 · 5.28 · 5.48M, vanilla 11.47 · 6.69 · 7.95 · 7.29 · 7.36 · 7.81 · 8.53 ·
+5.95M: about 1.7 standard errors apart. Earlier books read 1.22× (F264, game 1.13), 0.87× (F269, 1.15.0), 0.98× (F271, 1.15.1). Through the 1870s
+the canon loses more (0.53M against 0.46M); the 1880s and 1890s are near level (0.90M against 0.99M) and the gap is made in the 1900s–1930s
+(4.66M against 6.44M; the 1920s 1.54M against 2.45M).
+
+| class | points lost a run, canon / vanilla (k) | standing point-years (M) | empty | lost a year, % of standing | lost per empty point-year |
+|---|---|---|---|---|---|
+| t0 craft | 162 / 189 | 25.5 / 30.6 | 11.5% / 18.4% | 0.64 / 0.62 | 0.055 / 0.034 |
+| t0 non-craft | 343 / 881 | 27.9 / 52.5 | **49.8% / 26.5%** | 1.23 / 1.68 | **0.025 / 0.063** |
+| t1 | 1,051 / 819 | 75.8 / 72.0 | **30.4% / 15.3%** | 1.39 / 1.14 | **0.046 / 0.074** |
+| t2 | 1,897 / 2,474 | 247.6 / 212.4 | 8.0% / 10.7% | 0.77 / 1.16 | 0.096 / 0.108 |
+| t3 | 373 / 382 | 76.9 / 41.1 | 7.2% / 11.4% | 0.48 / 0.93 | 0.068 / 0.081 |
+| deposits | 1,333 / 1,464 | 129.2 / 137.4 | 11.9% / 9.9% | 1.03 / 1.07 | 0.087 / 0.107 |
+| agriculture | 590 / 1,027 | 175.0 / 217.5 | 6.2% / 6.1% | 0.34 / 0.47 | 0.054 / 0.077 |
+| logging | 66 / 216 | 28.1 / 35.6 | 3.9% / 5.2% | 0.23 / 0.61 | 0.059 / 0.118 |
+| other (railways, ports, power plants, shipyards, dams …) | 268 / 430 | 259.6 / 202.4 | 15.0% / 20.0% | 0.10 / 0.21 | 0.007 / 0.011 |
+| **all** | **6,082 / 7,881** | **1,045.6 / 1,001.6** | **12.6% / 12.7%** | **0.58 / 0.79** | **0.046 / 0.062** |
+
+**Where the gap comes from.** Splitting each class's gap into standing capital, its empty share and the points lost per empty point-year
+(log-mean split, summed over the classes): of −1.80M, standing capital +0.02M, empty share +0.23M, **lost per empty point-year −2.05M**. So the mix effects
+cancel: fewer dear t0 levels (−0.36M) and farms (−0.17M) against more t2 and t3 capital (+0.57M); a better staffed t2 and t3 (−0.82M) against
+emptier t0, t1 and deposits (+1.25M). From 1880 on alone the same three are 0.00, +0.16 and −2.03M. Loss per standing point-year by run: 0.37–0.71%
+(mean 0.57, sd 0.13) against vanilla's 0.60–0.96% (0.78, sd 0.11); t0 and t1 non-craft empty 32–40% against 16–21% (no overlap).
+
+**The intuition is right about obsolescence and wrong about the measure.**
+- The canon loses more early levels (t0 crafts 5,404 a run against 315, t1 1,539 against 1,207), but a craft level costs 30 points where
+  vanilla's equivalent costs 600, and a t0 factory half of vanilla's. Its capital standing in crafts, t0 and t1 is below vanilla's (129M against
+  155M point-years): vanilla keeps many plants on their first method at full cost.
+- Its old plants are idle, not demolished. The engine starts downsizing only a building missing at least 1.0 privately owned level of staffing
+  and 10% of its staffing (`AUTO_DOWNSIZE_BUILDING_MIN_EMPTY_PRIVATE_LEVELS`, `_MIN_EMPTY_FRACTION`), so a one-level plant at 3% staffing is missing 0.97 and stays. Levels per
+  building in 1930, canon / vanilla: t0 non-craft 1.8 / 6.0, t1 2.1 / 5.1, t2 5.1 / 6.2, deposits 5.1 / 9.6 (an industry split over several building types in
+  a state makes smaller plants). Of the empty private capital in the 1936 saves the rule reaches 61% on the canon's factories (t0 42%, t1 45%,
+  t2 73%) and 77% on vanilla's; one-level buildings are 51% of the canon's factories (t0 65%, t1 58%) and 30% of vanilla's; 44% of the canon's empty factory
+  capital is in plants under 10% staffed, vanilla's 22%.
+
+**What was tested and does not explain it.**
+- *Vanilla's fuller employment.* From 1880, vanilla's loss rate by country U\* (four bands) on the canon's capital in each band gives 6.78M against vanilla's
+  6.99M and the canon's 5.28M (6.95M by class, 6.94M by band and class). The canon's rate is lower in every band (under 10% U\*: 0.79% against
+  1.03%; over 50%: 0.70% against 0.82%).
+- *Vanilla's free method switch making surplus capacity.* A vanilla country's industry (5 levels or more) within three years of a jump of its
+  mean method tier of 0.4 or more loses 1.30% of its levels a year, the others 1.31% (1860–89 0.85 against 1.05, 1890–1914 1.17 against
+  1.23, 1915–35 1.52 against 1.40).
+
+**Consequence for reading the panel.** Points destroyed by auto-downsizing understates the canon's obsolete capital against vanilla's; the empty
+share of t0 and t1 (50% and 30% against 27% and 15%) is the better reading of waste on old rungs.
+
+**What it does NOT say.**
+- The gap is a direction, not a difference established at this n; two of the six canon runs are past the barrier and are in every figure here.
+- How much of the −2.05M the size rule accounts for is not measured. The 1936 saves are a stock: what the rule could reach has partly been taken down
+  already, which inflates the share it cannot reach. The rule is the mechanism read from the defines; its effect is shown by plant sizes and
+  eligibility, not by a perturbation.
+- Among eligible plants fewer in the canon have the downsizing timer running (factories: 19% of all empty capital against 36%, where 61% and 77% are
+  eligible); the cause is not read.
+- Why the canon's t2 and t3 are better staffed is not tested (that they must be built, not switched to, is a guess).
+- The state-level reading of hireable labour (in the scripts' output) was not used: about a third of the drops could not be placed on a state.
 
 ---
