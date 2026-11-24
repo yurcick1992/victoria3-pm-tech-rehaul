@@ -24979,6 +24979,36 @@ the private share 0.89 → 0.81–0.86, the government's own queue being empty i
 between 1.15.1 and 1.15.2. The AI's 1.4–1.5× delivered over target (the sectors' own productivity and efficiency on top of their base points) is what holds most majors
 level; the ones with a low private share or a high inflow are not held.
 
+**5 · Not windfalls: the hoard is the steady income underspent, and the target's calibration fades with the size of the flow** (the user's question,
+2026-11-24: is the target calibrated to the cash flow and thrown off by windfalls; same arms and data, scripts `win.mjs`, `size.mjs`, `pool.mjs`
+in the same folder).
+- *Windfalls.* A jump year = a member-year (≥ 2% of world GDP, 1880–1935) whose pool inflow ÷ GDP is above 1.4× and 5 points over the median of its
+  five years before. 1.2–1.7% of country-years in every arm (`1.2.d2` 1 of 275), and the money above that median is **0.3–0.8% of all inflow**. Half of
+  the listed ones are steps that stay (UNL 1918–22 in `m12b-first`, the USA 1901–04 in `canon12`). GDP grew by over 15% in the same year (annexation, unification) in
+  2–25 of each arm's jump years. Over the build-up of a hoard (from the last year under 0.1 of GDP to its peak, peak ≥ 0.5) the pool grew in 92–100% of
+  years, the median build-up lasts 11–32 years, the median largest single year is 9–19% of the gain, and jump money is 0–2% of it in every arm but
+  mod 1.0 (14%, four members of 47). A one-off smaller than 5% of GDP is below this test; the totals above bound it only as far as the test sees.
+- *The flows, read in one save* (`canon12b` plus4 run 1, 1936, the save's own `investment={}` = reinvestment per building type, and
+  `weekly_investment_pool_change_from_construction`): Britain £4.41M in, £2.48M out to construction, pool £1.92bn; the USA 2.81 / 1.67; France 2.01 / 1.66; Belgium 0.67 / 0.45. The
+  rest of the yearly change (Britain £1.42M a week) is less than the difference; what takes it is not read. On these gross
+  figures the rule gives Britain 6,218 points (it stands at 6,435 base points), the USA 4,093 (3,885), France 3,010 (3,320): `investment_pool_income`
+  reads the gross reinvestment, checked on three countries of one save.
+- *The calibration.* A target point turns into £490–620 a week of pool spending (median, by flow size), not £750; the constant terms (rank, population, government income) make up the gap
+  while the flow is small and fade as it grows. 1900–35, members by weekly inflow, spending ÷ inflow (median) and the constant terms' share of the target:
+
+  | arm | £0.2–0.5M | £0.5–1M | £1–2M | over £2M | over £2M: pool above half a GDP |
+  |---|---|---|---|---|---|
+  | vanilla 1.13.11 | 0.93 | 0.92 | 0.88 | 0.79 | 68% |
+  | mod 1.0 | 0.93 | 0.91 | 0.91 | 0.89 | 17% |
+  | vanilla 1.15.2 | 0.95 | 0.93 | 0.93 | 0.75 | 47% |
+  | mod 1.1.1 | 0.94 | 0.91 | 0.88 | 0.76 | 46% |
+  | `canon12b` | 0.96 | 0.94 | 0.91 | 0.82 | 26% |
+  | constant terms' share, all arms | 0.31–0.34 | 0.20–0.22 | 0.13–0.14 | 0.08–0.10 | |
+
+  So the gradient is vanilla's own: under half a million pounds a week the pool is spent, above two million a quarter to a fifth is not.
+  In vanilla that flow is reached by countries that have also run out of labour (section 3), so nothing is lost; in the mod it is reached with work queued. "Nearly all of it spent as it comes in"
+  holds only for a pool under 0.1 of GDP (0.94–0.96 in every arm).
+
 **Confidence.** The formula and the diffs are read (high). Points ÷ target at 1.0–1.05 for every mod hoard bucket is measured on 319–350 country-years of 27–42 members
 (high for mod 1.0, 1.1 and 1.1.1, low for the 1.2 books: 5 hoarding members in `canon12b`, 5 in `m12b-first`, 1 in `canon12`). That a target reading the pool's stock would end the hoard is an argument, not a measurement: more points also
 raise the demand for construction goods, the price of a point and the government's share of the bill, and at h under 0.1 the pool is spent as it comes in, so a higher target there would only
